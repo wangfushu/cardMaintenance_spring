@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans" xmlns="http://www.springframework.org/schema/security"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <http pattern="/css/**" security="none"/>
+    <http pattern="/images/**" security="none"/>
+    <http pattern="/image/**" security="none"/>
+    <http pattern="/js/**" security="none"/>
+   <http pattern="/easyui/**" security="none"/>
+    <http pattern="/index.jsp" security="none"/>
+
+    <http auto-config="true" access-denied-page="/accessDeniedPage">
+     <!--   <intercept-url pattern="/" access="ROLE_USER"/>
+        <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/invoice" access="ROLE_USER"/>
+        <intercept-url pattern="/invoice/**" access="ROLE_USER"/>-->
+        <intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER"/>
+        <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <!--<intercept-url pattern="/msg/noread/count" access="IS_AUTHENTICATED_ANONYMOUSLY"/>-->
+<!--        <intercept-url pattern="/user/usernameNotExist" access="ROLE_UI,ROLE_ADMIN,ROLE_NORMAL,ROLE_USER"/>
+        <intercept-url pattern="/user/telPhoneNotExist" access="ROLE_UI,ROLE_ADMIN,ROLE_NORMAL,ROLE_USER"/>-->
+        <intercept-url pattern="/user/checkPassword" access="ROLE_ADMIN,ROLE_USER"/>
+        <intercept-url pattern="/user/changePassword" access="ROLE_ADMIN,ROLE_USER"/>
+        <!--<intercept-url pattern="/order" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL,ROLE_UI"/>
+        <intercept-url pattern="/order/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>
+        <intercept-url pattern="/seller/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>-->
+        <!--<intercept-url pattern="/transaction/record/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>-->
+        <!--<intercept-url pattern="/msg/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL,ROLE_UI"/>-->
+        <!--<intercept-url pattern="/ui/**" access="ROLE_UI,ROLE_ADMIN,ROLE_NORMAL,ROLE_USER"/>-->
+        <!--<intercept-url pattern="/orderType/**" access="ROLE_USER,ROLE_ADMIN"/>-->
+       <!-- <intercept-url pattern="/**" access="ROLE_ADMIN,ROLE_NORMAL"/>-->
+
+        <!--default-target-url="/home/loginSuccess.action"(登录成功的url)-->
+
+        <form-login login-page="/login"/>
+
+        <logout invalidate-session="true"
+                logout-success-url="/invoice"/>
+
+        <!-- SESSION超时后跳转到该页面 -->
+        <session-management invalid-session-url="/login"></session-management>
+        <custom-filter ref="validateCodeAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
+    </http>
+
+
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="myUserService">
+        <!--<password-encoder ref="encoder" />-->
+            <password-encoder hash="md5" />
+        </authentication-provider>
+    </authentication-manager>
+ <!--  <b:bean id="encoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />-->
+   <!-- <b:bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" >
+       &lt;!&ndash; <constructor-arg name="secret" value="my-secret-key" /> //注意这里的秘钥值&ndash;&gt;
+    </b:bean>
+-->
+    <b:bean id="validateCodeAuthenticationFilter"
+            class="gmms.filter.ValidateCodeFilter">
+        <b:property name="authenticationSuccessHandler" ref="loginSuccessHandle"/>
+        <b:property name="authenticationFailureHandler" ref="simpleUrlAuthenticationFailureHandler"/>
+        <b:property name="authenticationManager" ref="authenticationManager"/>
+    </b:bean>
+
+    <!-- 登录成功 -->
+    <b:bean id="loginSuccessHandle"
+            class="gmms.filter.LoginSuccessHandle">
+        <b:property name="defaultTargetUrl" value="/invoice"/>
+    </b:bean>
+
+    <!-- 登录失败 -->
+    <b:bean id="simpleUrlAuthenticationFailureHandler"
+            class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <b:property name="defaultFailureUrl" value="/login?msg=errorUser"></b:property>
+    </b:bean>
+
+    <b:bean id="myUserService" class="gmms.service.MyUserDetailService"/>
+
+</b:beans>
+

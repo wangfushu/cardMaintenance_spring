@@ -1,0 +1,116 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven>
+            <mvc:message-converters register-defaults="true">
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <constructor-arg value="UTF-8"/>
+                </bean>
+            </mvc:message-converters>
+        </mvc:annotation-driven>
+<!--    <mvc:annotation-driven/>-->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:file.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="104857600"/>
+    </bean>
+    <!--ResponseBody encoding utf8 -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean
+                        class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/plain;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean
+                        class="org.springframework.http.converter.ResourceHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="handlerMapping"
+          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="useRegisteredSuffixPatternMatch" value="true"/>
+    </bean>
+
+    <!-- 处理静态文件 -->
+    <mvc:default-servlet-handler/>
+
+    <!-- 自动扫描且只扫描@Controller -->
+    <context:component-scan base-package="gmms.controller"
+                            use-default-filters="false">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+    <bean id="freemarkerConfig"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="/WEB-INF/freemarker/"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="viewResolver"  class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".ftl"/>
+        <property name="order" value="0"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>
+    <!--JSP视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/freemarker/admin4S/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>
+    <!-- 在JSP和Freemarker的配置项中都有一个order property，上面例子是把freemarker的order设置为0，jsp为1。
+      意思是找view时，先找ftl文件，再找jsp文件做为视图。 -->
+    <mvc:interceptors>
+        <!-- interceptor 配置顺序就是执行顺利 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/"/>
+            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/**"/>
+            <bean class="gmms.interceptor.AbsolutelyPathInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/"/>
+            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/**"/>
+            <bean class="gmms.interceptor.CurrentUserInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>
