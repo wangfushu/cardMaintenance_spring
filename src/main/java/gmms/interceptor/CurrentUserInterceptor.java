@@ -1,40 +1,69 @@
 package gmms.interceptor;
 
-import java.io.IOException;
+import com.google.common.collect.Lists;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import gmms.domain.db.Role;
+import gmms.domain.db.Users;
+import gmms.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 @Component
 public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
-	private static Logger LOGGER = LoggerFactory.getLogger(CurrentUserInterceptor.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(CurrentUserInterceptor.class);
+    @Autowired
+    private UsersService usersService;
 
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+                             Object handler) throws Exception {
+        getCurrentUser(request);
+        return super.preHandle(request, response, handler);
+    }
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		getCurrentUser(request);
-		return super.preHandle(request, response, handler);
-	}
+    private void getCurrentUser(HttpServletRequest request) throws ServletException, IOException {
+        Users users = (Users) request.getSession().getAttribute("currentUser");
+        //Users users = usersService.getById(1);
+        if (users == null || users.getId() == null) {
+            if (SecurityContextHolder.getContext() != null &&
+                    SecurityContextHolder.getContext().getAuthentication() != null &&
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null &&
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                        .getAuthentication().getPrincipal();
+                if (userDetails != null) {
+                    String username = userDetails.getUsername();
+                    users = usersService.findByName(username);
+                    if (!CollectionUtils.isEmpty(users.getRoles())) {
+                        List<String> roleStr = Lists.newArrayList();
+                        for (Role role : users.getRoles()) {
+                            roleStr.add(role.getName());
+                        }
+                        request.getSession().setAttribute("currentRole", roleStr);
+                    }
+                    request.getSession().setAttribute("currentUser", users);
 
-	private void getCurrentUser(HttpServletRequest request) throws ServletException, IOException {
+                }
+            }
+        }
+    }
 
-	}
-
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
-		super.postHandle(request, response, handler, modelAndView);
-	}
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) throws Exception {
+        super.postHandle(request, response, handler, modelAndView);
+    }
 }

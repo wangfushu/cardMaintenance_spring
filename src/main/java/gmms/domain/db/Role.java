@@ -17,6 +17,7 @@ public class Role extends IdEntity {
     private String remark;
     private List<Users> users;
 
+    @Column(name = "role_name")
     public String getName() {
         return name;
     }

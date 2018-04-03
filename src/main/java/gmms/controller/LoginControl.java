@@ -19,7 +19,12 @@ public class LoginControl extends BaseControl {
     public String login(String msg, Model model) {
         System.out.println("msg=" + msg);
         model.addAttribute("msg", msg);
-        return "selleradmin/login";
+        return "cardmaintenanceadmin/login";
+    }
+
+    @RequestMapping(value = "/test")
+    public String test(String msg, Model model) {
+        return "cardmaintenanceadmin/index";
     }
 
 //    @ResponseBody

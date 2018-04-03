@@ -41,7 +41,7 @@ public class MyUserDetailService implements UserDetailsService {
             SimpleGrantedAuthority simpleGrantedAuthority1 = new SimpleGrantedAuthority(role.getName());
             auths.add(simpleGrantedAuthority1);
         }
-        User user = new User(dbUser.getUserName(), dbUser.getPassword(), auths);
+        User user = new User(dbUser.getUserNo(), dbUser.getPassword(), auths);
         return user;
     }
 }

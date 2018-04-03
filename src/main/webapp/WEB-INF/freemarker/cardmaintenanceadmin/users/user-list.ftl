@@ -17,17 +17,26 @@
     <link rel="stylesheet" type="text/css"
           href="${absoluteContextPath}/H-ui-admin/static/h-ui.admin/skin/default/skin.css" id="skin"/>
     <link rel="stylesheet" type="text/css" href="${absoluteContextPath}/H-ui-admin/static/h-ui.admin/css/style.css"/>
-    <title>订单列表</title>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="${absoluteContextPath}/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="${absoluteContextPath}/lib/respond.min.js"></script>
+    <![endif]-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="${absoluteContextPath}/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+
+
+    <title>用户列表</title>
 </head>
 <script type="text/javascript"></script>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span
+<#--<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span
         class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
-        class="Hui-iconfont">&#xe68f;</i></a></nav>
+        class="Hui-iconfont">&#xe68f;</i></a></nav>-->
 
 <div class="text-c" style="margin: 10px">
-    <!-- <button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button> -->
     <form action="${absoluteContextPath}/user/list" method="post">
     <span class="select-box inline">
 		<select name="roleId" class="select">
@@ -73,14 +82,12 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
-                <th width="100">用户名</th>
-                <th width="100">客户名称</th>
-                <th width="200">用户手机号</th>
-                <th width="200">用户邮箱</th>
+                <th width="100">网点号</th>
+                <th width="100">工号</th>
+                <th width="100">姓名</th>
+                <th width="200">手机号</th>
                 <th width="160">注册时间</th>
                 <th width="160">上次登录时间</th>
-                <th width="160">上次登录ip</th>
-                <th width="100">账户余额</th>
                 <th width="120">备注</th>
                 <th width="150">操作</th>
             </tr>
@@ -89,20 +96,12 @@
             <#list userList as user>
             <tr class="text-c" id="user_${user.id?c}">
                 <td><input userId="${user.id?c}" type="checkbox" value="" name=""></td>
-                <td>${user.userName}</td>
-                <td>${user.realName!'管理员'}</td>
+                <td>${(user.plaze.plazaNo)!''}</td>
+                <td>${user.userNo}</td>
+                <td>${user.userName!'管理员'}</td>
                 <td>${user.telphone!''}</td>
-                <td>${user.email!''}</td>
-                <td>${user.gmtCreate?string("yyyy-MM-dd HH:mm:ss")!''}</td>
-                <td>${user.lastLoginTime?string("yyyy-MM-dd HH:mm:ss")!''}</td>
-                <td>${user.lastLoginIp!''}</td>
-                <td field="money">
-                    <#if user.isUser>
-                    ${user.money?c!''}
-                    <#else>
-                        -
-                    </#if>
-                </td>
+                <td>${user.gmtCreate!''}</td>
+                <td>${user.lastLoginTime!''}</td>
                 <td>${user.remark!''}</td>
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
@@ -113,18 +112,6 @@
                         &#xe6df;</i></a>
                     <a style="text-decoration:none" class="ml-5" onClick="del_user(this,${user.id?c})" href="javascript:;"
                        title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
-                    <#if user.isUser>
-                        <a style="text-decoration:none" class="ml-5"
-                           onClick="add_money(${user.id?c},'${user.realName!'管理员'}')"
-                           href="javascript:;"
-                           title="充值"><i class="Hui-iconfont">&#xe63a;</i></a>
-
-                        <a style="text-decoration:none" class="ml-5"
-                           onClick="alter_type_setting(${user.id?c})"
-                           href="javascript:;"
-                           title="类型配置"><i class="Hui-iconfont">&#xe61d;</i></a>
-                    </#if>
-
 
                 </td>
             </tr>
@@ -133,25 +120,7 @@
         </table>
     </div>
 </div>
-
-<article class="page-container" id="add_money" style="display: none">
-    <input type="hidden" id="userId">
-    <input type="hidden" id="userName">
-    <div class="row cl">
-        <label class="form-label col-xs-6 col-sm-6">充值金额：</label>
-        <div class="formControls col-xs-6 col-sm-6">
-            <input type="text" class="input-text"
-                   placeholder="" id="money">
-        </div>
-    </div>
-    <div class="row cl">
-        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-            <input class="btn btn-primary radius" type="submit"
-                   onclick="add_user_money()"
-                   value="&nbsp;&nbsp;充值&nbsp;&nbsp;">
-        </div>
-    </div>
-</article>
+<#include "user-add.ftl">
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/lib/layer/2.4/layer.js"></script>
@@ -173,7 +142,7 @@
         src="${absoluteContextPath}/H-ui-admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/js/common.js"></script>
 
-<#include "user-add.ftl">
+
 <script type="text/javascript">
     var addMoneyIndex;
     var userAddIndex;
@@ -230,31 +199,29 @@
         userAddIndex = addMoneyIndex = layer.open({
             title: "添加用户",
             type: 1,
-            area: ['700px', '520px'],
+            area: ['700px', '470px'],
             content: $('#user_add_div')
         });
     }
 
     function alert_user(obj, id, password, roleId) {
         $("#form-user-add")[0].reset();
-        $("#form-user-add").find("input[name='userName']").attr("readonly", "readonly");
+        $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
 
         var $tds = $(obj).parents("tr").find("td");
-        var userName = $tds.eq(1).text();
-        var realName = $tds.eq(2).text();
-        var phone = $tds.eq(3).text();
-        var email = $tds.eq(4).text();
-        var remark = $tds.eq(9).text();
+        var userName = $tds.eq(2).text();
+        var realName = $tds.eq(3).text();
+        var phone = $tds.eq(4).text();
+        var remark = $tds.eq(7).text();
         $("#form-user-add").find("input[name='id']").val(id);
-        $("#form-user-add").find("input[name='userName']").val(userName);
-        $("#form-user-add").find("input[name='realName']").val(realName);
+        $("#form-user-add").find("input[name='userNo']").val(userName);
+        $("#form-user-add").find("input[name='userName']").val(realName);
         $("#form-user-add").find("input[name='telphone']").val(phone);
-        $("#form-user-add").find("input[name='email']").val(email);
         $("#form-user-add").find("input[name='password']").val(password);
         $("#passwordAgain").val(password);
         $("#form-user-add").find("select[name='roleId']").val(roleId);
         if (roleId == 1) {
-            $("#user_role_div").hide();
+            $("#user_role_div").show();
         } else {
             $("#user_role_div").show();
         }
@@ -263,7 +230,7 @@
         userAddIndex = addMoneyIndex = layer.open({
             title: "修改用户信息",
             type: 1,
-            area: ['700px', '520px'],
+            area: ['0px', '470px'],
             content: $('#user_add_div')
         });
     }
@@ -319,14 +286,14 @@
         });
     }
 
-    function alter_type_setting(userId) {
+/*    function alter_type_setting(userId) {
         layer.open({
             type: 2,
             title: "类型设置",
             content: "${absoluteContextPath}/userItemType/" + userId + "/list",
             area: ['1000px', '500px']
         });
-    }
+    }*/
 </script>
 </body>
 </html>

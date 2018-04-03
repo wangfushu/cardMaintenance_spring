@@ -7,6 +7,7 @@ import gmms.dao.util.DynamicSpecifications;
 import gmms.dao.util.SearchFilter;
 import gmms.domain.db.Role;
 import gmms.domain.db.Users;
+import gmms.domain.param.UserParam;
 import gmms.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,22 +32,42 @@ public class UsersService {
     private UsersDao usersDao;
     @Autowired
     private RoleDao roleDao;
-/*    @Value("${ui_real_image_path}")
-    private String uiRealPath;*/
 
-/*    public List<Role> listAllRole() {
-        return Lists.newArrayList(roleDao.findAll());
+    public Users findByName(String name) {
+        return usersDao.findByUserNo(name);
     }
-
-    public Role getByRoleId(long id) {
-        return roleDao.findOne(id);
+    public Users getById(long id) {
+        return usersDao.findOne(id);
     }
 
     public Users saveOrUpdate(Users users) {
         return usersDao.save(users);
-    }*/
+    }
+    public Role getByRoleId(long id) {
+        return roleDao.findOne(id);
+    }
 
-  /*  public List<Users> listAllUser(UserParam userParam) {
+    public void delete(Users operatorUser, Users deleteUser) {
+        if (deleteUser == null) {
+            return;
+        }
+        LOGGER.info("users {} has delete,operator user id is {},name is ", deleteUser, operatorUser.getId(), operatorUser.getUserName());
+        usersDao.delete(deleteUser);
+    }
+
+    public void delete(Users operatorUser, List<Users> deleteUserList) {
+        if (deleteUserList == null) {
+            return;
+        }
+        LOGGER.info("users {} has delete,operator user id is {},name is ", deleteUserList, operatorUser.getId(), operatorUser.getUserName());
+        usersDao.delete(deleteUserList);
+    }
+
+    public List<Role> listAllRole() {
+        return Lists.newArrayList(roleDao.findAll());
+    }
+
+    public List<Users> listAllUser(UserParam userParam) {
         List<SearchFilter> filters = Lists.newArrayList();
         if (userParam.getTimefromFormat() != null) {
             if (userParam.getTimeType() == 0) {
@@ -78,49 +99,5 @@ public class UsersService {
             }
         }
         return allUsers;
-    }*/
-
-   /* public List<Users> listUiUser() {
-        Role uiRole = roleDao.findOne(4L);
-        return uiRole.getUsers();
-    }*/
-
-    /**
-     * 获取所有客户
-     *
-     * @return
-     */
-   /* public List<Users> listUser() {
-        Role uiRole = roleDao.findOne(3L);
-        return uiRole.getUsers();
-    }*/
-
-   /* public Users getById(long id) {
-        return usersDao.findOne(id);
-    }
-
-
-
-    public List<Users> findByTelphone(String telphone) {
-        return usersDao.findByTelphone(telphone);
-    }*/
-
-   /* public void delete(Users operatorUser, Users deleteUser) {
-        if (deleteUser == null) {
-            return;
-        }
-        LOGGER.info("users {} has delete,operator user id is {},name is ", deleteUser, operatorUser.getId(), operatorUser.getRealName());
-        usersDao.delete(deleteUser);
-    }
-
-    public void delete(Users operatorUser, List<Users> deleteUserList) {
-        if (deleteUserList == null) {
-            return;
-        }
-        LOGGER.info("users {} has delete,operator user id is {},name is ", deleteUserList, operatorUser.getId(), operatorUser.getRealName());
-        usersDao.delete(deleteUserList);
-    }*/
-    public Users findByName(String name) {
-        return usersDao.findByUserName(name);
     }
 }

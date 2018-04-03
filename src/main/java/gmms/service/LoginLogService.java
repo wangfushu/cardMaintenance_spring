@@ -29,6 +29,7 @@ public class LoginLogService {
     public void addLog(String ip, Users users) {
         LoginLog loginLog = new LoginLog();
         loginLog.setLoginIp(ip);
+        loginLog.setGmtCreate(new Date());
         loginLog.setUsers(users);
         loginLogDao.save(loginLog);
     }

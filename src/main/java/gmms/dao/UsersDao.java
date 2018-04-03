@@ -11,7 +11,7 @@ import java.util.List;
  * hello
  */
 public interface UsersDao extends BaseDao<Users, Long> {
-    public Users findByUserName(String userName);
+    public Users findByUserNo(String userNo);
 
     List<Users> findByTelphone(String telphone);
 

@@ -21,10 +21,10 @@ import java.util.Random;
 @DynamicInsert
 @DynamicUpdate
 public class Users extends IdEntity {
-    private String userName;
+    private String userNo;
     private String password;
     private String telphone;
-    private String realName;
+    private String userName;
     private Date gmtCreate;
     private Date gmtModify;
     private Date lastLoginTime;
@@ -34,15 +34,18 @@ public class Users extends IdEntity {
     private List<Role> rolesNoLazy;
     private List<Msg> msgList;
     private List<LoginLog> loginLogList;
+    private List<SysPlaza> sysPlaza;
 
-    @Column(name = "user_name")
-    public String getUserName() {
-        return userName;
+    @Column(name = "USERNO")
+    public String getUserNo() {
+        return userNo;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
     }
+
+
 
     public String getPassword() {
         return password;
@@ -114,14 +117,18 @@ public class Users extends IdEntity {
         return isAdmin();
     }
 
-    @Column(name = "real_name")
-    public String getRealName() {
-        return realName;
+
+    @Column(name = "USERNAME")
+    public String getUserName() {
+        return userName;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
+
+
+
 
 
 
@@ -222,15 +229,23 @@ public class Users extends IdEntity {
         this.loginLogList = loginLogList;
     }
 
+    @ManyToOne(targetEntity = SysPlaza.class)
+    @JoinColumn(name = "PLAZANO", updatable = false)
+    public List<SysPlaza> getSysPlaza() {
+        return sysPlaza;
+    }
 
+    public void setSysPlaza(List<SysPlaza> sysPlaza) {
+        this.sysPlaza = sysPlaza;
+    }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Users{");
-        sb.append("userName='").append(userName).append('\'');
+        sb.append("userNo='").append(userNo).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", telphone='").append(telphone).append('\'');
-        sb.append(", realName='").append(realName).append('\'');
+        sb.append(", userName='").append(userName).append('\'');
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModify=").append(gmtModify);
         sb.append(", lastLoginTime=").append(lastLoginTime);

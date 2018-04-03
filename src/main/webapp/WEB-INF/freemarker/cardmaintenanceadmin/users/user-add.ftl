@@ -2,21 +2,21 @@
     <form class="form form-horizontal" id="form-user-add" method="post" action="">
         <input type="hidden" name="id" id="formUserId">
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>登录账号名：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>工号：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text"
                        data-msg-checkWithId="该账号已被注册"
                        checkWithId="${absoluteContextPath}/user/usernameNotExist"
                        class="input-text" required minlength="3"
-                       placeholder="" id="" name="userName">
+                       placeholder="" id="" name="userNo">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>客户名称：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>姓名：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" required
                        class="input-text" minlength="2"
-                       placeholder="" id="" name="realName">
+                       placeholder="" id="" name="userName">
             </div>
         </div>
         <div class="row cl">
@@ -24,19 +24,8 @@
                 手机号码：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" class="input-text" required minlength="11" maxlength="11" number="true"
-                       data-msg-checkWithId="该电话已被使用"
-                       checkWithId="${absoluteContextPath}/user/telPhoneNotExist"
                        placeholder="" id=""
-                       name="telphone">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
-                邮箱：</label>
-            <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" class="input-text" email="true"
-                       placeholder="" id=""
-                       name="email">
+                       name="telphone"/>
             </div>
         </div>
         <div class="row cl">
@@ -63,15 +52,22 @@
         <div class="row cl" id="user_role_div">
             <label class="form-label col-xs-4 col-sm-2">
                 用户角色：</label>
-            <div class="formControls col-xs-8 col-sm-8"> <span class="select-box" style="width:150px;">
+            <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
 			<select class="select" name="roleId" size="1">
             <#list roleList as role>
-                <#if role.id!=1>
                     <option value="${role.id}">${role.remark}</option>
-                </#if>
             </#list>
 			</select>
-			</span></div>
+			</div>
+            <label class="form-label col-xs-4 col-sm-2">
+                网点号：</label>
+            <div class="formControls col-xs-4 col-sm-2"> <span class="select-box" style="width:150px;">
+			<select class="select" name="plazaNo" size="1">
+            <#list plazaList as plaza>
+                <option value="${plaza.plaNo}">${plaza.plaName}</option>
+            </#list>
+            </select>
+            </div>
         </div>
 
         <div class="row cl">

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="cardMaintenance:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/cardMaintenance_war_exploded</output-path>
+    <output-path>$PROJECT_DIR$/target/cardMaintenance</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -89,6 +89,9 @@
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.3" />
           <element id="library" level="project" name="Maven: com.google.zxing:core:3.3.0" />
         </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="E:\ideaworkspace\new\cardMaintenance\target/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="cardMaintenance/web/Web" />
     </root>
