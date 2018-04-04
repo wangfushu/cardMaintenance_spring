@@ -2,10 +2,7 @@ package gmms.domain.db;
 
 import org.hibernate.annotations.DynamicInsert;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by wangfs on 2018-02-23 helloword.
@@ -17,6 +14,15 @@ import javax.persistence.Table;
 public class TmTagType {
 
     @Id
+    @TableGenerator(name="ID_GENERATOR",
+           table="sys_SeqTable",
+            pkColumnName="ST_SeqName",
+            pkColumnValue="TmTagType.typeId",
+            valueColumnName="ST_SeqValue",
+            allocationSize=2,
+            initialValue=1
+            )
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
     @Column(name = "TT_TYPEID")
     private Long typeId;//标签ID
 

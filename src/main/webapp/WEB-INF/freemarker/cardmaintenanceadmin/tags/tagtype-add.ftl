@@ -59,7 +59,7 @@
         success: "valid",
         submitHandler: function (form) {
             var data = $(form).serializeObject();
-            $.post('${absoluteContextPath}/user/addplaza', data, function (result) {
+            $.post('${absoluteContextPath}/tag/add', data, function (result) {
                 result = JSON.parse(result);
                 if (result.success != undefined && result.success) {
                     layer.msg("保存成功", {icon: 1, time: 1000});
