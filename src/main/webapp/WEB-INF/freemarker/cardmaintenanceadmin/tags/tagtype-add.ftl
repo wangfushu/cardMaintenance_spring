@@ -1,46 +1,46 @@
-<article class="page-container" id="plaza_add_div" style="display: none">
-    <form class="form form-horizontal" id="form-plaza-add" method="post" action="">
+<article class="page-container" id="tagtype_add_div" style="display: none">
+    <form class="form form-horizontal" id="form-tagtype-add" method="post" action="">
         <input type="hidden" name="id" id="formUserId">
         <input type="hidden" name="userId" id="userId">
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网点编号：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>卡类型名称：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text"
-                       data-msg-checkWithId="该网点已存在"
-                       checkWithId="${absoluteContextPath}/user/sysPlazaNotExist"
+                       data-msg-checkWithId="该卡类型已存在"
+                       checkWithId="${absoluteContextPath}/tag/tagTypeNotExist"
                        class="input-text" required minlength="3"
-                       placeholder="" id="" name="plaNo">
+                       placeholder="" id="" name="tagType">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网点名称：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>通讯速率：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" required
-                       class="input-text" minlength="2"
-                       placeholder="" id="" name="plaName">
+                       class="input-text"
+                       placeholder="" id="" name="communicateRate">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
-                邮编  ：</label>
-            <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" class="input-text" required minlength="6" maxlength="6" number="true"
-                       placeholder="" id=""
-                       name="plaZipCode"/>
-            </div>
-        </div>
-
-
-
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
-                备注：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>
+                厂家  ：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" class="input-text"
                        placeholder="" id=""
-                       name="plaRemark">
+                       name="factory"/>
             </div>
         </div>
+
+        <div class="row cl" >
+            <label class="form-label col-xs-4 col-sm-2">
+                是否在用：</label>
+            <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
+			<select class="select" name="inUse" size="1">
+                <option value="1">在用</option>
+                <option value="0">作废</option>
+            </select>
+            </div>
+        </div>
+
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <button onClick="" class="btn btn-primary radius" type="submit"><i

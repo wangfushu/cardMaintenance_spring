@@ -19,7 +19,7 @@ public class AccessDenyControl {
 
     @RequestMapping(value = "")
     public String deny(Model model) {
-        return "selleradmin/deny";
+        return "cardmaintenanceadmin/deny";
     }
 
     @RequestMapping(value = "error500")

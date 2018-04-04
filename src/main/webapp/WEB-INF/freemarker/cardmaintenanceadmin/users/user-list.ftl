@@ -31,10 +31,10 @@
 </head>
 <script type="text/javascript"></script>
 <body>
-<#--<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span
         class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
-        class="Hui-iconfont">&#xe68f;</i></a></nav>-->
+        class="Hui-iconfont">&#xe68f;</i></a></nav>
 
 <div class="text-c" style="margin: 10px">
     <form action="${absoluteContextPath}/user/list" method="post">
@@ -96,7 +96,7 @@
             <#list userList as user>
             <tr class="text-c" id="user_${user.id?c}">
                 <td><input userId="${user.id?c}" type="checkbox" value="" name=""></td>
-                <td>${(user.plaze.plazaNo)!''}</td>
+                <td>${(user.sysPlaza.plaName)!''}</td>
                 <td>${user.userNo}</td>
                 <td>${user.userName!'管理员'}</td>
                 <td>${user.telphone!''}</td>
@@ -106,7 +106,7 @@
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
                        data-href="${absoluteContextPath}/user/add?id=${user.id?c}"
-                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId})"
+                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},'${(user.sysPlaza.plaNo)?string}')"
                        data-title="编辑用户"
                        title="编辑"><i class="Hui-iconfont">
                         &#xe6df;</i></a>
@@ -120,7 +120,7 @@
         </table>
     </div>
 </div>
-<#include "user-add.ftl">
+
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/lib/layer/2.4/layer.js"></script>
@@ -142,46 +142,10 @@
         src="${absoluteContextPath}/H-ui-admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/js/common.js"></script>
 
-
+<#include "user-add.ftl">
 <script type="text/javascript">
     var addMoneyIndex;
     var userAddIndex;
-    function add_money(user_id, userName) {
-        var money = $("#money").val("");
-        $("#userId").val(user_id);
-        $("#userName").val(userName);
-        addMoneyIndex = layer.open({
-            title: "余额充值",
-            type: 1,
-            content: $('#add_money')
-        });
-    }
-
-    function add_user_money() {
-        var money = $("#money").val();
-        if (money === undefined || money == "") {
-            layer.msg('请填写具体金额', {icon: 5, time: 1000});
-            return;
-        }
-        var userName = $("#userName").val();
-        var userId = $("#userId").val();
-
-        layer.confirm('确定要给用户[' + userName + ']充值' + money + '元吗？', {
-            btn: ['确认', '返回'] //按钮
-        }, function (index) {
-            $.get('${absoluteContextPath}/user/addMoney', {money: money, userId: userId}).done(function (data) {
-                layer.close(index);
-                layer.close(addMoneyIndex);
-                $("#user_" + userId).find("td[field='money']").text(data);
-                layer.msg('充值成功!', {icon: 1, time: 1000});
-            }).fail(function (xhr, status) {
-                layer.msg('充值失败!', {icon: 1, time: 1000});
-            });
-        }, function (index) {
-            layer.close(index);
-        });
-    }
-
     $('.table-sort').dataTable({
         "aaSorting": [[1, "desc"]],//默认第几个排序
         "bStateSave": true,//状态保存
@@ -195,7 +159,7 @@
     function show_user_add() {
 //        layer_show(title, url, w, h);
         $("#form-user-add")[0].reset();
-        $("#form-user-add").find("input[name='userName']").removeAttr("readonly");
+        $("#form-user-add").find("input[name='userNo']").removeAttr("readonly");
         userAddIndex = addMoneyIndex = layer.open({
             title: "添加用户",
             type: 1,
@@ -204,7 +168,7 @@
         });
     }
 
-    function alert_user(obj, id, password, roleId) {
+    function alert_user(obj, id, password, roleId,plazaNo) {
         $("#form-user-add")[0].reset();
         $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
 
@@ -220,6 +184,8 @@
         $("#form-user-add").find("input[name='password']").val(password);
         $("#passwordAgain").val(password);
         $("#form-user-add").find("select[name='roleId']").val(roleId);
+        $("#plazaNo").val(plazaNo);
+        //$("#form-user-add").find("select[id='sysPlaza.plaNo']").val(plazaNo);
         if (roleId == 1) {
             $("#user_role_div").show();
         } else {
@@ -230,7 +196,7 @@
         userAddIndex = addMoneyIndex = layer.open({
             title: "修改用户信息",
             type: 1,
-            area: ['0px', '470px'],
+            area: ['700px', '470px'],
             content: $('#user_add_div')
         });
     }

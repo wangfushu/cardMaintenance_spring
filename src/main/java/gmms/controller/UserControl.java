@@ -47,12 +47,13 @@ public class UserControl extends BaseControl {
         }
 
         model.addAttribute("roleList", usersService.listAllRole());
+        model.addAttribute("plazaList", baseInformationService.listAllPlaza());
         return "cardmaintenanceadmin/users/user-add";
     }
 
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(Users users, long roleId,String plazaNo) {
+    public String add(Users users, long roleId) {
         long userId = 0;
         if (users.getId() != null) {
             userId = users.getId();
@@ -69,18 +70,19 @@ public class UserControl extends BaseControl {
                 Role role = usersService.getByRoleId(roleId);
                 oldUser.setRoles(Lists.newArrayList(role));
             }
-            SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
+            /*SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
             if(null!=sysPlaza){
                 oldUser.setSysPlaza(Lists.newArrayList(sysPlaza));
-            }
+            }*/
             usersService.saveOrUpdate(oldUser);
         } else {
             Role role = usersService.getByRoleId(roleId);
             users.setRoles(Lists.newArrayList(role));
-            SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
+            /*SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
             if(null!=sysPlaza){
                 users.setSysPlaza(Lists.newArrayList(sysPlaza));
-            }
+            }*/
+            users.setGmtCreate(new Date());
             users.setLastLoginTime(DateUtil.parseDate("2000-01-01", "yyyy-MM-dd"));
             Users save = usersService.saveOrUpdate(users);
             userId = save.getId();
@@ -93,6 +95,7 @@ public class UserControl extends BaseControl {
         List<Users> users = usersService.listAllUser(userParam);
         model.addAttribute("userList", users);
         model.addAttribute("roleList", usersService.listAllRole());
+        model.addAttribute("plazaList", baseInformationService.listAllPlaza());
         model.addAttribute("param", userParam);
         return "cardmaintenanceadmin/users/user-list";
     }
@@ -100,9 +103,9 @@ public class UserControl extends BaseControl {
 
     @ResponseBody
     @RequestMapping(value = "usernameNotExist")
-    public String usernameNotExist(String userName) {
-        Preconditions.checkNotNull(userName, "username 不能为空");
-        Users users = usersService.findByName(userName);
+    public String usernameNotExist(String userNo) {
+        Preconditions.checkNotNull(userNo, "username 不能为空");
+        Users users = usersService.findByName(userNo);
         return users == null ? "true" : "false";
     }
 
@@ -176,11 +179,11 @@ public class UserControl extends BaseControl {
     @ResponseBody
     @RequestMapping(value = "/addplaza", method = RequestMethod.POST)
     public String addplaza(SysPlaza sysPlaza,Long userId) {
-        Users users = usersService.getById(userId);
-        if(null!=users){
-            sysPlaza.setPlaUserId(String.valueOf(users.getId()));
-            sysPlaza.setPlaUserName(users.getUserName());
-            sysPlaza.setPlaUserNo(users.getUserNo());
+        Users currentUser = getCurrentUser();
+        if(null!=currentUser){
+            sysPlaza.setPlaUserId(String.valueOf(currentUser.getId()));
+            sysPlaza.setPlaUserName(currentUser.getUserName());
+            sysPlaza.setPlaUserNo(currentUser.getUserNo());
         }
         sysPlaza.setPlaModifyTime(new Date());
         sysPlaza.setPlaInUse("1");
@@ -190,10 +193,17 @@ public class UserControl extends BaseControl {
 
     @ResponseBody
     @RequestMapping(value = "sysPlazaNotExist")
-    public String sysPlazaNotExist(String plazaNo) {
-        Preconditions.checkNotNull(plazaNo, "plazaNo 不能为空");
-        SysPlaza sysPlaza = baseInformationService.findSysPlaza(plazaNo);
+    public String sysPlazaNotExist(String plaNo) {
+        Preconditions.checkNotNull(plaNo, "plazaNo 不能为空");
+        SysPlaza sysPlaza = baseInformationService.findSysPlaza(plaNo);
         return sysPlaza == null ? "true" : "false";
     }
-
+    @RequestMapping(value = "/plazalist")
+    public String plazalist(UserParam userParam, Model model) {
+        List<SysPlaza> sysPlazas = baseInformationService.sysPlazaListAll();
+        model.addAttribute("sysPlazaList", sysPlazas);
+        //model.addAttribute("roleList", usersService.listAllRole());
+        //model.addAttribute("param", userParam);
+        return "cardmaintenanceadmin/users/plaza-list";
+    }
 }

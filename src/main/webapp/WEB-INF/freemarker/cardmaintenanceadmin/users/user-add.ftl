@@ -8,7 +8,7 @@
                        data-msg-checkWithId="该账号已被注册"
                        checkWithId="${absoluteContextPath}/user/usernameNotExist"
                        class="input-text" required minlength="3"
-                       placeholder="" id="" name="userNo">
+                       placeholder="" id="formUserNo" name="userNo">
             </div>
         </div>
         <div class="row cl">
@@ -16,7 +16,7 @@
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" required
                        class="input-text" minlength="2"
-                       placeholder="" id="" name="userName">
+                       placeholder="" id="formUserName" name="userName">
             </div>
         </div>
         <div class="row cl">
@@ -24,7 +24,7 @@
                 手机号码：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" class="input-text" required minlength="11" maxlength="11" number="true"
-                       placeholder="" id=""
+                       placeholder="" id="formTelphone"
                        name="telphone"/>
             </div>
         </div>
@@ -62,9 +62,9 @@
             <label class="form-label col-xs-4 col-sm-2">
                 网点号：</label>
             <div class="formControls col-xs-4 col-sm-2"> <span class="select-box" style="width:150px;">
-			<select class="select" name="plazaNo" size="1">
-            <#list plazaList as plaza>
-                <option value="${plaza.plaNo}">${plaza.plaName}</option>
+			<select class="select" id="plazaNo"  name="sysPlaza.plaNo" size="1">
+            <#list plazaList as sysPlaza>
+                <option value="${sysPlaza.plaNo?string}">${sysPlaza.plaName}</option>
             </#list>
             </select>
             </div>
@@ -75,7 +75,7 @@
                 备注：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" class="input-text"
-                       placeholder="" id=""
+                       placeholder="" id="formRemark"
                        name="remark">
             </div>
         </div>

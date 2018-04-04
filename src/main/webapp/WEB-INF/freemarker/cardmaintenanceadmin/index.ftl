@@ -170,7 +170,7 @@
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
 
-                    <li>${currentUser.userName!"admin"} </li>
+                    <li>${currentUser.sysPlaza.plaName!"admin"} </li>
                     <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A">${currentUser.userName} <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius">
@@ -228,7 +228,7 @@
             <dt><i class="Hui-iconfont">&#xe60d;</i> 基础信息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="${absoluteContextPath}/user/list"  data-title="网点管理"
+                    <li><a data-href="${absoluteContextPath}/user/plazalist"  data-title="网点管理"
                            href="javascript:;">网点管理</a>
                     </li>
                 </ul>
@@ -240,12 +240,17 @@
             <dt><i class="Hui-iconfont">&#xe60d;</i> 卡管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
+                    <li><a data-href="${absoluteContextPath}/tag/list"  data-title="卡类型管理"
+                           href="javascript:;">卡类型管理</a>
+                    </li>
+
                     <li><a data-href="${absoluteContextPath}/user/list" data-title="卡出入库管理"
                            href="javascript:;">卡出入库管理</a>
                     </li>
-                    <li><a data-href="${absoluteContextPath}/user/list"  data-title="卡工本管理"
+
+                   <#-- <li><a data-href="${absoluteContextPath}/user/list"  data-title="卡工本管理"
                            href="javascript:;">卡工本管理</a>
-                    </li>
+                    </li>-->
                 </ul>
             </dd>
         </dl>

@@ -34,7 +34,7 @@ public class Users extends IdEntity {
     private List<Role> rolesNoLazy;
     private List<Msg> msgList;
     private List<LoginLog> loginLogList;
-    private List<SysPlaza> sysPlaza;
+    private SysPlaza sysPlaza;
 
     @Column(name = "USERNO")
     public String getUserNo() {
@@ -231,13 +231,15 @@ public class Users extends IdEntity {
 
     @ManyToOne(targetEntity = SysPlaza.class)
     @JoinColumn(name = "PLAZANO", updatable = false)
-    public List<SysPlaza> getSysPlaza() {
+    public SysPlaza getSysPlaza() {
         return sysPlaza;
     }
 
-    public void setSysPlaza(List<SysPlaza> sysPlaza) {
+    public void setSysPlaza(SysPlaza sysPlaza) {
         this.sysPlaza = sysPlaza;
     }
+
+
 
     @Override
     public String toString() {

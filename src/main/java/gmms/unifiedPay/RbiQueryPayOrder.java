@@ -1,7 +1,6 @@
 package gmms.unifiedPay;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xmrbi.parking.CheckCode;
 import gmms.unifiedPay.payConfig.BaseConfig;
 import gmms.unifiedPay.payEntity.BaseDataPay;
 import gmms.unifiedPay.payEntity.QueryOrderPay;
