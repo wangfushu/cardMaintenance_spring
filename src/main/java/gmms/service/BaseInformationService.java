@@ -49,4 +49,23 @@ public class BaseInformationService {
     public List<SysPlaza> listAllPlaza() {
         return Lists.newArrayList(sysPlazaDao.findAll());
     }
+
+
+
+    public void delete(Users operatorUser, SysPlaza sysPlaza) {
+        if (sysPlaza == null) {
+            return;
+        }
+        LOGGER.info("sysPlaza {} has delete,operator user id is {},name is ", sysPlaza, operatorUser.getId(), operatorUser.getUserName());
+        sysPlazaDao.delete(sysPlaza);
+    }
+
+    public void delete(Users operatorUser, List<SysPlaza> sysPlazaList) {
+        if (sysPlazaList == null) {
+            return;
+        }
+        LOGGER.info("sysPlazaList {} has delete,operator user id is {},name is ", sysPlazaList, operatorUser.getId(), operatorUser.getUserName());
+        sysPlazaDao.delete(sysPlazaList);
+    }
+
 }

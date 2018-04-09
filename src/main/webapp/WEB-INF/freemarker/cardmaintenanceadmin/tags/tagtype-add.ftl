@@ -13,15 +13,15 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>通讯速率：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>通讯速率：</label>
             <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" required
+                <input type="text"
                        class="input-text"
                        placeholder="" id="" name="communicateRate">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
                 厂家  ：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text" class="input-text"
@@ -36,7 +36,7 @@
             <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
 			<select class="select" name="inUse" size="1">
                 <option value="1">在用</option>
-                <option value="0">作废</option>
+                <option value="0">停用</option>
             </select>
             </div>
         </div>
@@ -53,7 +53,7 @@
 
 <script>
     //表单验证
-    $("#form-plaza-add").validate({
+    $("#form-tagtype-add").validate({
         onkeyup: false,
         focusCleanup: true,
         success: "valid",

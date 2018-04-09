@@ -27,7 +27,7 @@
     <![endif]-->
 
 
-    <title>用户列表</title>
+    <title>卡类型列表</title>
 </head>
 <script type="text/javascript"></script>
 <body>
@@ -86,6 +86,7 @@
                 <th width="100">卡类型名称</th>
                 <th width="100">通讯速率</th>
                 <th width="120">生产厂家</th>
+                <th width="120">是否在用</th>
                 <th width="150">操作</th>
             </tr>
             </thead>
@@ -97,15 +98,24 @@
                 <td>${tmTagType.tagType!''}</td>
                 <td>${tmTagType.communicateRate!''}</td>
                 <td>${tmTagType.factory!''}</td>
+                <td> <#if tmTagType.inUse==1>
+                    <span >在用</span>
+                <#else>
+                    <span class="c-red">停用</span>
+                </#if></td>
                 <td class="f-14 td-manage">
-                    <a style="text-decoration:none" class="ml-5"
+                    <#--<a style="text-decoration:none" class="ml-5"
                        onclick="alert_tagtype(${tmTagType.typeId?c})"
                        data-title="编辑卡类型"
                        title="编辑"><i class="Hui-iconfont">
-                        &#xe6df;</i></a>
-                  <#--  <a style="text-decoration:none" class="ml-5" onClick="del_user(this,${user.id?c})" href="javascript:;"
-                       title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>-->
-
+                        &#xe6df;</i></a>-->
+                        <#if tmTagType.inUse==1>
+                            <a style="text-decoration:none" class="ml-5" onClick="alter_tag(this,${tmTagType.typeId?c},0)" href="javascript:;"
+                               title="停用"><span class="c-red">停用</span><i class="Hui-iconfont">&#xe631;</i></a>
+                        <#else>
+                            <a style="text-decoration:none" class="ml-5" onClick="alter_tag_on(this,${tmTagType.typeId?c},1)" href="javascript:;"
+                               title="启用"><span class="c-green">启用</span><i class="Hui-iconfont">&#xe615;</i></a>
+                        </#if>
                 </td>
             </tr>
             </#list>
@@ -140,7 +150,7 @@
     var addMoneyIndex;
     var userAddIndex;
     $('.table-sort').dataTable({
-        "aaSorting": [[1, "desc"]],//默认第几个排序
+        "aaSorting": [[1, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "pading": false,
         "aoColumnDefs": [
@@ -161,56 +171,59 @@
         });
     }
 
-    function alert_tagtype(obj, id) {
-        $("#form-user-add")[0].reset();
-        $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
+   /* function alert_tagtype(obj) {
+        $("#form-tagtype-add")[0].reset();
+        //$("#form-tagtype-add").find("input[name='userNo']").attr("readonly", "readonly");
 
         var $tds = $(obj).parents("tr").find("td");
         var userName = $tds.eq(2).text();
         var realName = $tds.eq(3).text();
         var phone = $tds.eq(4).text();
         var remark = $tds.eq(7).text();
-        $("#form-user-add").find("input[name='id']").val(id);
-        $("#form-user-add").find("input[name='userNo']").val(userName);
-        $("#form-user-add").find("input[name='userName']").val(realName);
-        $("#form-user-add").find("input[name='telphone']").val(phone);
-        $("#form-user-add").find("input[name='password']").val(password);
+        $("#form-tagtype-add").find("input[name='id']").val(id);
+        $("#form-tagtype-add").find("input[name='userNo']").val(userName);
+        $("#form-tagtype-add").find("input[name='userName']").val(realName);
+        $("#form-tagtype-add").find("input[name='telphone']").val(phone);
+        $("#form-tagtype-add").find("input[name='password']").val(password);
         $("#passwordAgain").val(password);
-        $("#form-user-add").find("select[name='roleId']").val(roleId);
+        $("#form-tagtype-add").find("select[name='roleId']").val(roleId);
         $("#plazaNo").val(plazaNo);
         //$("#form-user-add").find("select[id='sysPlaza.plaNo']").val(plazaNo);
-        if (roleId == 1) {
-            $("#user_role_div").show();
-        } else {
-            $("#user_role_div").show();
-        }
-        $("#form-user-add").find("input[name='remark']").val(remark);
+
+        $("#form-tagtype-add").find("input[name='remark']").val(remark);
 
         userAddIndex = addMoneyIndex = layer.open({
             title: "修改用户信息",
             type: 1,
             area: ['700px', '470px'],
-            content: $('#user_add_div')
+            content: $('#tagtype_add_div')
+        });
+    }*/
+
+    function alter_tag(obj, id,inuse) {
+        layer.confirm('确认要停用吗？', function (index) {
+            $.get('${absoluteContextPath}/tag/alterTagType', {typeId: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已停用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('停用失败!', {icon: 1, time: 1000});
+            });
         });
     }
 
-    function del_user(obj, id) {
-        layer.confirm('确认要删除吗？', function (index) {
-            $.ajax({
-                type: 'GET',
-                url: '${absoluteContextPath}/user/delete',
-                data: {userId: id},
-                success: function (data) {
-                    if (data == "ok") {
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {icon: 1, time: 1000});
-                    } else {
-                        layer.alert(data, {icon: 1});
-                    }
-                },
-                error: function (data) {
-                    layer.alert("删除出错啦,请刷新一下页面再操作!", {icon: 5});
-                }
+    function alter_tag_on(obj, id,inuse) {
+        layer.confirm('确认要启用吗？', function (index) {
+            $.get('${absoluteContextPath}/tag/alterTagType', {typeId: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已启用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('启用失败!', {icon: 1, time: 1000});
             });
         });
     }

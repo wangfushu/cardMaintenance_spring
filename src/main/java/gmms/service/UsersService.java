@@ -6,6 +6,7 @@ import gmms.dao.UsersDao;
 import gmms.dao.util.DynamicSpecifications;
 import gmms.dao.util.SearchFilter;
 import gmms.domain.db.Role;
+import gmms.domain.db.SysPlaza;
 import gmms.domain.db.Users;
 import gmms.domain.param.UserParam;
 import gmms.util.DateUtil;
@@ -35,6 +36,10 @@ public class UsersService {
 
     public Users findByName(String name) {
         return usersDao.findByUserNo(name);
+    }
+
+    public List<Users> findBySysPlaza(SysPlaza sysPlaza) {
+        return usersDao.findBySysPlaza(sysPlaza);
     }
     public Users getById(long id) {
         return usersDao.findOne(id);
@@ -86,7 +91,7 @@ public class UsersService {
         }
 
         Specification<Users> spec = DynamicSpecifications.bySearchFilter(filters, Users.class);
-        Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "gmtCreate");
+        Sort purchaseDateDB = new Sort(Sort.Direction.ASC, "gmtCreate");
         List<Users> allUsers = usersDao.findAll(spec, purchaseDateDB);
         if (userParam.getRoleId() != null && userParam.getRoleId() != -1) {
             Role role = roleDao.findOne(userParam.getRoleId());

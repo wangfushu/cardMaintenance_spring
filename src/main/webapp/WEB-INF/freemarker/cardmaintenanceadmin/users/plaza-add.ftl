@@ -24,7 +24,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
                 邮编  ：</label>
             <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" class="input-text" required minlength="6" maxlength="6" number="true"
+                <input type="text" class="input-text" required maxlength="6" number="true"
                        placeholder="" id=""
                        name="plaZipCode"/>
             </div>

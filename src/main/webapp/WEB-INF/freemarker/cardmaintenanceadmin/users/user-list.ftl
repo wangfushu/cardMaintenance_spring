@@ -106,7 +106,7 @@
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
                        data-href="${absoluteContextPath}/user/add?id=${user.id?c}"
-                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},'${(user.sysPlaza.plaNo)?string}')"
+                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},'${(user.sysPlaza.plaNo)?string!''}')"
                        data-title="编辑用户"
                        title="编辑"><i class="Hui-iconfont">
                         &#xe6df;</i></a>
@@ -147,7 +147,7 @@
     var addMoneyIndex;
     var userAddIndex;
     $('.table-sort').dataTable({
-        "aaSorting": [[1, "desc"]],//默认第几个排序
+        "aaSorting": [[5, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "pading": false,
         "aoColumnDefs": [
@@ -158,7 +158,7 @@
 
     function show_user_add() {
 //        layer_show(title, url, w, h);
-        $("#form-user-add")[0].reset();
+        $("#form-user-add").find("input[name='id']").val(null)
         $("#form-user-add").find("input[name='userNo']").removeAttr("readonly");
         userAddIndex = addMoneyIndex = layer.open({
             title: "添加用户",

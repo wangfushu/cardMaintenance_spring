@@ -69,6 +69,7 @@ public class UserControl extends BaseControl {
             if (!oldUser.isSuperAdmin()) {
                 Role role = usersService.getByRoleId(roleId);
                 oldUser.setRoles(Lists.newArrayList(role));
+                oldUser.setSysPlaza(users.getSysPlaza());
             }
             /*SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
             if(null!=sysPlaza){
@@ -78,6 +79,11 @@ public class UserControl extends BaseControl {
         } else {
             Role role = usersService.getByRoleId(roleId);
             users.setRoles(Lists.newArrayList(role));
+            if(users.isSuperAdmin()){
+                SysPlaza sysPlaza = new SysPlaza();
+                sysPlaza.setPlaNo("0000");
+                users.setSysPlaza(sysPlaza);
+            }
             /*SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
             if(null!=sysPlaza){
                 users.setSysPlaza(Lists.newArrayList(sysPlaza));
@@ -206,4 +212,33 @@ public class UserControl extends BaseControl {
         //model.addAttribute("param", userParam);
         return "cardmaintenanceadmin/users/plaza-list";
     }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteplaza", method = RequestMethod.GET)
+    public String deleteplaza(String plazaNo) {
+        SysPlaza sysPlaza = baseInformationService.findSysPlaza(plazaNo);
+        List<Users>  usersList= usersService.findBySysPlaza(sysPlaza);
+        if(null!=usersList&&usersList.size()>0){
+            return "userExist";
+        }else {
+            baseInformationService.delete(getCurrentUser(), sysPlaza);
+            return "ok";
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteAllplaza", method = RequestMethod.GET)
+    public String deleteAllplaza(String plazaNos) {
+        String[] split = plazaNos.split(",");
+        List<SysPlaza> sysPlazaList = Lists.newArrayList();
+        for (String idStr : split) {
+            /*long id = Long.parseLong(idStr);*/
+            SysPlaza sysPlaza = baseInformationService.findSysPlaza(idStr);
+            sysPlazaList.add(sysPlaza);
+        }
+        baseInformationService.delete(getCurrentUser(), sysPlazaList);
+        return "ok";
+    }
+
 }

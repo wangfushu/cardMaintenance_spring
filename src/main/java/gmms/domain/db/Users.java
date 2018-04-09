@@ -230,7 +230,7 @@ public class Users extends IdEntity {
     }
 
     @ManyToOne(targetEntity = SysPlaza.class)
-    @JoinColumn(name = "PLAZANO", updatable = false)
+    @JoinColumn(name = "PLAZANO", updatable = true)
     public SysPlaza getSysPlaza() {
         return sysPlaza;
     }

@@ -27,54 +27,81 @@
     <![endif]-->
 
 
-    <title>网点列表</title>
+    <title>网点卡库存列表</title>
 </head>
 <script type="text/javascript"></script>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 基础信息管理 <span
-        class="c-gray en">&gt;</span> 网点管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 卡管理 <span
+        class="c-gray en">&gt;</span> 卡出入库管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
-<div class="text-c" style="margin: 10px">
 
+<div class="text-c" style="margin: 10px">
+   <form action="${absoluteContextPath}/tag/tagstorelist" method="post">
+    网点：<span class="select-box inline">
+		<select name="plaNo" class="select">
+        <#list plazaList as plaza>
+            <option value="${plaza.plaNo?string}"
+                    <#if param.plaNo?? && param.plaNo==plaza.plaNo>selected</#if>>${plaza.plaName}</option>
+        </#list>
+        </select>
+	</span>
+    卡类型：<span class="select-box inline">
+		<select name="typeId" class="select">
+        <#list tmTagTypeList as tmTagTyp>
+            <option value="${tmTagTyp.typeId?c}"
+                    <#if param.typeId?? && param.typeId==tmTagTyp.typeId>selected</#if>>${tmTagTyp.tagType}</option>
+        </#list>
+        </select>
+		</span>
+
+        <button class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 清空</button>
+    </form>
 </div>
 <div class="page-container" style="padding-top: 0px">
     <div class="cl pd-5 bg-1 bk-gray mt-20">
 	<span class="l">
-		<a class="btn btn-success radius" onclick="show_user_add()" href="javascript:;"><i
-                class="Hui-iconfont">&#xe600;</i> 添加网点</a>
+		<a class="btn btn-success-outline radius" onclick="tag_inStore()" href="javascript:;"><i
+                class="Hui-iconfont">&#xe600;</i> 入库</a>
+        <a class="btn btn-success-outline radius" onclick="tag_outStore()" href="javascript:;"><i
+                class="Hui-iconfont">&#xe600;</i> 出库</a>
 
+        <a class="btn btn-danger-outline radius" onclick="tag_outStore()" href="javascript:;"><i
+                class="Hui-iconfont">&#xe600;</i> 批量出库</a>
                 	<#--<a class="btn btn-danger radius"
                        onclick="delete_all();" href="javascript:;"><i
                             class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
 	</span>
-        <span class="r">共有数据：<strong>${sysPlazaList?size}</strong> 条</span></div>
+        <span class="r">共有数据：<strong>${tmTagStoreList?size}</strong> 条</span></div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
-                <th width="100">网点编号</th>
-                <th width="100">网点名称</th>
-                <th width="100">备注</th>
-                <th width="200">邮编  </th>
-                <th width="160">创建人姓名</th>
+                <th width="100">网点</th>
+                <th width="100">卡类型</th>
+                <th width="100">好卡数量</th>
+                <th width="100">坏卡数量</th>
+                <th width="120">更新时间</th>
                 <th width="150">操作</th>
             </tr>
             </thead>
             <tbody>
-            <#list sysPlazaList as sysPlaza>
-            <tr class="text-c" id="user_${sysPlaza.plaNo?string}">
-                <td><input userId="${sysPlaza.plaNo?string}" type="checkbox" value="" name=""></td>
-                <td>${(sysPlaza.plaNo)!''}</td>
-                <td>${sysPlaza.plaName!''}</td>
-                <td>${sysPlaza.plaRemark!''}</td>
-                <td>${sysPlaza.plaZipCode!''}</td>
-                <td>${sysPlaza.plaUserName!''}</td>
+            <#list tmTagStoreList as tmTagStore>
+            <tr class="text-c" id="tagtype_${tmTagStore.plazaNo?string}">
+                <td><input userId="${tmTagStore.plazaNo?string}" type="checkbox" value="" name=""></td>
+                <td>${tmTagStore.plazaName!''}</td>
+                <td>${tmTagStore.tagType!''}</td>
+                <td>${tmTagStore.goodTagCount!''}</td>
+                <td>${tmTagStore.badTagCount!''}</td>
+                <td>${tmTagStore.updateTime!''} </td>
                 <td class="f-14 td-manage">
-
-                    <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'${sysPlaza.plaNo?string}')" href="javascript:;"
-                       title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                    <#--<a style="text-decoration:none" class="ml-5"
+                       onclick="alert_tagtype(${tmTagType.typeId?c})"
+                       data-title="编辑卡类型"
+                       title="编辑"><i class="Hui-iconfont">
+                        &#xe6df;</i></a>-->
                 </td>
             </tr>
             </#list>
@@ -103,16 +130,15 @@
 <script type="text/javascript"
         src="${absoluteContextPath}/H-ui-admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/js/common.js"></script>
-<#include "plaza-add.ftl">
 
+<#include "tagtype-add.ftl">
 <script type="text/javascript">
     var addMoneyIndex;
     var userAddIndex;
-
-
     $('.table-sort').dataTable({
         "aaSorting": [[1, "desc"]],//默认第几个排序
         "bStateSave": true,//状态保存
+        "iDisplayLength":25,
         "pading": false,
         "aoColumnDefs": [
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
@@ -120,39 +146,71 @@
         ]
     });
 
-    function show_user_add() {
+    function show_tagtype_add() {
 //        layer_show(title, url, w, h);
-        $("#form-plaza-add")[0].reset();
-        $("#form-plaza-add").find("input[name='plaNo']").removeAttr("readonly");
+        $("#form-tagtype-add")[0].reset();
+        $("#form-tagtype-add").find("input[name='tagType']").removeAttr("readonly");
         userAddIndex = addMoneyIndex = layer.open({
-            title: "添加网点",
+            title: "添加卡类型",
             type: 1,
             area: ['700px', '470px'],
-            content: $('#plaza_add_div')
+            content: $('#tagtype_add_div')
         });
     }
 
+   /* function alert_tagtype(obj) {
+        $("#form-tagtype-add")[0].reset();
+        //$("#form-tagtype-add").find("input[name='userNo']").attr("readonly", "readonly");
 
+        var $tds = $(obj).parents("tr").find("td");
+        var userName = $tds.eq(2).text();
+        var realName = $tds.eq(3).text();
+        var phone = $tds.eq(4).text();
+        var remark = $tds.eq(7).text();
+        $("#form-tagtype-add").find("input[name='id']").val(id);
+        $("#form-tagtype-add").find("input[name='userNo']").val(userName);
+        $("#form-tagtype-add").find("input[name='userName']").val(realName);
+        $("#form-tagtype-add").find("input[name='telphone']").val(phone);
+        $("#form-tagtype-add").find("input[name='password']").val(password);
+        $("#passwordAgain").val(password);
+        $("#form-tagtype-add").find("select[name='roleId']").val(roleId);
+        $("#plazaNo").val(plazaNo);
+        //$("#form-user-add").find("select[id='sysPlaza.plaNo']").val(plazaNo);
 
-    function del_user(obj, id) {
-        layer.confirm('确认要删除吗？', function (index) {
-            $.ajax({
-                type: 'GET',
-                url: '${absoluteContextPath}/user/deleteplaza',
-                data: {plazaNo: id},
-                success: function (data) {
-                    if (data == "ok") {
-                        $(obj).parents("tr").remove();
-                        layer.msg('已删除!', {icon: 1, time: 1000});
-                    } else if(data=='userExist'){
-                        layer.alert("该网点下存在用户，不可删除", {icon: 1, time: 1000});
-                    }else{
-                        layer.alert(data, {icon: 1});
-                    }
-                },
-                error: function (data) {
-                    layer.alert("删除出错啦,请刷新一下页面再操作!", {icon: 5});
-                }
+        $("#form-tagtype-add").find("input[name='remark']").val(remark);
+
+        userAddIndex = addMoneyIndex = layer.open({
+            title: "修改用户信息",
+            type: 1,
+            area: ['700px', '470px'],
+            content: $('#tagtype_add_div')
+        });
+    }*/
+
+    function alter_tag(obj, id,inuse) {
+        layer.confirm('确认要停用吗？', function (index) {
+            $.get('${absoluteContextPath}/tag/alterTagType', {typeId: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已停用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('停用失败!', {icon: 1, time: 1000});
+            });
+        });
+    }
+
+    function alter_tag_on(obj, id,inuse) {
+        layer.confirm('确认要启用吗？', function (index) {
+            $.get('${absoluteContextPath}/tag/alterTagType', {typeId: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已启用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('启用失败!', {icon: 1, time: 1000});
             });
         });
     }
@@ -164,11 +222,11 @@
         });
         var ids = idArray.join(",");
 
-        layer.confirm('确认要删除这些网点吗？', function (index) {
+        layer.confirm('确认要删除这些账号吗？', function (index) {
             $.ajax({
                 type: 'GET',
-                url: '${absoluteContextPath}/user/deleteAllplaza',
-                data: {plazaNos: ids},
+                url: '${absoluteContextPath}/user/deleteAll',
+                data: {userIds: ids},
                 success: function (data) {
                     if (data == "ok") {
                         layer.msg("删除成功", {icon: 1, time: 1000});

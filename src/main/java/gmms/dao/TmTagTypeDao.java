@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface TmTagTypeDao extends BaseDao<TmTagType, Long> {
 
+    TmTagType findByTagType(String tagType);
+
 }

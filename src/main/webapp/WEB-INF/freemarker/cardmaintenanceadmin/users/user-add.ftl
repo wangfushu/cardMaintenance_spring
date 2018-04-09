@@ -53,7 +53,7 @@
             <label class="form-label col-xs-4 col-sm-2">
                 用户角色：</label>
             <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
-			<select class="select" name="roleId" size="1">
+			<select class="select" name="roleId" size="1" onchange="">
             <#list roleList as role>
                     <option value="${role.id}">${role.remark}</option>
             </#list>
@@ -90,6 +90,8 @@
 </article>
 
 <script>
+
+
     //表单验证
     $("#form-user-add").validate({
         onkeyup: false,

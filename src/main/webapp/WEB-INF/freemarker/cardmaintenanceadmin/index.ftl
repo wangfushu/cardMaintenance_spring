@@ -170,7 +170,7 @@
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
 
-                    <li>${currentUser.sysPlaza.plaName!"admin"} </li>
+                    <li>${(currentUser.sysPlaza.plaName)!"所有网点"} </li>
                     <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A">${currentUser.userName} <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius">
@@ -244,7 +244,7 @@
                            href="javascript:;">卡类型管理</a>
                     </li>
 
-                    <li><a data-href="${absoluteContextPath}/user/list" data-title="卡出入库管理"
+                    <li><a data-href="${absoluteContextPath}/tag/tagstorelist" data-title="卡出入库管理"
                            href="javascript:;">卡出入库管理</a>
                     </li>
 

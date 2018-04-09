@@ -2,6 +2,7 @@ package gmms.dao;
 
 
 
+import gmms.domain.db.SysPlaza;
 import gmms.domain.db.Users;
 
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public interface UsersDao extends BaseDao<Users, Long> {
     public Users findByUserNo(String userNo);
+
+    public  List<Users> findBySysPlaza(SysPlaza sysPlaza);
 
     List<Users> findByTelphone(String telphone);
 
