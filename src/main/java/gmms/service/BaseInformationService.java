@@ -2,13 +2,12 @@ package gmms.service;
 
 import com.google.common.collect.Lists;
 import gmms.dao.RoleDao;
+import gmms.dao.SysConfigDao;
 import gmms.dao.SysPlazaDao;
 import gmms.dao.UsersDao;
 import gmms.dao.util.DynamicSpecifications;
 import gmms.dao.util.SearchFilter;
-import gmms.domain.db.Role;
-import gmms.domain.db.SysPlaza;
-import gmms.domain.db.Users;
+import gmms.domain.db.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +30,14 @@ public class BaseInformationService {
     @Autowired
     private SysPlazaDao sysPlazaDao;
 
-    public SysPlaza saveOrUpdate(SysPlaza sysPlaza) {
+    @Autowired
+    private SysConfigDao sysConfigDao;
+
+    public SysPlaza saveOrUpdateSysPlaza(SysPlaza sysPlaza ,Users operateUsers) {
+        LOGGER.info("sysPlaza {} has saveAndUpdate,operator user id is {},name is{} ", sysPlaza, operateUsers.getId(), operateUsers.getUserName());
         return sysPlazaDao.save(sysPlaza);
     }
-    public SysPlaza findSysPlaza(String  plazaNo) {
+    public SysPlaza findSysPlaza(Long  plazaNo) {
         return sysPlazaDao.findByPlaNo(plazaNo);
     }
 
@@ -47,7 +50,12 @@ public class BaseInformationService {
     }
 
     public List<SysPlaza> listAllPlaza() {
-        return Lists.newArrayList(sysPlazaDao.findAll());
+
+        List<SearchFilter> filters = Lists.newArrayList();
+        filters.add(new SearchFilter("plaInUse", SearchFilter.Operator.EQ, 0l));
+        Specification<SysPlaza> spec = DynamicSpecifications.bySearchFilter(filters, SysPlaza.class);
+        List<SysPlaza> sysPlazas= sysPlazaDao.findAll(spec,new Sort(Sort.Direction.ASC,"plaNo"));
+        return sysPlazas;
     }
 
 
@@ -56,7 +64,7 @@ public class BaseInformationService {
         if (sysPlaza == null) {
             return;
         }
-        LOGGER.info("sysPlaza {} has delete,operator user id is {},name is ", sysPlaza, operatorUser.getId(), operatorUser.getUserName());
+        LOGGER.info("sysPlaza {} has delete,operator user id is {},name is{} ", sysPlaza, operatorUser.getId(), operatorUser.getUserName());
         sysPlazaDao.delete(sysPlaza);
     }
 
@@ -66,6 +74,44 @@ public class BaseInformationService {
         }
         LOGGER.info("sysPlazaList {} has delete,operator user id is {},name is ", sysPlazaList, operatorUser.getId(), operatorUser.getUserName());
         sysPlazaDao.delete(sysPlazaList);
+    }
+
+    /**
+     * 质保期
+     * @return
+     */
+    public SysConfig findInSureYearByValue(){
+        return sysConfigDao.findByCfConfigName("InSureYear");
+    }
+
+    /**
+     * 超级密码
+     * @return
+     */
+    public SysConfig findSuperAdminPassWordByValue(){
+        return sysConfigDao.findByCfConfigName("SuperAdminPassWord");
+    }
+
+    /**
+     * 工本费
+     * @return
+     */
+    public SysConfig findCardExpenseByValue(){
+        return sysConfigDao.findByCfConfigName("CardExpense");
+    }
+
+    public List<SysConfig> SysConfigListAll(){
+        return Lists.newArrayList(sysConfigDao.findAll());
+    }
+
+    public SysConfig saveOrUpdateSysConfig(SysConfig sysConfig ,Users operatorUser){
+        SysConfig save=sysConfigDao.save(sysConfig);
+        LOGGER.info("SysConfig {} has update,operator user id is {},name is {} ", sysConfig, operatorUser.getId(), operatorUser.getUserName());
+        return null;
+    }
+
+    public SysConfig findSysConfigById(String name){
+        return sysConfigDao.findOne(name);
     }
 
 }

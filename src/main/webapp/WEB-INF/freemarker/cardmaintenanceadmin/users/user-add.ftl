@@ -61,12 +61,19 @@
 			</div>
             <label class="form-label col-xs-4 col-sm-2">
                 网点号：</label>
-            <div class="formControls col-xs-4 col-sm-2"> <span class="select-box" style="width:150px;">
+            <div class="formControls col-xs-4 col-sm-2">
+                <input id="plazaNo_input" name="sysPlaza.plaNo" type="hidden">
+                 <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
+                 <#list plazaList as plaza>
+                     <option value="${plaza.plaNo?c}">${plaza.plaName}</option>
+                 </#list>
+                 </select>
+<#--
 			<select class="select" id="plazaNo"  name="sysPlaza.plaNo" size="1">
             <#list plazaList as sysPlaza>
-                <option value="${sysPlaza.plaNo?string}">${sysPlaza.plaName}</option>
+                <option value="${sysPlaza.plaNo?c}">${sysPlaza.plaName}</option>
             </#list>
-            </select>
+            </select>-->
             </div>
         </div>
 
@@ -79,6 +86,7 @@
                        name="remark">
             </div>
         </div>
+
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <button onClick="" class="btn btn-primary radius" type="submit"><i
@@ -98,6 +106,8 @@
         focusCleanup: true,
         success: "valid",
         submitHandler: function (form) {
+            var ids=$("#plazaNo").combobox('getValues');
+            $("#plazaNo_input").val(ids);
             var data = $(form).serializeObject();
             $.post('${absoluteContextPath}/user/add', data, function (result) {
                 result = JSON.parse(result);

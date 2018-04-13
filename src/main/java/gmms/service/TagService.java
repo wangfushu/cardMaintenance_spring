@@ -8,11 +8,13 @@ import gmms.dao.util.SearchFilter;
 import gmms.domain.db.*;
 import gmms.domain.param.TmTagStoreParam;
 import gmms.util.DateUtil;
+import gmms.util.StringUtil;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -80,7 +82,7 @@ public class TagService {
             filters.add(new SearchFilter("tagType.typeId", SearchFilter.Operator.EQ,  tmTagStoreParam.getTypeId()));
         }
 
-        if (tmTagStoreParam.getPlaNo() != null&&!tmTagStoreParam.getPlaNo().equals("-1")) {
+        if (tmTagStoreParam.getPlaNo() != null&&!tmTagStoreParam.getPlaNo().equals(0l)) {
             filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ, tmTagStoreParam.getPlaNo()));
         }
         Specification<TmTagStore> spec = DynamicSpecifications.bySearchFilter(filters, TmTagStore.class);
@@ -95,7 +97,77 @@ public class TagService {
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     public TmTagInStore inStoreTagAll(TmTagInStore tmTagInStore){
-        return null;
+        TmTagStore tmTagStore=null;
+        TmTagInStore inStore=tmTagInStoreDao.save(tmTagInStore);
+        tmTagStore= tmTagStoreDao.findOne(inStore.getInRecievedPlazaNo());
+        if(null!= tmTagStore&& !StringUtil.isEmpty(String.valueOf(tmTagStore.getPlazaNo()))){
+            //update
+            if(inStore.getInStoreType().equals(1L)) {
+                tmTagStore.setGoodTagCount(tmTagStore.getGoodTagCount()+inStore.getCount());
+            }else{
+                TmTagStore sendtmTagStore= tmTagStoreDao.findOne(inStore.getInSendPlazaNo());//发送方库存扣除
+                sendtmTagStore.setGoodTagCount(sendtmTagStore.getGoodTagCount()-inStore.getCount());
+                sendtmTagStore.setBadTagCount(sendtmTagStore.getBadTagCount() + inStore.getCount());
+                tmTagStoreDao.save(sendtmTagStore);
+
+                tmTagStore.setBadTagCount(tmTagStore.getBadTagCount()+inStore.getCount());
+            }
+            tmTagStore.setUpdateTime(new Date());
+        }else{
+            //add
+            tmTagStore=new TmTagStore();
+            tmTagStore.setPlazaNo(inStore.getInRecievedPlazaNo());
+            tmTagStore.setPlazaName(inStore.getInRecievedPlazaName());
+            if(inStore.getInStoreType().equals(1L)) {
+                tmTagStore.setGoodTagCount(inStore.getCount());
+            }else{
+                TmTagStore sendtmTagStore= tmTagStoreDao.findOne(inStore.getInSendPlazaNo());//发送方库存扣除
+                sendtmTagStore.setGoodTagCount(sendtmTagStore.getGoodTagCount()-inStore.getCount());
+                sendtmTagStore.setBadTagCount(sendtmTagStore.getBadTagCount()+inStore.getCount());
+                tmTagStoreDao.save(sendtmTagStore);
+
+                tmTagStore.setBadTagCount(inStore.getCount());
+            }
+            tmTagStore.setUpdateTime(new Date());
+        }
+        TmTagStore tmTagStoreSave=tmTagStoreDao.save(tmTagStore);
+        return inStore;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public TmTagOutStore outStoreTagAll(TmTagOutStore tmTagOutStore){
+        TmTagStore tmTagStore=null;
+        TmTagOutStore outStore=tmTagOutStoreDao.save(tmTagOutStore);
+        tmTagStore= tmTagStoreDao.findOne(outStore.getOutRecievedPlazaNo());
+        if(null!= tmTagStore&& !StringUtil.isEmpty(String.valueOf(tmTagStore.getPlazaNo()))){
+            //update
+            tmTagStore.setGoodTagCount(tmTagStore.getGoodTagCount()+outStore.getCount());
+
+            TmTagStore sendtmTagStore= tmTagStoreDao.findOne(outStore.getOutSendPlazaNo());//发送方库存扣除
+            sendtmTagStore.setGoodTagCount(sendtmTagStore.getGoodTagCount()-outStore.getCount());
+            tmTagStoreDao.save(sendtmTagStore);
+
+            tmTagStore.setUpdateTime(new Date());
+        }else{
+            //add
+            tmTagStore=new TmTagStore();
+            tmTagStore.setPlazaNo(outStore.getOutRecievedPlazaNo());
+            tmTagStore.setPlazaName(outStore.getOutRecievedPlazaName());
+            TmTagStore sendtmTagStore= tmTagStoreDao.findOne(outStore.getOutSendPlazaNo());//发送方库存扣除
+            sendtmTagStore.setGoodTagCount(sendtmTagStore.getGoodTagCount()-outStore.getCount());
+            tmTagStoreDao.save(sendtmTagStore);
+            tmTagStore.setGoodTagCount(outStore.getCount());
+            tmTagStore.setUpdateTime(new Date());
+        }
+        TmTagStore tmTagStoreSave=tmTagStoreDao.save(tmTagStore);
+        return outStore;
+    }
+
+
+    public TmTagStore findTmTagStoreByPlazaNo(Long plazaNo){
+        return tmTagStoreDao.findOne(plazaNo);
+    }
+
 }

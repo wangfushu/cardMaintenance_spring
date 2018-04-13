@@ -19,7 +19,7 @@ public class TmTagInStore {
             pkColumnName="ST_SeqName",
             pkColumnValue="TmTagInStore.inID",
             valueColumnName="ST_SeqValue",
-            allocationSize=2,
+            allocationSize=1,
             initialValue=1
     )
     @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
@@ -36,10 +36,10 @@ public class TmTagInStore {
     public Long tagType;
 
     @Column(name = "COUNT")
-    public Long count;
+    public int count;
 
 
-    @Column(name = "UserId")
+    @Column(name = "USERID")
     public Long userId;
 
     @Column(name = "USERNO")
@@ -48,13 +48,13 @@ public class TmTagInStore {
     public String userName;
 
     @Column(name = "INRECIEVEDPLAZANO")
-    public String inRecievedPlazaNo;
+    public Long inRecievedPlazaNo;
 
     @Column(name = "INRECIEVEDPLAZANAME")
     public String inRecievedPlazaName;
 
     @Column(name = "INSENDPLAZANO")
-    public String inSendPlazaNo;
+    public Long inSendPlazaNo;
 
     @Column(name = "INSENDPLAZANAME")
     public String inSendPlazaName;
@@ -94,11 +94,11 @@ public class TmTagInStore {
         this.tagType = tagType;
     }
 
-    public Long getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
@@ -126,13 +126,6 @@ public class TmTagInStore {
         this.userName = userName;
     }
 
-    public String getInRecievedPlazaNo() {
-        return inRecievedPlazaNo;
-    }
-
-    public void setInRecievedPlazaNo(String inRecievedPlazaNo) {
-        this.inRecievedPlazaNo = inRecievedPlazaNo;
-    }
 
     public String getInRecievedPlazaName() {
         return inRecievedPlazaName;
@@ -142,13 +135,7 @@ public class TmTagInStore {
         this.inRecievedPlazaName = inRecievedPlazaName;
     }
 
-    public String getInSendPlazaNo() {
-        return inSendPlazaNo;
-    }
 
-    public void setInSendPlazaNo(String inSendPlazaNo) {
-        this.inSendPlazaNo = inSendPlazaNo;
-    }
 
     public String getInSendPlazaName() {
         return inSendPlazaName;
@@ -164,5 +151,21 @@ public class TmTagInStore {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getInRecievedPlazaNo() {
+        return inRecievedPlazaNo;
+    }
+
+    public void setInRecievedPlazaNo(Long inRecievedPlazaNo) {
+        this.inRecievedPlazaNo = inRecievedPlazaNo;
+    }
+
+    public Long getInSendPlazaNo() {
+        return inSendPlazaNo;
+    }
+
+    public void setInSendPlazaNo(Long inSendPlazaNo) {
+        this.inSendPlazaNo = inSendPlazaNo;
     }
 }

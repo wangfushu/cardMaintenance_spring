@@ -50,8 +50,8 @@
         根据：
         <span class="select-box inline">
 		<select name="timeType" class="select">
-            <option value="0" <#if param.timeType==0>selected</#if>>上次登录时间</option>
             <option value="1" <#if param.timeType==1>selected</#if>>注册时间</option>
+            <option value="0" <#if param.timeType==0>selected</#if>>上次登录时间</option>
         </select>
 		</span>
         <input type="text" name="timefrom" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })"
@@ -82,12 +82,12 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
-                <th width="100">网点号</th>
-                <th width="100">工号</th>
-                <th width="100">姓名</th>
-                <th width="200">手机号</th>
+                <th width="150">网点号</th>
+                <th width="80">工号</th>
+                <th width="80">姓名</th>
+                <th width="80">手机号</th>
                 <th width="160">注册时间</th>
-                <th width="160">上次登录时间</th>
+<#--                <th width="160">上次登录时间</th>-->
                 <th width="120">备注</th>
                 <th width="150">操作</th>
             </tr>
@@ -101,12 +101,12 @@
                 <td>${user.userName!'管理员'}</td>
                 <td>${user.telphone!''}</td>
                 <td>${user.gmtCreate!''}</td>
-                <td>${user.lastLoginTime!''}</td>
+<#--                <td>${user.lastLoginTime!''}</td>-->
                 <td>${user.remark!''}</td>
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
                        data-href="${absoluteContextPath}/user/add?id=${user.id?c}"
-                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},'${(user.sysPlaza.plaNo)?string!''}')"
+                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},${(user.sysPlaza.plaNo)?c!''})"
                        data-title="编辑用户"
                        title="编辑"><i class="Hui-iconfont">
                         &#xe6df;</i></a>
@@ -127,6 +127,12 @@
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/static/h-ui.admin/js/H-ui.admin.js"></script>
 <!--/_footer 作为公共模版分离出去-->
+
+<!--easyUI的引入-->
+<link rel="stylesheet" type="text/css" href="${absoluteContextPath}/easyui/1.5.4.5/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${absoluteContextPath}/easyui/1.5.4.5/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${absoluteContextPath}/easyui/1.5.4.5/demo/demo.css">
+<script type="text/javascript" src="${absoluteContextPath}/easyui/1.5.4.5/jquery.easyui.min.js"></script>
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="${absoluteContextPath}/H-ui-admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
@@ -158,11 +164,14 @@
 
     function show_user_add() {
 //        layer_show(title, url, w, h);
+        $("#plazaNo").combobox('select', 0);
+        $("#form-user-add")[0].reset();
         $("#form-user-add").find("input[name='id']").val(null)
         $("#form-user-add").find("input[name='userNo']").removeAttr("readonly");
         userAddIndex = addMoneyIndex = layer.open({
             title: "添加用户",
             type: 1,
+            zIndex:1989,
             area: ['700px', '470px'],
             content: $('#user_add_div')
         });
@@ -170,13 +179,14 @@
 
     function alert_user(obj, id, password, roleId,plazaNo) {
         $("#form-user-add")[0].reset();
+        $("#plazaNo").combobox('select', 0);
         $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
 
         var $tds = $(obj).parents("tr").find("td");
         var userName = $tds.eq(2).text();
         var realName = $tds.eq(3).text();
         var phone = $tds.eq(4).text();
-        var remark = $tds.eq(7).text();
+        var remark = $tds.eq(6).text();
         $("#form-user-add").find("input[name='id']").val(id);
         $("#form-user-add").find("input[name='userNo']").val(userName);
         $("#form-user-add").find("input[name='userName']").val(realName);
@@ -184,7 +194,9 @@
         $("#form-user-add").find("input[name='password']").val(password);
         $("#passwordAgain").val(password);
         $("#form-user-add").find("select[name='roleId']").val(roleId);
-        $("#plazaNo").val(plazaNo);
+       /* $("#plazaNo").val(plazaNo);*/
+        $('#plazaNo').combobox('select', plazaNo);
+        $("#plazaNo_input").val(plazaNo);
         //$("#form-user-add").find("select[id='sysPlaza.plaNo']").val(plazaNo);
         if (roleId == 1) {
             $("#user_role_div").show();
@@ -196,6 +208,7 @@
         userAddIndex = addMoneyIndex = layer.open({
             title: "修改用户信息",
             type: 1,
+            zIndex:1989,
             area: ['700px', '470px'],
             content: $('#user_add_div')
         });

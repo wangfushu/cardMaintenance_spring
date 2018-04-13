@@ -16,13 +16,13 @@
         <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/invoice" access="ROLE_USER"/>
         <intercept-url pattern="/invoice/**" access="ROLE_USER"/>-->
-        <intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER"/>
+        <intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER"/>
         <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <!--<intercept-url pattern="/msg/noread/count" access="IS_AUTHENTICATED_ANONYMOUSLY"/>-->
 <!--        <intercept-url pattern="/user/usernameNotExist" access="ROLE_UI,ROLE_ADMIN,ROLE_NORMAL,ROLE_USER"/>
         <intercept-url pattern="/user/telPhoneNotExist" access="ROLE_UI,ROLE_ADMIN,ROLE_NORMAL,ROLE_USER"/>-->
-        <intercept-url pattern="/user/checkPassword" access="ROLE_ADMIN,ROLE_USER"/>
-        <intercept-url pattern="/user/changePassword" access="ROLE_ADMIN,ROLE_USER"/>
+        <intercept-url pattern="/user/checkPassword" access="ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER"/>
+        <intercept-url pattern="/user/changePassword" access="ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER"/>
         <intercept-url pattern="/user/list" access="ROLE_ADMIN"/>
         <!--<intercept-url pattern="/order" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL,ROLE_UI"/>
         <intercept-url pattern="/order/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>

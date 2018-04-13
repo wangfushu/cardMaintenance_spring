@@ -10,6 +10,7 @@ import gmms.domain.param.TmTagStoreParam;
 import gmms.service.BaseInformationService;
 import gmms.service.TagService;
 import gmms.util.DateUtil;
+import gmms.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,15 +102,100 @@ public class TagControl extends BaseControl {
     @ResponseBody
     @RequestMapping(value = "/inStore", method = RequestMethod.POST)
     public String inStore(TmTagInStore tmTagInStore) {
-        long inId = 0;
+        //long inId = 0;
         Users users= getCurrentUser();
         tmTagInStore.setUserId(users.getId());
         tmTagInStore.setUserNo(users.getUserNo());
         tmTagInStore.setUserName(users.getUserName());
         tmTagInStore.setInStoreTime(new Date());
+        if(!StringUtil.isEmpty(String.valueOf(tmTagInStore.getInRecievedPlazaNo()))){
+            SysPlaza sysPlaza=baseInformationService.findSysPlaza(tmTagInStore.getInRecievedPlazaNo());
+            tmTagInStore.setInRecievedPlazaName(sysPlaza.getPlaName());
+        }
+        if(!StringUtil.isEmpty(String.valueOf(tmTagInStore.getInSendPlazaNo()))){
+            SysPlaza sysPlaza=baseInformationService.findSysPlaza(tmTagInStore.getInSendPlazaNo());
+            tmTagInStore.setInSendPlazaName(sysPlaza.getPlaName());
+        }
         TmTagInStore save = tagService.inStoreTagAll(tmTagInStore);
-
-
+        long inId = save.getInID();
         return AjaxResponseBodyFactory.createSuccessBody(true, inId);
     }
+
+
+    @ResponseBody
+    @RequestMapping(value = "checkBadCount")
+    public String checkBadCount(Long inSendPlazaNo,Long inStoreType,int count){
+        Preconditions.checkNotNull(count, "count 不能为空");
+        if(inStoreType.equals(1L)){
+            return "true";
+        }else{
+            TmTagStore tmTagStore=tagService.findTmTagStoreByPlazaNo(inSendPlazaNo);
+            if(null!=tmTagStore){
+                if(count>tmTagStore.getGoodTagCount()){
+                    return "false";
+                }
+            }
+            return "true";
+        }
+       // Users users = usersService.findByName(userNo);
+       // return inStoreType.equals(1L)?"true":"false";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/outStore", method = RequestMethod.POST)
+    public String outStore(TmTagOutStore temp,String outRecievedlazaNoListinput) {
+        //long inId = 0;
+        Users users= getCurrentUser();
+        String[] split = outRecievedlazaNoListinput.split(",");
+        for (String plaNoStr : split) {
+            long id = Long.parseLong(plaNoStr);
+            TmTagOutStore tmTagOutStore=new TmTagOutStore();
+            SysPlaza sysPlaza1 =baseInformationService.findSysPlaza(id);
+            if(!sysPlaza1.isAllPlazaNo()) {
+                tmTagOutStore.setUserId(users.getId());
+                tmTagOutStore.setUserNo(users.getUserNo());
+                tmTagOutStore.setUserName(users.getUserName());
+                tmTagOutStore.setOutStoreTime(new Date());
+
+                tmTagOutStore.setOutRecievedPlazaName(sysPlaza1.getPlaName());
+                tmTagOutStore.setOutRecievedPlazaNo(sysPlaza1.getPlaNo());
+                if (!StringUtil.isEmpty(String.valueOf(temp.getOutSendPlazaNo()))) {
+                    SysPlaza sysPlaza = baseInformationService.findSysPlaza(temp.getOutSendPlazaNo());
+                    tmTagOutStore.setOutSendPlazaName(sysPlaza.getPlaName());
+                    tmTagOutStore.setOutSendPlazaNo(sysPlaza.getPlaNo());
+                }
+                tmTagOutStore.setCount(temp.getCount());
+                TmTagOutStore save = tagService.outStoreTagAll(tmTagOutStore);
+            }
+        }
+        long outId = 0l;
+        return AjaxResponseBodyFactory.createSuccessBody(true, outId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "checkOutCount")
+    public String checkOutCount(String outRecievedlazaNoListinput,Long outSendPlazaNo, int count){
+        Preconditions.checkNotNull(count, "count 不能为空");
+        Preconditions.checkNotNull(outRecievedlazaNoListinput, "接收方网点不能为空");
+        String[] split = outRecievedlazaNoListinput.split(",");
+        List<String> plazaNos=Lists.newArrayList();
+        for (String idStr : split) {
+            if(!idStr.equals(outSendPlazaNo)){
+                plazaNos.add(idStr);
+            };
+        }
+        if(plazaNos.size()>0){
+              TmTagStore tmTagStore= tagService.findTmTagStoreByPlazaNo(outSendPlazaNo);
+            if((plazaNos.size()*count)<=tmTagStore.getGoodTagCount()){
+                return "true";
+            }
+
+        }else{
+            return "false";
+        }
+
+        return "false";
+    }
+
+
 }

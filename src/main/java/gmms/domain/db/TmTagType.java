@@ -78,4 +78,6 @@ public class TmTagType {
     public void setInUse(Long inUse) {
         this.inUse = inUse;
     }
+
+
 }

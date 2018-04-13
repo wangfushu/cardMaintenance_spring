@@ -19,7 +19,7 @@ public class TmTagOutStore {
             pkColumnName="ST_SeqName",
             pkColumnValue="TmTagOutStore.outID",
             valueColumnName="ST_SeqValue",
-            allocationSize=2,
+            allocationSize=1,
             initialValue=1
     )
     @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
@@ -36,10 +36,10 @@ public class TmTagOutStore {
     public Long tagType;
 
     @Column(name = "COUNT")
-    public Long count;
+    public int count;
 
 
-    @Column(name = "UserId")
+    @Column(name = "USERID")
     public Long userId;
 
     @Column(name = "USERNO")
@@ -48,13 +48,13 @@ public class TmTagOutStore {
     public String userName;
 
     @Column(name = "OUTRECIEVEDPLAZANO")
-    public String outRecievedPlazaNo;
+    public Long outRecievedPlazaNo;
 
     @Column(name = "OUTRECIEVEDPLAZANAME")
     public String outRecievedPlazaName;
 
     @Column(name = "OUTSENDPLAZANO")
-    public String outSendPlazaNo;
+    public Long outSendPlazaNo;
 
     @Column(name = "OUTSENDPLAZANAME")
     public String outSendPlazaName;
@@ -94,11 +94,12 @@ public class TmTagOutStore {
         this.tagType = tagType;
     }
 
-    public Long getCount() {
+
+    public int getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
@@ -126,13 +127,6 @@ public class TmTagOutStore {
         this.userName = userName;
     }
 
-    public String getOutRecievedPlazaNo() {
-        return outRecievedPlazaNo;
-    }
-
-    public void setOutRecievedPlazaNo(String outRecievedPlazaNo) {
-        this.outRecievedPlazaNo = outRecievedPlazaNo;
-    }
 
     public String getOutRecievedPlazaName() {
         return outRecievedPlazaName;
@@ -140,14 +134,6 @@ public class TmTagOutStore {
 
     public void setOutRecievedPlazaName(String outRecievedPlazaName) {
         this.outRecievedPlazaName = outRecievedPlazaName;
-    }
-
-    public String getOutSendPlazaNo() {
-        return outSendPlazaNo;
-    }
-
-    public void setOutSendPlazaNo(String outSendPlazaNo) {
-        this.outSendPlazaNo = outSendPlazaNo;
     }
 
     public String getOutSendPlazaName() {
@@ -164,5 +150,21 @@ public class TmTagOutStore {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getOutRecievedPlazaNo() {
+        return outRecievedPlazaNo;
+    }
+
+    public void setOutRecievedPlazaNo(Long outRecievedPlazaNo) {
+        this.outRecievedPlazaNo = outRecievedPlazaNo;
+    }
+
+    public Long getOutSendPlazaNo() {
+        return outSendPlazaNo;
+    }
+
+    public void setOutSendPlazaNo(Long outSendPlazaNo) {
+        this.outSendPlazaNo = outSendPlazaNo;
     }
 }

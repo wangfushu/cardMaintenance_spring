@@ -54,26 +54,49 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
-                <th width="100">网点编号</th>
-                <th width="100">网点名称</th>
+<#--                <th width="100">网点编号</th>-->
+                <th width="150">网点名称</th>
+                <th width="100">联系人</th>
+                <th width="50">电话</th>
+                <th width="50">传真</th>
+                <th width="100">地址</th>
+                <th width="100">邮编  </th>
                 <th width="100">备注</th>
-                <th width="200">邮编  </th>
-                <th width="160">创建人姓名</th>
-                <th width="150">操作</th>
+                <th width="50">是否启用</th>
+                <th width="100">操作</th>
             </tr>
             </thead>
             <tbody>
             <#list sysPlazaList as sysPlaza>
             <tr class="text-c" id="user_${sysPlaza.plaNo?string}">
-                <td><input userId="${sysPlaza.plaNo?string}" type="checkbox" value="" name=""></td>
-                <td>${(sysPlaza.plaNo)!''}</td>
+                <td><input userId="${(sysPlaza.plaNo)?c}" type="checkbox" value="" name=""></td>
+<#--                <td>${(sysPlaza.plaNo)!''}</td>-->
                 <td>${sysPlaza.plaName!''}</td>
-                <td>${sysPlaza.plaRemark!''}</td>
+                <td>${sysPlaza.plaLinkMan!''}</td>
+                <td>${sysPlaza.plaPhone!''}</td>
+                <td>${sysPlaza.plaFax!''}</td>
+                <td>${sysPlaza.plaAddress!''}</td>
                 <td>${sysPlaza.plaZipCode!''}</td>
-                <td>${sysPlaza.plaUserName!''}</td>
+                <td>${sysPlaza.plaRemark!''}</td>
+                <td> <#if sysPlaza.plaInUse==0>
+                    <span >在用</span>
+                <#else>
+                    <span class="c-red">停用</span>
+                </#if></td>
                 <td class="f-14 td-manage">
-
-                    <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'${sysPlaza.plaNo?string}')" href="javascript:;"
+                    <a style="text-decoration:none" class="ml-5"
+                       onclick="alert_user(this,${sysPlaza.plaNo?c})"
+                       data-title="编辑网点"
+                       title="编辑"><i class="Hui-iconfont">
+                        &#xe6df;</i></a>
+                    <#if sysPlaza.plaInUse==0>
+                        <a style="text-decoration:none" class="ml-5" onClick="alter_plaza(this,${sysPlaza.plaNo?c},1)" href="javascript:;"
+                           title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
+                    <#else>
+                        <a style="text-decoration:none" class="ml-5" onClick="alter_plaza_on(this,${sysPlaza.plaNo?c},0)" href="javascript:;"
+                           title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
+                    </#if>
+                    <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'${sysPlaza.plaNo?c}')" href="javascript:;"
                        title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                 </td>
             </tr>
@@ -123,7 +146,7 @@
     function show_user_add() {
 //        layer_show(title, url, w, h);
         $("#form-plaza-add")[0].reset();
-        $("#form-plaza-add").find("input[name='plaNo']").removeAttr("readonly");
+        //$("#form-plaza-add").find("input[name='plaNo']").removeAttr("readonly");
         userAddIndex = addMoneyIndex = layer.open({
             title: "添加网点",
             type: 1,
@@ -132,6 +155,32 @@
         });
     }
 
+    function alert_user(obj, id) {
+        $("#form-plaza-add")[0].reset();
+        var $tds = $(obj).parents("tr").find("td");
+        var plaName = $tds.eq(1).text();
+        var plaLinkMan = $tds.eq(2).text();
+        var plaPhone = $tds.eq(3).text();
+        var plaFax = $tds.eq(4).text();
+        var plaAddress = $tds.eq(5).text();
+        var plaZipCode = $tds.eq(6).text();
+        var plaRemark = $tds.eq(7).text();
+        $("#form-plaza-add").find("input[name='plaNo']").val(id);
+        $("#form-plaza-add").find("input[name='plaName']").val(plaName);
+        $("#form-plaza-add").find("input[name='plaLinkMan']").val(plaLinkMan);
+        $("#form-plaza-add").find("input[name='plaPhone']").val(plaPhone);
+        $("#form-plaza-add").find("input[name='plaFax']").val(plaFax);
+        $("#form-plaza-add").find("input[name='plaAddress']").val(plaAddress);
+        $("#form-plaza-add").find("input[name='plaZipCode']").val(plaZipCode);
+        $("#form-plaza-add").find("input[name='plaRemark']").val(plaRemark);
+
+        userAddIndex = addMoneyIndex = layer.open({
+            title: "修改网点信息",
+            type: 1,
+            area: ['700px', '470px'],
+            content: $('#plaza_add_div')
+        });
+    }
 
 
     function del_user(obj, id) {
@@ -187,6 +236,34 @@
         });
     }
 
+
+    function alter_plaza(obj, id,inuse) {
+        layer.confirm('确认要停用吗？', function (index) {
+            $.get('${absoluteContextPath}/user/alterPlazainUse', {plazaNo: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已停用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('停用失败!', {icon: 1, time: 1000});
+            });
+        });
+    }
+
+    function alter_plaza_on(obj, id,inuse) {
+        layer.confirm('确认要启用吗？', function (index) {
+            $.get('${absoluteContextPath}/user/alterPlazainUse', {plazaNo: id, inUse: inuse}).done(function (data) {
+
+                layer.msg('已启用!', {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location.replace(location.href);
+                }, 1000);
+            }).fail(function (xhr, status) {
+                layer.msg('启用失败!', {icon: 1, time: 1000});
+            });
+        });
+    }
 /*    function alter_type_setting(userId) {
         layer.open({
             type: 2,

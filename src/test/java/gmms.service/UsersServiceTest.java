@@ -33,8 +33,8 @@ public class UsersServiceTest {
 
 	@Test
 	public void findById() throws Exception {
-
-
+		int a=5;
+		System.out.println("value is :"+( (a<5) ? 10.9 : 9));
 	}
 
 

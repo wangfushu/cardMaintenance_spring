@@ -7,4 +7,6 @@ import gmms.domain.db.SysConfig;
  */
 public interface SysConfigDao extends BaseDao<SysConfig, String> {
 	//SysConfig findByCfPlazaNoAndCfConfigNameAndCfPCNo(String cfPlazaNo, String cfConfigName, String cfPCNo);
+
+    SysConfig  findByCfConfigName(String cfConfigName);
 }

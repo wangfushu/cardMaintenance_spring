@@ -12,28 +12,26 @@ import java.util.Date;
 
 @Entity
 @Table(name = "TM_TAGSTORE")
-/*@DynamicInsert*/
-@SuppressWarnings("serial")
-@IdClass(TmTagStorePK.class)
+@DynamicInsert
 public class TmTagStore{
     @Id
     @Column(name = "PLAZANO")
-    public String plazaNo;
+    public Long plazaNo;
 
     @Column(name = "PLAZANAME")
     public String plazaName;
 
-    @Id
+/*    @Id
     @ManyToOne(targetEntity = TmTagType.class)
     @JoinColumn(name = "TAGTYPE", updatable = true)
-    public TmTagType tagType;
+    public TmTagType tagType;*/
 
     @Column(name = "GOODTAGCOUNT")
-    public Long goodTagCount;
+    public int goodTagCount;
 
 
     @Column(name = "BADTAGCOUNT")
-    public Long badTagCount;
+    public int badTagCount;
 
     @Column(name = "UPDATETIME")
     public Date updateTime;
@@ -42,11 +40,11 @@ public class TmTagStore{
     @Column(name = "REMARK")
     public String remark;
 
-    public String getPlazaNo() {
+    public Long getPlazaNo() {
         return plazaNo;
     }
 
-    public void setPlazaNo(String plazaNo) {
+    public void setPlazaNo(Long plazaNo) {
         this.plazaNo = plazaNo;
     }
 
@@ -59,20 +57,19 @@ public class TmTagStore{
     }
 
 
-
-    public Long getGoodTagCount() {
+    public int getGoodTagCount() {
         return goodTagCount;
     }
 
-    public void setGoodTagCount(Long goodTagCount) {
+    public void setGoodTagCount(int goodTagCount) {
         this.goodTagCount = goodTagCount;
     }
 
-    public Long getBadTagCount() {
+    public int getBadTagCount() {
         return badTagCount;
     }
 
-    public void setBadTagCount(Long badTagCount) {
+    public void setBadTagCount(int badTagCount) {
         this.badTagCount = badTagCount;
     }
 
@@ -92,11 +89,9 @@ public class TmTagStore{
         this.remark = remark;
     }
 
-    public TmTagType getTagType() {
-        return tagType;
-    }
 
-    public void setTagType(TmTagType tagType) {
-        this.tagType = tagType;
-    }
+
+
+
+
 }

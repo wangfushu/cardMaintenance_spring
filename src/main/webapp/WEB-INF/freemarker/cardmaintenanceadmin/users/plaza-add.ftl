@@ -1,8 +1,7 @@
 <article class="page-container" id="plaza_add_div" style="display: none">
     <form class="form form-horizontal" id="form-plaza-add" method="post" action="">
-        <input type="hidden" name="id" id="formUserId">
-        <input type="hidden" name="userId" id="userId">
-        <div class="row cl">
+        <input type="hidden" name="plaNo" id="formUserId">
+<#--        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网点编号：</label>
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text"
@@ -11,7 +10,7 @@
                        class="input-text" required minlength="3"
                        placeholder="" id="" name="plaNo">
             </div>
-        </div>
+        </div>-->
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网点名称：</label>
             <div class="formControls col-xs-8 col-sm-8">
@@ -22,9 +21,46 @@
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                联系人  ：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text"  maxlength="20"
+                       placeholder="" id=""
+                       name="plaLinkMan"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                电话  ：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text"  maxlength="11" number="true"
+                       placeholder="" id=""
+                       name="plaPhone"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                传真  ：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text"  maxlength="11" number="true"
+                       placeholder="" id=""
+                       name="plaFax"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                地址  ：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text"  maxlength="60"
+                       placeholder="" id=""
+                       name="plaAddress"/>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
                 邮编  ：</label>
             <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" class="input-text" required maxlength="6" number="true"
+                <input type="text" class="input-text"  maxlength="6" number="true"
                        placeholder="" id=""
                        name="plaZipCode"/>
             </div>

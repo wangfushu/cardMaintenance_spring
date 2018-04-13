@@ -66,4 +66,15 @@ public class SysConfig {
     public void setCfUpdateTime(Date cfUpdateTime) {
         this.cfUpdateTime = cfUpdateTime;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("SysConfig{");
+        sb.append("cfConfigName='").append(cfConfigName).append('\'');
+        sb.append(", cfConfigValue='").append(cfConfigValue).append('\'');
+        sb.append(", cfConfigDescription='").append(cfConfigDescription).append('\'');
+        sb.append(", cfUpdateTime='").append(cfUpdateTime).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

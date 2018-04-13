@@ -170,11 +170,11 @@
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
 
-                    <li>${(currentUser.sysPlaza.plaName)!"所有网点"} </li>
+                    <li>${(currentUser.sysPlaza.plaName)?string} </li>
                     <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A">${currentUser.userName} <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius">
-                            <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+                            <#--<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>-->
                             <li><a href="javascript:;" onClick="change_password()">修改密码</a></li>
                             <li><a href="${absoluteContextPath}/j_spring_security_logout">安全退出</a></li>
                         </ul>
@@ -231,18 +231,21 @@
                     <li><a data-href="${absoluteContextPath}/user/plazalist"  data-title="网点管理"
                            href="javascript:;">网点管理</a>
                     </li>
+                    <li><a data-href="${absoluteContextPath}/user/baseinformationlist"  data-title="基本信息配置管理"
+                           href="javascript:;">基本信息配置管理</a>
+                    </li>
                 </ul>
             </dd>
         </dl>
     </@sec.authorize>
-    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN'>
+    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
         <dl id="menu-member">
             <dt><i class="Hui-iconfont">&#xe60d;</i> 卡管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="${absoluteContextPath}/tag/list"  data-title="卡类型管理"
+                    <#--<li><a data-href="${absoluteContextPath}/tag/list"  data-title="卡类型管理"
                            href="javascript:;">卡类型管理</a>
-                    </li>
+                    </li>-->
 
                     <li><a data-href="${absoluteContextPath}/tag/tagstorelist" data-title="卡出入库管理"
                            href="javascript:;">卡出入库管理</a>
@@ -255,7 +258,7 @@
             </dd>
         </dl>
     </@sec.authorize>
-    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_USER'>
+    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER'>
         <dl id="menu-member">
             <dt><i class="Hui-iconfont">&#xe60d;</i> 报表管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
@@ -263,7 +266,11 @@
                     <li><a data-href="${absoluteContextPath}/user/list"  data-title="日报表"
                            href="javascript:;">日报表</a>
                     </li>
-
+                <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_USER'>
+                    <li><a data-href="${absoluteContextPath}/user/list"  data-title="日报表"
+                           href="javascript:;">年报表</a>
+                    </li>
+                </@sec.authorize>
                 </ul>
             </dd>
         </dl>
@@ -338,15 +345,14 @@
     </form>
 </article>
 <script>
-   /* $("#form-password-change").validate({
+    $("#form-password-change").validate({
         onkeyup: false,
         focusCleanup: true,
         success: "valid",
         submitHandler: function (form) {
             var data = $(form).serializeObject();
             $.post('${absoluteContextPath}/login/changePassWord', data, function (result) {
-                if (result == "success") {
-                    *//*layer.msg("密码修改成功", {icon: 1, time: 1000});*//*
+                if (result == "ok") {
                     alert("密码修改成功");
                     layer.close(passwordIndex);
                     window.location.href="${absoluteContextPath}/j_spring_security_logout";
@@ -358,7 +364,7 @@
                 }
             });
         }
-    });*/
+    });
 </script>
 </body>
 </html>

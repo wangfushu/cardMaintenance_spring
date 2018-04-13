@@ -3,9 +3,7 @@ package gmms.controller;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import gmms.domain.AjaxResponseBodyFactory;
-import gmms.domain.db.Role;
-import gmms.domain.db.SysPlaza;
-import gmms.domain.db.Users;
+import gmms.domain.db.*;
 import gmms.domain.param.UserParam;
 import gmms.service.BaseInformationService;
 import gmms.service.MsgService;
@@ -66,7 +64,7 @@ public class UserControl extends BaseControl {
             oldUser.setRemark(users.getRemark());
             oldUser.setPassword(users.getPassword());
             oldUser.setGmtModify(new Date());
-            if (!oldUser.isSuperAdmin()) {
+            if (!oldUser.isSuperAdmin()||!oldUser.isTagAdmin()) {
                 Role role = usersService.getByRoleId(roleId);
                 oldUser.setRoles(Lists.newArrayList(role));
                 oldUser.setSysPlaza(users.getSysPlaza());
@@ -79,9 +77,9 @@ public class UserControl extends BaseControl {
         } else {
             Role role = usersService.getByRoleId(roleId);
             users.setRoles(Lists.newArrayList(role));
-            if(users.isSuperAdmin()){
+            if(users.isSuperAdmin()||users.isTagAdmin()){
                 SysPlaza sysPlaza = new SysPlaza();
-                sysPlaza.setPlaNo("0000");
+                sysPlaza.setPlaNo(0l);
                 users.setSysPlaza(sysPlaza);
             }
             /*SysPlaza sysPlaza=baseInformationService.findSysPlaza(plazaNo);
@@ -173,10 +171,8 @@ public class UserControl extends BaseControl {
             if (!users.isAdmin()) {
                 usersList.add(users);
             }
-
            // deleteUiAsin(users);
         }
-
         usersService.delete(getCurrentUser(), usersList);
         return "ok";
     }
@@ -185,21 +181,49 @@ public class UserControl extends BaseControl {
     @ResponseBody
     @RequestMapping(value = "/addplaza", method = RequestMethod.POST)
     public String addplaza(SysPlaza sysPlaza,Long userId) {
-        Users currentUser = getCurrentUser();
+   /*     Users currentUser = getCurrentUser();
         if(null!=currentUser){
             sysPlaza.setPlaUserId(String.valueOf(currentUser.getId()));
             sysPlaza.setPlaUserName(currentUser.getUserName());
             sysPlaza.setPlaUserNo(currentUser.getUserNo());
         }
         sysPlaza.setPlaModifyTime(new Date());
-        sysPlaza.setPlaInUse("1");
-        SysPlaza save = baseInformationService.saveOrUpdate(sysPlaza);
-        return AjaxResponseBodyFactory.createSuccessBody(true, save.getPlaNo());
+        sysPlaza.setPlaInUse("0");
+
+        SysPlaza save = baseInformationService.saveOrUpdateSysPlaza(sysPlaza);
+*/
+        Users currentUser = getCurrentUser();
+        long id = 0;
+        if (sysPlaza.getPlaNo() != null) {
+            id = sysPlaza.getPlaNo();
+            SysPlaza oldSysPlaza = baseInformationService.findSysPlaza(sysPlaza.getPlaNo());
+            oldSysPlaza.setPlaNo(sysPlaza.getPlaNo());
+            oldSysPlaza.setPlaName(sysPlaza.getPlaName());
+            oldSysPlaza.setPlaLinkMan(sysPlaza.getPlaLinkMan());
+            oldSysPlaza.setPlaRemark(sysPlaza.getPlaRemark());
+            oldSysPlaza.setPlaPhone(sysPlaza.getPlaPhone());
+            oldSysPlaza.setPlaFax(sysPlaza.getPlaFax());
+            oldSysPlaza.setPlaAddress(sysPlaza.getPlaAddress());
+            oldSysPlaza.setPlaZipCode(sysPlaza.getPlaZipCode());
+            oldSysPlaza.setPlaModifyTime(new Date());
+            SysPlaza save = baseInformationService.saveOrUpdateSysPlaza(oldSysPlaza,currentUser);
+        } else {
+            if(null!=currentUser){
+                sysPlaza.setPlaUserId(String.valueOf(currentUser.getId()));
+                sysPlaza.setPlaUserName(currentUser.getUserName());
+                sysPlaza.setPlaUserNo(currentUser.getUserNo());
+            }
+            sysPlaza.setPlaModifyTime(new Date());
+            SysPlaza save = baseInformationService.saveOrUpdateSysPlaza(sysPlaza, currentUser);
+            id = save.getPlaNo();
+        }
+
+        return AjaxResponseBodyFactory.createSuccessBody(true, id);
     }
 
     @ResponseBody
     @RequestMapping(value = "sysPlazaNotExist")
-    public String sysPlazaNotExist(String plaNo) {
+    public String sysPlazaNotExist(Long plaNo) {
         Preconditions.checkNotNull(plaNo, "plazaNo 不能为空");
         SysPlaza sysPlaza = baseInformationService.findSysPlaza(plaNo);
         return sysPlaza == null ? "true" : "false";
@@ -216,7 +240,7 @@ public class UserControl extends BaseControl {
 
     @ResponseBody
     @RequestMapping(value = "/deleteplaza", method = RequestMethod.GET)
-    public String deleteplaza(String plazaNo) {
+    public String deleteplaza(Long plazaNo) {
         SysPlaza sysPlaza = baseInformationService.findSysPlaza(plazaNo);
         List<Users>  usersList= usersService.findBySysPlaza(sysPlaza);
         if(null!=usersList&&usersList.size()>0){
@@ -233,12 +257,47 @@ public class UserControl extends BaseControl {
         String[] split = plazaNos.split(",");
         List<SysPlaza> sysPlazaList = Lists.newArrayList();
         for (String idStr : split) {
-            /*long id = Long.parseLong(idStr);*/
-            SysPlaza sysPlaza = baseInformationService.findSysPlaza(idStr);
+            long id = Long.parseLong(idStr);
+            SysPlaza sysPlaza = baseInformationService.findSysPlaza(id);
             sysPlazaList.add(sysPlaza);
         }
         baseInformationService.delete(getCurrentUser(), sysPlazaList);
         return "ok";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/alterPlazainUse")
+    public String alterPlazainUse(Long plazaNo,int inUse){
+        Users currentuser= getCurrentUser();
+        SysPlaza sysPlaza= baseInformationService.findSysPlaza(plazaNo);
+        sysPlaza.setPlaInUse(inUse);
+        SysPlaza save= baseInformationService.saveOrUpdateSysPlaza(sysPlaza,currentuser);
+        return "ok";
+    }
+
+
+    @RequestMapping(value = "/baseinformationlist")
+    public String baseinformationlist(SysConfig sysConfig, Model model) {
+        List<SysConfig> sysConfigs = baseInformationService.SysConfigListAll();
+        model.addAttribute("sysConfigList", sysConfigs);
+        //model.addAttribute("roleList", usersService.listAllRole());
+        //model.addAttribute("param", userParam);
+        return "cardmaintenanceadmin/baseinformation-list";
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/alertbaseinfo", method = RequestMethod.POST)
+    public String alertbaseinfo(SysConfig sysConfig) {
+        Long  id=0l;
+        Users currentUser = getCurrentUser();
+        if(null!=sysConfig.getCfConfigName()&&""!=sysConfig.getCfConfigName()){
+            SysConfig oldSysConfig = baseInformationService.findSysConfigById(sysConfig.getCfConfigName());
+            oldSysConfig.setCfConfigValue(sysConfig.getCfConfigValue());
+            SysConfig save = baseInformationService.saveOrUpdateSysConfig(oldSysConfig,currentUser);
+            id=2l;
+        }
+
+        return AjaxResponseBodyFactory.createSuccessBody(true, id);
+    }
 }

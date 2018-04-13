@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -35,6 +36,15 @@ public class Users extends IdEntity {
     private List<Msg> msgList;
     private List<LoginLog> loginLogList;
     private SysPlaza sysPlaza;
+
+    private String iDCard;
+    private String fax;
+    private String address;
+    private String zip;
+    private String email;
+
+
+
 
     @Column(name = "USERNO")
     public String getUserNo() {
@@ -193,6 +203,18 @@ public class Users extends IdEntity {
         return false;
     }
 
+    //是否是卡管
+    @Transient
+    public boolean isTagAdmin() {
+        List<Role> roles = this.roles;
+        for (Role role : roles) {
+            if (StringUtils.equalsIgnoreCase(role.getName(), "ROLE_TAGMANAGER")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Transient
     public boolean getIsUser() {
         List<Role> roles = this.roles;
@@ -238,9 +260,82 @@ public class Users extends IdEntity {
     public void setSysPlaza(SysPlaza sysPlaza) {
         this.sysPlaza = sysPlaza;
     }
+    @Column(name = "IDCARD")
+    public String getiDCard() {
+        return iDCard;
+    }
+
+    public void setiDCard(String iDCard) {
+        this.iDCard = iDCard;
+    }
+    @Column(name = "FAX")
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+    @Column(name = "ADRESS")
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    @Column(name = "ZIP")
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+    @Column(name = "EMAIL")
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userNo='" + userNo + '\'' +
+                ", password='" + password + '\'' +
+                ", telphone='" + telphone + '\'' +
+                ", userName='" + userName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModify=" + gmtModify +
+                ", lastLoginTime=" + lastLoginTime +
+                ", status=" + status +
+                ", remark='" + remark + '\'' +
+                ", rolesNoLazy=" + rolesNoLazy +
+                ", msgList=" + msgList +
+                ", loginLogList=" + loginLogList +
+                ", sysPlaza=" + sysPlaza.getPlaNo() +
+                ", iDCard='" + iDCard + '\'' +
+                ", fax='" + fax + '\'' +
+                ", address='" + address + '\'' +
+                ", zip='" + zip + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 
 
 
+
+
+
+
+
+
+
+
+/*
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Users{");
@@ -256,6 +351,7 @@ public class Users extends IdEntity {
         sb.append('}');
         return sb.toString();
     }
+*/
 
   /*  public static int getRandomNum(int min, int max) {
 

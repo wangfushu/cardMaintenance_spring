@@ -5,7 +5,7 @@ package gmms.domain.param;
  */
 public class TmTagStoreParam extends DataTablesParam {
     private Long typeId;
-    private String plaNo;
+    private Long plaNo;
 
     public Long getTypeId() {
         return typeId;
@@ -15,11 +15,11 @@ public class TmTagStoreParam extends DataTablesParam {
         this.typeId = typeId;
     }
 
-    public String getPlaNo() {
+    public Long getPlaNo() {
         return plaNo;
     }
 
-    public void setPlaNo(String plaNo) {
+    public void setPlaNo(Long plaNo) {
         this.plaNo = plaNo;
     }
 }
