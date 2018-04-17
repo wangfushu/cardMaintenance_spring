@@ -9,6 +9,8 @@ import gmms.service.BaseInformationService;
 import gmms.service.MsgService;
 import gmms.service.UsersService;
 import gmms.util.DateUtil;
+import gmms.util.MD5;
+import gmms.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class UserControl extends BaseControl {
 
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(Users users, long roleId) {
+    public String add(Users users, long roleId) throws UnsupportedEncodingException {
         long userId = 0;
         if (users.getId() != null) {
             userId = users.getId();
@@ -59,10 +62,15 @@ public class UserControl extends BaseControl {
             oldUser.setUserNo(users.getUserNo());
             oldUser.setUserName(users.getUserName());
             oldUser.setTelphone(users.getTelphone());
+            oldUser.setFax(users.getFax());
+            oldUser.setEmail(users.getEmail());
+            oldUser.setiDCard(users.getiDCard());
+            oldUser.setAddress(users.getAddress());
+            oldUser.setZip(users.getZip());
             //oldUser.setEmail(users.getEmail());
 
             oldUser.setRemark(users.getRemark());
-            oldUser.setPassword(users.getPassword());
+            oldUser.setPassword(MD5.GetMD5Code(users.getPassword()));
             oldUser.setGmtModify(new Date());
             if (!oldUser.isSuperAdmin()||!oldUser.isTagAdmin()) {
                 Role role = usersService.getByRoleId(roleId);
@@ -86,6 +94,9 @@ public class UserControl extends BaseControl {
             if(null!=sysPlaza){
                 users.setSysPlaza(Lists.newArrayList(sysPlaza));
             }*/
+            if(!StringUtil.isEmpty(users.getPassword())){
+                users.setPassword(MD5.GetMD5Code(users.getPassword()));
+            }
             users.setGmtCreate(new Date());
             users.setLastLoginTime(DateUtil.parseDate("2000-01-01", "yyyy-MM-dd"));
             Users save = usersService.saveOrUpdate(users);
@@ -124,19 +135,19 @@ public class UserControl extends BaseControl {
 
     @ResponseBody
     @RequestMapping(value = "checkPassword")
-    public String checkPassword(String oldPassword) {
+    public String checkPassword(String oldPassword) throws UnsupportedEncodingException {
         Preconditions.checkNotNull(oldPassword, "oldPassword 不能为空");
         Users currentUser = getCurrentUser();
-        return String.valueOf(StringUtils.endsWithIgnoreCase(currentUser.getPassword(), oldPassword));
+        return String.valueOf(StringUtils.endsWithIgnoreCase(currentUser.getPassword(), MD5.GetMD5Code(oldPassword)));
     }
 
     @ResponseBody
     @RequestMapping(value = "changePassword")
-    public String changePassword(String oldPassword, String password) {
+    public String changePassword(String oldPassword, String password) throws UnsupportedEncodingException {
         Preconditions.checkNotNull(password, "password 不能为空");
         Users currentUser = getCurrentUser();
-        if (StringUtils.equalsIgnoreCase(oldPassword, currentUser.getPassword())) {
-            currentUser.setPassword(password);
+        if (StringUtils.equalsIgnoreCase( MD5.GetMD5Code(oldPassword), currentUser.getPassword())) {
+            currentUser.setPassword( MD5.GetMD5Code(password));
             currentUser.setGmtModify(new Date());
             usersService.saveOrUpdate(currentUser);
             return "ok";

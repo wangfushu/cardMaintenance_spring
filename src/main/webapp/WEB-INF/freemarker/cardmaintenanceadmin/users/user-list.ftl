@@ -83,10 +83,11 @@
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
                 <th width="150">网点号</th>
-                <th width="80">工号</th>
-                <th width="80">姓名</th>
+                <th width="40">工号</th>
+                <th width="40">姓名</th>
                 <th width="80">手机号</th>
-                <th width="160">注册时间</th>
+                <th width="80">邮箱</th>
+                <th width="100">注册时间</th>
 <#--                <th width="160">上次登录时间</th>-->
                 <th width="120">备注</th>
                 <th width="150">操作</th>
@@ -100,13 +101,14 @@
                 <td>${user.userNo}</td>
                 <td>${user.userName!'管理员'}</td>
                 <td>${user.telphone!''}</td>
+                <td>${user.email!''}</td>
                 <td>${user.gmtCreate!''}</td>
 <#--                <td>${user.lastLoginTime!''}</td>-->
                 <td>${user.remark!''}</td>
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
                        data-href="${absoluteContextPath}/user/add?id=${user.id?c}"
-                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},${(user.sysPlaza.plaNo)?c!''})"
+                       onclick="alert_user(this,${user.id?c},'${user.password}',${user.roleId},${(user.sysPlaza.plaNo)?c!''},'${user.fax!''}','${user.address!''}','${user.zip!''}','${user.iDCard!''}')"
                        data-title="编辑用户"
                        title="编辑"><i class="Hui-iconfont">
                         &#xe6df;</i></a>
@@ -172,12 +174,12 @@
             title: "添加用户",
             type: 1,
             zIndex:1989,
-            area: ['700px', '470px'],
+            area: ['800px', '470px'],
             content: $('#user_add_div')
         });
     }
 
-    function alert_user(obj, id, password, roleId,plazaNo) {
+    function alert_user(obj, id, password, roleId,plazaNo,fax,address,zip,idcard) {
         $("#form-user-add")[0].reset();
         $("#plazaNo").combobox('select', 0);
         $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
@@ -186,12 +188,18 @@
         var userName = $tds.eq(2).text();
         var realName = $tds.eq(3).text();
         var phone = $tds.eq(4).text();
-        var remark = $tds.eq(6).text();
+        var email = $tds.eq(5).text();
+        var remark = $tds.eq(7).text();
         $("#form-user-add").find("input[name='id']").val(id);
         $("#form-user-add").find("input[name='userNo']").val(userName);
         $("#form-user-add").find("input[name='userName']").val(realName);
         $("#form-user-add").find("input[name='telphone']").val(phone);
         $("#form-user-add").find("input[name='password']").val(password);
+        $("#form-user-add").find("input[name='fax']").val(fax);
+        $("#form-user-add").find("input[name='iDCard']").val(idcard);
+        $("#form-user-add").find("input[name='email']").val(email);
+        $("#form-user-add").find("input[name='zip']").val(zip);
+        $("#form-user-add").find("input[name='address']").val(address);
         $("#passwordAgain").val(password);
         $("#form-user-add").find("select[name='roleId']").val(roleId);
        /* $("#plazaNo").val(plazaNo);*/
@@ -209,7 +217,7 @@
             title: "修改用户信息",
             type: 1,
             zIndex:1989,
-            area: ['700px', '470px'],
+            area: ['800px', '470px'],
             content: $('#user_add_div')
         });
     }

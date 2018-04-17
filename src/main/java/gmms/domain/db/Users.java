@@ -1,5 +1,6 @@
 package gmms.domain.db;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -33,7 +34,7 @@ public class Users extends IdEntity {
     private String remark;
     private List<Role> roles;
     private List<Role> rolesNoLazy;
-    private List<Msg> msgList;
+/*    private List<Msg> msgList;*/
     private List<LoginLog> loginLogList;
     private SysPlaza sysPlaza;
 
@@ -100,6 +101,7 @@ public class Users extends IdEntity {
         this.remark = remark;
     }
 
+    @JsonBackReference
     @OneToMany(targetEntity = Role.class)
     @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id",
             referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id",
@@ -227,7 +229,8 @@ public class Users extends IdEntity {
     }
 
 
-    @OneToMany(targetEntity = Msg.class, mappedBy = "users")
+
+/*    @OneToMany(targetEntity = Msg.class, mappedBy = "users")
     @Cascade({CascadeType.ALL})
     public List<Msg> getMsgList() {
         return msgList;
@@ -235,12 +238,12 @@ public class Users extends IdEntity {
 
     public void setMsgList(List<Msg> msgList) {
         this.msgList = msgList;
-    }
+    }*/
 
 
 
 
-
+    @JsonBackReference
     @OneToMany(targetEntity = LoginLog.class, mappedBy = "users")
     @Cascade({CascadeType.ALL})
     public List<LoginLog> getLoginLogList() {
@@ -276,7 +279,8 @@ public class Users extends IdEntity {
     public void setFax(String fax) {
         this.fax = fax;
     }
-    @Column(name = "ADRESS")
+
+    @Column(name = "ADDRESS")
     public String getAddress() {
         return address;
     }
@@ -314,7 +318,6 @@ public class Users extends IdEntity {
                 ", status=" + status +
                 ", remark='" + remark + '\'' +
                 ", rolesNoLazy=" + rolesNoLazy +
-                ", msgList=" + msgList +
                 ", loginLogList=" + loginLogList +
                 ", sysPlaza=" + sysPlaza.getPlaNo() +
                 ", iDCard='" + iDCard + '\'' +

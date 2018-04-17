@@ -23,7 +23,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>
                 手机号码：</label>
             <div class="formControls col-xs-8 col-sm-8">
-                <input type="text" class="input-text" required minlength="11" maxlength="11" number="true"
+                <input type="text" class="input-text" required isMobile="1"  data-msg-isMobile="请输入有效的手机号码" maxlength="11"
                        placeholder="" id="formTelphone"
                        name="telphone"/>
             </div>
@@ -55,27 +55,75 @@
             <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
 			<select class="select" name="roleId" size="1" onchange="">
             <#list roleList as role>
-                    <option value="${role.id}">${role.remark}</option>
+                <option value="${role.id}">${role.remark}</option>
             </#list>
-			</select>
-			</div>
+            </select>
+            </div>
             <label class="form-label col-xs-4 col-sm-2">
                 网点号：</label>
             <div class="formControls col-xs-4 col-sm-2">
                 <input id="plazaNo_input" name="sysPlaza.plaNo" type="hidden">
-                 <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
-                 <#list plazaList as plaza>
-                     <option value="${plaza.plaNo?c}">${plaza.plaName}</option>
-                 </#list>
-                 </select>
-<#--
-			<select class="select" id="plazaNo"  name="sysPlaza.plaNo" size="1">
-            <#list plazaList as sysPlaza>
-                <option value="${sysPlaza.plaNo?c}">${sysPlaza.plaName}</option>
-            </#list>
-            </select>-->
+                <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
+                <#list plazaList as plaza>
+                    <option value="${plaza.plaNo?c}">${plaza.plaName}</option>
+                </#list>
+                </select>
+            <#--
+                        <select class="select" id="plazaNo"  name="sysPlaza.plaNo" size="1">
+                        <#list plazaList as sysPlaza>
+                            <option value="${sysPlaza.plaNo?c}">${sysPlaza.plaName}</option>
+                        </#list>
+                        </select>-->
             </div>
         </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                传真：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text" isPhone="1" data-msg-isMobile="请输入有效的传真" maxlength="7"
+                       placeholder="" id="formfax"
+                       name="fax"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                身份证号：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text" isIdCardNo="1" data-msg-checkEmail="请输入有效的身份证"
+                       placeholder="" id="formiDCard"
+                       name="iDCard"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                邮箱：</label>
+
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text" checkEmail="${absoluteContextPath}" data-msg-checkEmail="请输入有效的E_mail"
+                       placeholder="" id="formemail"
+                       name="email"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                邮编：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text" isZipCode="1" data-msg-isZipCode="请输入有效的邮编"
+                       placeholder="" id="formzip"
+                       name="zip"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
+                地址：</label>
+            <div class="formControls col-xs-8 col-sm-8">
+                <input type="text" class="input-text"
+                       placeholder="" id="formaddress"
+                       name="address"/>
+            </div>
+        </div>
+
+
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>
@@ -98,7 +146,28 @@
 </article>
 
 <script>
+    if ($.validator != undefined) {
 
+        $.validator.addMethod("checkEmail", function (value, element, params) {
+            var myreg = /^[_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9\-]*)*@[a-zA-Z0-9\-]+([\.][a-zA-Z0-9\-]+)+$/;
+
+            if(value !=''){if(!myreg.test(value)){return false;}};
+
+            return true;
+
+        } ,  "");
+        $.validator.addMethod( "isZipCode",function(value,element, params){
+
+            var pattern =/^[0-9]{6}$/;
+
+            if(value !=''){if(!pattern.exec(value)){return false;}};
+
+            return true;
+
+        } ,  "请输入有效的邮政编码");
+
+
+    }
 
     //表单验证
     $("#form-user-add").validate({

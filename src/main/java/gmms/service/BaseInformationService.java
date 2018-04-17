@@ -1,10 +1,7 @@
 package gmms.service;
 
 import com.google.common.collect.Lists;
-import gmms.dao.RoleDao;
-import gmms.dao.SysConfigDao;
-import gmms.dao.SysPlazaDao;
-import gmms.dao.UsersDao;
+import gmms.dao.*;
 import gmms.dao.util.DynamicSpecifications;
 import gmms.dao.util.SearchFilter;
 import gmms.domain.db.*;
@@ -32,6 +29,8 @@ public class BaseInformationService {
 
     @Autowired
     private SysConfigDao sysConfigDao;
+    @Autowired
+    private SysBaseInformationDao sysBaseInformationDao;
 
     public SysPlaza saveOrUpdateSysPlaza(SysPlaza sysPlaza ,Users operateUsers) {
         LOGGER.info("sysPlaza {} has saveAndUpdate,operator user id is {},name is{} ", sysPlaza, operateUsers.getId(), operateUsers.getUserName());
@@ -92,6 +91,8 @@ public class BaseInformationService {
         return sysConfigDao.findByCfConfigName("SuperAdminPassWord");
     }
 
+
+
     /**
      * 工本费
      * @return
@@ -112,6 +113,10 @@ public class BaseInformationService {
 
     public SysConfig findSysConfigById(String name){
         return sysConfigDao.findOne(name);
+    }
+
+    public List<SysBaseInformation> findVehicleKindByValue(){
+        return sysBaseInformationDao.querybybiType("VehicleKind");
     }
 
 }

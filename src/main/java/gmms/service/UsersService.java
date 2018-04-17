@@ -41,6 +41,10 @@ public class UsersService {
         return usersDao.findByUserNo(name);
     }
 
+    public Users findById(Long id){
+        return usersDao.findOne(id);
+    }
+
     public List<Users> findBySysPlaza(SysPlaza sysPlaza) {
         return usersDao.findBySysPlaza(sysPlaza);
     }
@@ -94,7 +98,7 @@ public class UsersService {
         }
 
         Specification<Users> spec = DynamicSpecifications.bySearchFilter(filters, Users.class);
-        Sort purchaseDateDB = new Sort(Sort.Direction.ASC, "gmtCreate");
+        Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "gmtCreate");
         List<Users> allUsers = usersDao.findAll(spec, purchaseDateDB);
         if (userParam.getRoleId() != null && userParam.getRoleId() != -1) {
             Role role = roleDao.findOne(userParam.getRoleId());

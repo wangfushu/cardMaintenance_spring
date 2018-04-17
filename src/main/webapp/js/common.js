@@ -53,67 +53,92 @@ if ($.validator != undefined) {
 
         return res;
     }, "");
-}
-// 身份证号码验证
-jQuery.validator.addMethod("idcardno", function(value, element) {
-    return this.optional(element) || isIdCardNo(value);
-}, "请正确输入身份证号码");
-function isIdCardNo(num) {
+    $.validator.addMethod("isIdCardNo", function(value, element, params) {
+        //var idCard = /^(\d{6})()?(\d{4})(\d{2})(\d{2})(\d{3})(\w)$/;
+        return this.optional(element) || isIdCardNo(value);
+    }, "");
+    // 手机号码验证
+    $.validator.addMethod("isMobile", function(value, element, params) {
+        var length = value.length;
+        return this.optional(element) || (length == 11 && /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(value));
+    }, "");
 
-    var factorArr = new Array(7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2,1);
-    var parityBit=new Array("1","0","X","9","8","7","6","5","4","3","2");
-    var varArray = new Array();
-    var intValue;
-    var lngProduct = 0;
-    var intCheckDigit;
-    var intStrLen = num.length;
-    var idNumber = num;
-    // initialize
-    if ((intStrLen != 15) && (intStrLen != 18)) {
-        return false;
-    }
-    // check and set value
-    for(i=0;i<intStrLen;i++) {
-        varArray[i] = idNumber.charAt(i);
-        if ((varArray[i] < '0' || varArray[i] > '9') && (i != 17)) {
-            return false;
-        } else if (i < 17) {
-            varArray[i] = varArray[i] * factorArr[i];
-        }
-    }
 
-    if (intStrLen == 18) {
-        //check date
-        var date8 = idNumber.substring(6,14);
-        if (isDate8(date8) == false) {
-            return false;
-        }
-        // calculate the sum of the products
-        for(i=0;i<17;i++) {
-            lngProduct = lngProduct + varArray[i];
-        }
-        // calculate the check digit
-        intCheckDigit = parityBit[lngProduct % 11];
-        // check last digit
-        if (varArray[17] != intCheckDigit) {
-            return false;
-        }
-    }
-    else{        //length is 15
-                 //check date
-        var date6 = idNumber.substring(6,12);
-        if (isDate6(date6) == false) {
+    // 电话号码验证
+    $.validator.validator.addMethod("isPhone", function(value, element, params) {
+        var tel = /^(\d{3,4}-?)?\d{7,9}$/g;
+        return this.optional(element) || (tel.test(value));
+    }, "");
 
-            return false;
-        }
-    }
-    return true;
+
+    // 联系电话(手机/电话皆可)验证
+    $.validator.validator.addMethod("isTel", function(value,element, params) {
+        var length = value.length;
+        var mobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+        var tel = /^(\d{3,4}-?)?\d{7,9}$/g;
+        return this.optional(element) || tel.test(value) || (length==11 && mobile.test(value));
+    }, "");
+
 
 }
+
 function fileNamePost(fileName) {
     var extStart = fileName.lastIndexOf(".");
     var ext = fileName.substring(extStart + 1, fileName.length).toUpperCase();
     return ext.toLowerCase();
 }
+
+//身份证号码的验证规则
+
+
+function isIdCardNo(num){
+    //if (isNaN(num)) {alert("输入的不是数字！"); return false;}
+    var len = num.length, re;
+    if (len == 15)
+        re = new RegExp(/^(\d{6})()?(\d{2})(\d{2})(\d{2})(\d{2})(\w)$/);
+    else if (len == 18)
+        re = new RegExp(/^(\d{6})()?(\d{4})(\d{2})(\d{2})(\d{3})(\w)$/);
+    else {
+        //alert("输入的数字位数不对。");
+        return false;
+    }
+    var a = num.match(re);
+    if (a != null)
+    {
+        if (len==15)
+        {
+            var D = new Date("19"+a[3]+"/"+a[4]+"/"+a[5]);
+            var B = D.getYear()==a[3]&&(D.getMonth()+1)==a[4]&&D.getDate()==a[5];
+        }
+        else
+        {
+            var D = new Date(a[3]+"/"+a[4]+"/"+a[5]);
+            var B = D.getFullYear()==a[3]&&(D.getMonth()+1)==a[4]&&D.getDate()==a[5];
+        }
+        if (!B) {
+            //alert("输入的身份证号 "+ a[0] +" 里出生日期不对。");
+            return false;
+        }
+    }
+    if(!re.test(num)){
+        //alert("身份证最后一位只能是数字和字母。");
+        return false;
+    }
+    return true;
+}
+
+
+
+
+//车牌号校验
+function isPlateNo(plateNo){
+    var re = /^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$/;
+    if(re.test(plateNo)){
+        return true;
+    }
+    return false;
+}
+
+
 
 

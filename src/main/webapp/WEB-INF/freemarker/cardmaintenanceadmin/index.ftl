@@ -358,7 +358,9 @@
                     window.location.href="${absoluteContextPath}/j_spring_security_logout";
 
                 } else {
-                    alert(result);
+                    alert("密码修改失败");
+                    layer.close(passwordIndex);
+                    //alert(result);
                     //layer.alert(result);
 
                 }

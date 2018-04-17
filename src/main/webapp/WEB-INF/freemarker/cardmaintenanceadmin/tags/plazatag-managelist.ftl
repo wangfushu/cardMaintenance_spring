@@ -87,7 +87,7 @@
 	</span>
         <span class="r">共有数据：<strong>${tmTagStoreList?size}</strong> 条</span></div>
     <div class="mt-20">
-        <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+        <table class="table table-border table-bordered table-bg table-hover table-sort  table-responsive">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" name="" value=""></th>
