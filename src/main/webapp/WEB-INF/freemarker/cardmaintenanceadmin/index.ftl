@@ -211,7 +211,7 @@
 <aside class="Hui-aside">
     <div class="menu_dropdown bk_2">
 
-    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN'>
+    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
         <dl id="menu-member">
             <dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
@@ -223,7 +223,7 @@
             </dd>
         </dl>
     </@sec.authorize>
-    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN'>
+    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
         <dl id="menu-member">
             <dt><i class="Hui-iconfont">&#xe60d;</i> 基础信息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
@@ -263,14 +263,21 @@
             <dt><i class="Hui-iconfont">&#xe60d;</i> 报表管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="${absoluteContextPath}/user/list"  data-title="日报表"
-                           href="javascript:;">日报表</a>
+                    <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
+                    <li><a data-href="${absoluteContextPath}/statistic/taginstore-report"  data-title="二维卡入库报表"
+                           href="javascript:;">二维卡入库报表</a>
                     </li>
-                <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_USER'>
-                    <li><a data-href="${absoluteContextPath}/user/list"  data-title="日报表"
-                           href="javascript:;">年报表</a>
+                    <li><a data-href="${absoluteContextPath}/statistic/tagoutstore-report"  data-title="二维卡出库报表"
+                           href="javascript:;">二维卡出库报表</a>
                     </li>
-                </@sec.authorize>
+                    </@sec.authorize>
+                    <li><a data-href="${absoluteContextPath}/statistic/issuetag-day-report"  data-title="发卡信息跨日报表"
+                           href="javascript:;">发卡信息跨日报表</a>
+                    </li>
+                    <li><a data-href="${absoluteContextPath}/statistic/issuetag-year-report"  data-title="发卡信息年报表"
+                           href="javascript:;">发卡信息年报表</a>
+                    </li>
+
                 </ul>
             </dd>
         </dl>
@@ -284,7 +291,7 @@
         <div class="Hui-tabNav-wp">
             <ul id="min_title_list" class="acrossTab cl">
                 <li class="active">
-                    <span title="我的桌面" data-href="store-add.html">我的桌面</span>
+                    <span title="我的首页" data-href="store-add.html">我的首页</span>
                     <em></em></li>
             </ul>
         </div>
@@ -293,7 +300,12 @@
     <div id="iframe_box" class="Hui-article">
         <div class="show_iframe">
             <div style="display:none" class="loading"></div>
-            <iframe scrolling="yes" frameborder="0" src="${absoluteContextPath}/user/list"></iframe>
+            <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
+                <iframe scrolling="yes" frameborder="0" src="${absoluteContextPath}/user/list"></iframe>
+            </@sec.authorize>
+            <@sec.authorize ifAnyGranted = 'ROLE_USER'>
+            <iframe scrolling="yes" frameborder="0" src="${absoluteContextPath}/statistic/issuetag-day-report"></iframe>
+            </@sec.authorize>
         </div>
     </div>
 </section>

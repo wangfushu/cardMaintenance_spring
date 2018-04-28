@@ -2,14 +2,18 @@ package gmms.service;
 
 
 import com.google.common.collect.Lists;
+import gmms.dao.FmAliWeiChartPayLogDao;
+import gmms.dao.IssueTagDao;
+import gmms.dao.TmTagStoreDao;
 import gmms.dao.VmVehicleDao;
 import gmms.dao.util.DynamicSpecifications;
 import gmms.dao.util.SearchFilter;
-import gmms.domain.db.Users;
-import gmms.domain.db.VmVehicle;
+import gmms.domain.db.*;
 import gmms.domain.form.VmVehicleForm;
+import gmms.domain.param.IssueForm;
 import gmms.domain.query.VmVehicleQueryParam;
 import gmms.util.DateUtil;
+import gmms.util.DateUtils;
 import gmms.util.DomainCopyUtil;
 import gmms.util.StringUtils;
 import org.hibernate.HibernateException;
@@ -21,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -39,6 +44,20 @@ public class VmVehicleService {
 
     @Autowired
     private VmVehicleDao vmVehicleDao;
+    @Autowired
+    private IssueTagDao issueTagDao;
+    @Autowired
+    private TmTagStoreDao tmTagStoreDao;
+
+    @Autowired
+    private FmAliWeiChartPayLogDao fmAliWeiChartPayLogDao;
+
+
+    @Autowired
+    private BaseInformationService baseInformationService;
+    @Autowired
+    private  FmFeeService fmFeeService;
+
 
 
     @PersistenceUnit
@@ -46,6 +65,10 @@ public class VmVehicleService {
 
     public VmVehicle findById(String vVehicleNo){
         return vmVehicleDao.findOne(vVehicleNo);
+    }
+
+    public VmVehicle findVmVehicleByPlateNoAndPlateColor(String plateNo,String plateColor){
+        return vmVehicleDao.findByPlateNoAndPlateColor(plateNo,plateColor);
     }
 
     public VmVehicle queryVmVehicleIsExist(String plateNo, String plateColor, Long vKindNo){
@@ -133,7 +156,7 @@ public class VmVehicleService {
 
         List<SearchFilter> filters = Lists.newArrayList();
 
-        if (null != queryParam.getPlateNo() && !"".equals(queryParam.getPlateNo())) {
+       if (null != queryParam.getPlateNo() && !"".equals(queryParam.getPlateNo())) {
             filters.add(new SearchFilter("plateNo", SearchFilter.Operator.LIKE, queryParam.getPlateNo()));
         }
         if (null != queryParam.getPlateColor() && !"".equals(queryParam.getPlateColor())) {
@@ -146,7 +169,7 @@ public class VmVehicleService {
 
         if (null != users) {
 
-                 filters.add(new SearchFilter("vVehicleNo", SearchFilter.Operator.TLIKE, StringUtils.getFormat(5,users.getSysPlaza().getPlaNo().intValue()) ));
+                 filters.add(new SearchFilter("vehicleNo", SearchFilter.Operator.TLIKE, StringUtils.getFormat(5,users.getSysPlaza().getPlaNo().intValue()) ));
         }
 
         if (null != queryParam.getStartPassTime() && !"".equals(queryParam.getStartPassTime())) {
@@ -168,7 +191,54 @@ public class VmVehicleService {
         return vmVehicles;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public String updateIssueTagAndVmVehicle(String vehicleNo,Users users,IssueForm issueForm) {
+        IssueTag issueTag = DomainCopyUtil.map(issueForm, IssueTag.class);
+        VmVehicle vmVehicle=vmVehicleDao.findOne(vehicleNo);
+        issueTag.setVehicleNo(vmVehicle.getVehicleNo());
+        issueTag.setPlateNo(vmVehicle.getPlateNo());
+        issueTag.setPlateColor(vmVehicle.getPlateColor());
+        issueTag.setvKindNo(vmVehicle.getvKindNo());
+        issueTag.setInstallDate(new Date());
+        Float fee=Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue());
+        if(null!=vmVehicle.getInstallDate()){
+            Integer insureDays=Integer.valueOf(baseInformationService.findInSureYearByValue().getCfConfigValue());
+            if(DateUtils.getCurrDate().before( DateUtil.getDateAfterDays(vmVehicle.getInstallDate(), insureDays))){
+                issueTag.setInstallType(2L);//保内换卡
+                issueTag.setFee(0f);
+            }else{
+                issueTag.setInstallType(3L);//保外换卡
+                issueTag.setFee(fee);
+            }
+        }else{
+            issueTag.setInstallType(1L);//新卡
+            issueTag.setFee(fee);
+        }
 
+        IssueTag save=issueTagDao.save(issueTag);
+        /****************************库存扣除*********************************************************/
+        TmTagStore tmTagStore=tmTagStoreDao.findOne(users.getSysPlaza().getPlaNo());
+        tmTagStore.setGoodTagCount(tmTagStore.getGoodTagCount()-1);
+        tmTagStoreDao.save(tmTagStore);
+        /****************************车辆的卡信息反填 **********************************/
+        vmVehicle.setEpc(save.getEpc());
+        vmVehicle.setTid(save.getTid());
+        vmVehicle.setTagNo(save.getTagNo());
+        vmVehicle.setOutTagNo(save.getOutTagNo());
+        vmVehicle.setTagType(save.getTagType());
+        vmVehicle.setInstallDate(save.getInstallDate());
+        vmVehicle.setUpdateTime(new Date());
+        vmVehicle.setNewCarRegistNode(2L);
+        VmVehicle vmVehiclesave=vmVehicleDao.save(vmVehicle);
+
+        List<FmAliWeiChartPayLog> fmAliWeiChartPayLogs=fmFeeService.findFmAliWeiChartPayLogByVehicleNo(vmVehiclesave.getVehicleNo());
+        if(fmAliWeiChartPayLogs.size()>0){
+
+            fmAliWeiChartPayLogs.get(0).setEndSign(2);
+            fmAliWeiChartPayLogDao.save(fmAliWeiChartPayLogs.get(0));
+        }
+        return "success";
+    }
 
     /*********************************************数据库操作*********************************************************************/
 

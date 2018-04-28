@@ -22,7 +22,8 @@ import java.util.Random;
 @Table(name = "users")
 @DynamicInsert
 @DynamicUpdate
-public class Users extends IdEntity {
+public class Users {
+    protected Long id;
     private String userNo;
     private String password;
     private String telphone;
@@ -44,8 +45,26 @@ public class Users extends IdEntity {
     private String zip;
     private String email;
 
+    private int storeNum;//网点卡库存
 
 
+    @Id
+    @TableGenerator(name="ID_GENERATOR",
+            table="sys_SeqTable",
+            pkColumnName="ST_SeqName",
+            pkColumnValue="Users.id",
+            valueColumnName="ST_SeqValue",
+            allocationSize=1,
+            initialValue=1
+    )
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Column(name = "USERNO")
     public String getUserNo() {
@@ -305,6 +324,9 @@ public class Users extends IdEntity {
         this.email = email;
     }
 
+
+
+
     @Override
     public String toString() {
         return "Users{" +
@@ -335,10 +357,15 @@ public class Users extends IdEntity {
 
 
 
+    @Transient
+    public int getStoreNum() {
+        return storeNum;
+    }
 
-
-
-/*
+    public void setStoreNum(int storeNum) {
+        this.storeNum = storeNum;
+    }
+    /*
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Users{");

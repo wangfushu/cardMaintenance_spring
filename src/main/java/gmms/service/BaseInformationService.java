@@ -8,6 +8,8 @@ import gmms.domain.db.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,13 @@ public class BaseInformationService {
         List<SearchFilter> filters = Lists.newArrayList();
         Specification<SysPlaza> spec = DynamicSpecifications.bySearchFilter(filters, SysPlaza.class);
         List<SysPlaza> sysPlazas= sysPlazaDao.findAll(spec,new Sort(Sort.Direction.ASC,"plaModifyTime"));
+        return sysPlazas;
+    }
+    public Page<SysPlaza> sysPlazaListAllPage(int pageNo,int pageSize){
+        List<SearchFilter> filters = Lists.newArrayList();
+        Specification<SysPlaza> spec = DynamicSpecifications.bySearchFilter(filters, SysPlaza.class);
+        PageRequest page = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC,"plaModifyTime"));
+        Page<SysPlaza> sysPlazas= sysPlazaDao.findAll(spec,page);
         return sysPlazas;
     }
 
@@ -100,6 +109,7 @@ public class BaseInformationService {
     public SysConfig findCardExpenseByValue(){
         return sysConfigDao.findByCfConfigName("CardExpense");
     }
+
 
     public List<SysConfig> SysConfigListAll(){
         return Lists.newArrayList(sysConfigDao.findAll());

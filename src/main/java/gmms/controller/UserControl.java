@@ -8,11 +8,10 @@ import gmms.domain.param.UserParam;
 import gmms.service.BaseInformationService;
 import gmms.service.MsgService;
 import gmms.service.UsersService;
-import gmms.util.DateUtil;
-import gmms.util.MD5;
-import gmms.util.StringUtil;
+import gmms.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -105,16 +104,37 @@ public class UserControl extends BaseControl {
         return AjaxResponseBodyFactory.createSuccessBody(true, userId);
     }
 
+
     @RequestMapping(value = "/list")
     public String list(UserParam userParam, Model model) {
-        List<Users> users = usersService.listAllUser(userParam);
-        model.addAttribute("userList", users);
+       /* List<Users> users = usersService.listAllUser(userParam);
+        model.addAttribute("userList", users);*/
         model.addAttribute("roleList", usersService.listAllRole());
         model.addAttribute("plazaList", baseInformationService.listAllPlaza());
         model.addAttribute("param", userParam);
         return "cardmaintenanceadmin/users/user-list";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/page")
+    public String userpage(UserParam userParam) {
+        int pageNo = userParam.getStart() / userParam.getLength() + 1;
+        Pagination<Users> pagination = new Pagination<Users>();
+        Page<Users> users = usersService.listAllUserPage(userParam, pageNo, userParam.getLength());
+        pagination.setData(users.getContent());
+        pagination.setDraw(userParam.getDraw());
+        pagination.setRecordsFiltered((int) users.getTotalElements());
+        pagination.setRecordsTotal((int) users.getTotalElements());
+        if(users.getContent().size()>0) {
+            return JsonMapper.nonEmptyMapper().toJson(pagination);
+        }else{
+            return JsonMapper.nonDefaultMapper().toJson(pagination);
+        }
+   /*      model.addAttribute("userList", users);
+       model.addAttribute("roleList", usersService.listAllRole());
+        model.addAttribute("plazaList", baseInformationService.listAllPlaza());
+        model.addAttribute("param", userParam);*/
+    }
 
     @ResponseBody
     @RequestMapping(value = "usernameNotExist")
@@ -241,13 +261,29 @@ public class UserControl extends BaseControl {
     }
     @RequestMapping(value = "/plazalist")
     public String plazalist(UserParam userParam, Model model) {
-        List<SysPlaza> sysPlazas = baseInformationService.sysPlazaListAll();
-        model.addAttribute("sysPlazaList", sysPlazas);
+     /*   List<SysPlaza> sysPlazas = baseInformationService.sysPlazaListAll();
+        model.addAttribute("sysPlazaList", sysPlazas);*/
         //model.addAttribute("roleList", usersService.listAllRole());
         //model.addAttribute("param", userParam);
         return "cardmaintenanceadmin/users/plaza-list";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/plazaPage")
+    public String plazaPage(UserParam userParam) {
+        int pageNo = userParam.getStart() / userParam.getLength() + 1;
+        Pagination<SysPlaza> pagination = new Pagination<SysPlaza>();
+        Page<SysPlaza> sysPlazas = baseInformationService.sysPlazaListAllPage(pageNo, userParam.getLength());
+        pagination.setData(sysPlazas.getContent());
+        pagination.setDraw(userParam.getDraw());
+        pagination.setRecordsFiltered((int) sysPlazas.getTotalElements());
+        pagination.setRecordsTotal((int) sysPlazas.getTotalElements());
+        if(sysPlazas.getContent().size()>0) {
+            return JsonMapper.nonEmptyMapper().toJson(pagination);
+        }else{
+            return JsonMapper.nonDefaultMapper().toJson(pagination);
+        }
+    }
 
     @ResponseBody
     @RequestMapping(value = "/deleteplaza", method = RequestMethod.GET)

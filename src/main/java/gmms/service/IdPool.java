@@ -28,7 +28,7 @@ public class IdPool {
     /**
      * 号码池的长度
      */
-    private int poolSize = 5;
+    private int poolSize = 2;
     /**
      * 主键的数组
      */

@@ -1,5 +1,8 @@
 package gmms.util;
 
+import gmms.domain.query.IssueTagYearQueryForm;
+import gmms.domain.vo.TagInStoreExcelVO;
+import gmms.domain.vo.TagOutStoreExcelVO;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -19,6 +22,107 @@ import java.util.List;
 public class ExcelUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtil.class);
 
+
+    public static byte[] exportTagInStoreReportExcel(List<TagInStoreExcelVO> data, String fileName, String[] Title) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(fileName);
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 4000);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(5, 4000);
+        sheet.setColumnWidth(6, 6000);
+
+        setHeader(wb, sheet, fileName);
+
+        HSSFRow row2 = sheet.createRow(1);
+        for (Integer i = 0; i < Title.length; i++) {
+            row2.createCell(i).setCellValue(Title[i]);
+        }
+
+        int index = 2;
+        for (TagInStoreExcelVO vo : data) {
+            HSSFRow rowIndex = sheet.createRow(index++);
+            rowIndex.createCell(0).setCellValue(vo.getInStoreType());
+            rowIndex.createCell(1).setCellValue(vo.getInStoreTime());
+            rowIndex.createCell(2).setCellValue(vo.getCount());
+            rowIndex.createCell(3).setCellValue(vo.getUserName());
+            rowIndex.createCell(4).setCellValue(vo.getInRecievedPlazaName());
+            rowIndex.createCell(5).setCellValue(vo.getInSendPlazaName());
+            rowIndex.createCell(6).setCellValue(vo.getRemark());
+        }
+        return getBytes(wb);
+    }
+
+
+
+    public static byte[] exportTagOutStoreReportExcel(List<TagOutStoreExcelVO> data, String fileName, String[] Title) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(fileName);
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 4000);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(5, 4000);
+
+        setHeader(wb, sheet, fileName);
+
+        HSSFRow row2 = sheet.createRow(1);
+        for (Integer i = 0; i < Title.length; i++) {
+            row2.createCell(i).setCellValue(Title[i]);
+        }
+
+        int index = 2;
+        for (TagOutStoreExcelVO vo : data) {
+            HSSFRow rowIndex = sheet.createRow(index++);
+            rowIndex.createCell(0).setCellValue(vo.getOutRecievedPlazaName());
+            rowIndex.createCell(1).setCellValue(vo.getOutSendPlazaName());
+            rowIndex.createCell(2).setCellValue(vo.getOutStoreTime());
+            rowIndex.createCell(3).setCellValue(vo.getCount());
+            rowIndex.createCell(4).setCellValue(vo.getUserName());
+            rowIndex.createCell(5).setCellValue(vo.getRemark());
+        }
+        return getBytes(wb);
+    }
+
+    public static byte[] exportIssueTagYearReportExcel(List<IssueTagYearQueryForm> data, String fileName, String[] Title) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(fileName);
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 4000);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(5, 4000);
+        sheet.setColumnWidth(6, 4000);
+        sheet.setColumnWidth(7, 4000);
+        sheet.setColumnWidth(8, 4000);
+
+
+        setHeader(wb, sheet, fileName);
+
+        HSSFRow row2 = sheet.createRow(1);
+        for (Integer i = 0; i < Title.length; i++) {
+            row2.createCell(i).setCellValue(Title[i]);
+        }
+
+        int index = 2;
+        for (IssueTagYearQueryForm vo : data) {
+            HSSFRow rowIndex = sheet.createRow(index++);
+            rowIndex.createCell(0).setCellValue(vo.getPlazaName());
+            rowIndex.createCell(1).setCellValue(vo.getIssueUserNo());
+            rowIndex.createCell(2).setCellValue(vo.getIssueUserName());
+            rowIndex.createCell(3).setCellValue(vo.getStatisticDate());
+            rowIndex.createCell(4).setCellValue(vo.getNewCardIssueCount());
+            rowIndex.createCell(5).setCellValue(vo.getInsureCardIssueCount());
+            rowIndex.createCell(6).setCellValue(vo.getOutsureCardIssueCount());
+            rowIndex.createCell(7).setCellValue(vo.getCount());
+            rowIndex.createCell(8).setCellValue(vo.getTotalfee());
+        }
+        return getBytes(wb);
+    }
 /*    public static List<OrderExcelVO> readPostcodeFromExcel(InputStream inputStream, String fileName) throws IOException {
         List<OrderExcelVO> result = Lists.newArrayList();
         Workbook wb = null;
@@ -388,6 +492,23 @@ public class ExcelUtil {
         } catch (Exception e) {
             return String.valueOf(cell.getNumericCellValue());
         }
+    }
+
+    private static void setHeader(HSSFWorkbook wb, HSSFSheet sheet) {
+        HSSFRow row1 = sheet.createRow(0);
+        row1.setHeight((short) 500);
+
+        HSSFCellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        HSSFFont font = wb.createFont();
+        font.setFontName("黑体");
+        font.setFontHeightInPoints((short) 16);
+        cellStyle.setFont(font);
+
+        HSSFCell cell = row1.createCell(0);
+        cell.setCellValue("订单详情");
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 16));
+        cell.setCellStyle(cellStyle);
     }
 
     private static void setHeader(HSSFWorkbook wb, HSSFSheet sheet, String fileName) {

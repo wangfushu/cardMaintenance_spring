@@ -37,7 +37,7 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 
 <div class="text-c" style="margin: 10px">
-   <form action="${absoluteContextPath}/tag/tagstorelist" method="post">
+   <form id="tagstore_searchlist_form" action="${absoluteContextPath}/tag/tagstorelist" method="post">
     网点：<span class="select-box inline">
 
        <select  name="plaNo" class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
@@ -85,7 +85,8 @@
                        onclick="delete_all();" href="javascript:;"><i
                             class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
 	</span>
-        <span class="r">共有数据：<strong>${tmTagStoreList?size}</strong> 条</span></div>
+      <#--  <span class="r">共有数据：<strong>${tmTagStoreList?size}</strong> 条</span>-->
+    </div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-bg table-hover table-sort  table-responsive">
             <thead>
@@ -98,18 +99,18 @@
                 <th width="120">更新时间</th>
             </tr>
             </thead>
-            <tbody>
+           <#-- <tbody>
             <#list tmTagStoreList as tmTagStore>
             <tr class="text-c" id="tagtype_${tmTagStore.plazaNo?string}">
                 <td><input userId="${tmTagStore.plazaNo?string}" userName="${tmTagStore.plazaName!''}" type="checkbox" value="" name=""></td>
                 <td>${tmTagStore.plazaName!''}</td>
-                <#--<td>${tmTagStore.tagType!''}</td>-->
+                &lt;#&ndash;<td>${tmTagStore.tagType!''}</td>&ndash;&gt;
                 <td>${tmTagStore.goodTagCount!''}</td>
                 <td>${tmTagStore.badTagCount!''}</td>
                 <td>${tmTagStore.updateTime!''} </td>
             </tr>
             </#list>
-            </tbody>
+            </tbody>-->
         </table>
     </div>
 </div>
@@ -147,15 +148,65 @@
     var taginStoreIndex;
     var tagoutStoreIndex;
     var addMoneyIndex;
-    $('.table-sort').dataTable({
-        "aaSorting": [[1, "desc"]],//默认第几个排序
-        "bStateSave": true,//状态保存
-        "iDisplayLength":25,
-        "pading": false,
-        "aoColumnDefs": [
-            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            // {"orderable":false,"aTargets":[0,8]}// 不参与排序的列
-        ]
+    $(function () {
+        var data = $("#tagstore_searchlist_form").serializeObject();
+        $('.table-sort').dataTable({
+            "bDeferRender": true,
+            "processing": true, //打开数据加载时的等待效果
+            "serverSide": true,//打开后台分页
+            "bAutoWidth": false,
+            "ordering": false,
+            "aLengthMenu": [20, 100, 200, 500, 1000], //更改显示记录数选项
+            "iDisplayLength": 20, //默认显示的记录数
+            "searching": false,
+            "ajax": {
+                "url": "${absoluteContextPath}/tag/tagstorePage",
+                "data": data
+            },
+            "columns": [
+
+        {
+            "targets": 0,
+            "data": "plazaNo",
+            "width": "25px",
+            "render": function (data, type, row, meta) {
+
+                return '<input userId="'+data+'" userName="'+row.plazaName+'" type="checkbox" value="" name="">';
+            }
+        },
+                {"data": "plazaName"},
+                {"targets": 4,
+                    "data": "goodTagCount",
+                    "width": "100px",
+                    "class":"text-c",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        return  data;
+                    }},
+                {"targets": 4,
+                    "data": "badTagCount",
+                    "width": "100px",
+                    "class":"text-c",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        return  data;
+                    }},
+                {"targets": 4,
+                    "data": "updateTime",
+                    "width": "100px",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        return  new Date(data).Format("yyyy-MM-dd hh:mm:ss");
+                    }
+                }],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $(nRow).addClass('text-c');
+        }
+
+    });
+        setTimeout(function () {
+            $("table").css("width", "100%");
+        }, 2000);
     });
 
     function tag_inStore() {

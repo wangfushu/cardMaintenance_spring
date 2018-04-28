@@ -37,7 +37,7 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 
 <div class="text-c" style="margin: 10px">
-    <form action="${absoluteContextPath}/user/list" method="post">
+    <form id="user_searchlist_form" action="${absoluteContextPath}/user/list" method="post">
     <span class="select-box inline">
 		<select name="roleId" class="select">
             <option value="-1">角色</option>
@@ -76,7 +76,8 @@
                        onclick="delete_all();" href="javascript:;"><i
                             class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
 	</span>
-        <span class="r">共有数据：<strong>${userList?size}</strong> 条</span></div>
+        <#--<span class="r">共有数据：<strong>${userList?size}</strong> 条</span>-->
+    </div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
             <thead>
@@ -93,7 +94,7 @@
                 <th width="150">操作</th>
             </tr>
             </thead>
-            <tbody>
+           <#-- <tbody>
             <#list userList as user>
             <tr class="text-c" id="user_${user.id?c}">
                 <td><input userId="${user.id?c}" type="checkbox" value="" name=""></td>
@@ -103,7 +104,7 @@
                 <td>${user.telphone!''}</td>
                 <td>${user.email!''}</td>
                 <td>${user.gmtCreate!''}</td>
-<#--                <td>${user.lastLoginTime!''}</td>-->
+&lt;#&ndash;                <td>${user.lastLoginTime!''}</td>&ndash;&gt;
                 <td>${user.remark!''}</td>
                 <td class="f-14 td-manage">
                     <a style="text-decoration:none" class="ml-5"
@@ -118,7 +119,7 @@
                 </td>
             </tr>
             </#list>
-            </tbody>
+            </tbody>-->
         </table>
     </div>
 </div>
@@ -154,7 +155,7 @@
 <script type="text/javascript">
     var addMoneyIndex;
     var userAddIndex;
-    $('.table-sort').dataTable({
+/*    $('.table-sort').dataTable({
         "aaSorting": [[5, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "pading": false,
@@ -162,6 +163,82 @@
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
             // {"orderable":false,"aTargets":[0,8]}// 不参与排序的列
         ]
+    });*/
+
+    $(function () {
+        var data = $("#user_searchlist_form").serializeObject();
+        $('.table-sort').dataTable({
+            "bDeferRender": true,
+            "processing": true, //打开数据加载时的等待效果
+            "serverSide": true,//打开后台分页
+            "bAutoWidth": false,
+            "ordering": false,
+            "aLengthMenu": [20, 100, 200, 500, 1000], //更改显示记录数选项
+            "iDisplayLength": 20, //默认显示的记录数
+            "searching": false,
+            "ajax": {
+                "url": "${absoluteContextPath}/user/page",
+                "data": data
+            },
+            "columns": [{
+                "targets": 0,
+                "data": "id",
+                "width": "25px",
+                "render": function (data, type, row, meta) {
+
+                    return '<input userId="'+data+'" type="checkbox" value="" name="">';
+                }
+            },
+                {"data": "sysPlaza.plaName", defaultContent:""},
+                {"data": "userNo"},
+                {"data": "userName",defaultContent:"管理员" },
+                {"data": "telphone", defaultContent:""},
+                {"data": "email", defaultContent:""},
+                {
+                    "targets": 4,
+                    "data": "gmtCreate",
+                    "width": "100px",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if(data){
+                            return  new Date(data).Format("yyyy-MM-dd hh:mm:ss");
+                        }else{
+                            return "";
+                        }
+
+                    }
+                },
+                {"data": "remark", defaultContent:""},
+                {
+                    "targets": 0,
+                    "data": "sysPlaza",
+                    "width": "25px",
+                    "class":"f-14 td-manage",
+                    "render": function (data, type, row, meta) {
+                        var address="",zip="",iDCard="",fax="";
+                        if(row.fax){
+                            fax=row.fax;
+                        }
+                        if(row.address){
+                            address=row.address;
+                        }
+                        if(row.zip){zip=row.zip;}
+                        if(row.iDCard){iDCard=row.iDCard;}
+                        var result=' <a style="text-decoration:none" class="ml-5" data-href="${absoluteContextPath}/user/add?id='+row.id+'" onclick="alert_user(this,'+row.id+',\''+row.password+'\','+row.roleId+','+row.sysPlaza.plaNo+',\''+fax+'\',\''+address+'\',\''+zip+'\',\''+iDCard+'\')" data-title="编辑用户" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'+row.id+')" href="javascript:;"title="删除"> <i class="Hui-iconfont">&#xe6e2;</i></a>';
+
+
+                        return result;
+                    }
+                }
+            ],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                $(nRow).addClass('text-c');
+            }
+
+        });
+        setTimeout(function () {
+            $("table").css("width", "100%");
+        }, 2000);
     });
 
     function show_user_add() {
@@ -230,7 +307,8 @@
                 data: {userId: id},
                 success: function (data) {
                     if (data == "ok") {
-                        $(obj).parents("tr").remove();
+                        //$(obj).parents("tr").remove();
+                        location.replace(location.href);
                         layer.msg('已删除!', {icon: 1, time: 1000});
                     } else {
                         layer.alert(data, {icon: 1});

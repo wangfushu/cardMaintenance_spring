@@ -28,12 +28,12 @@ public class RBIPay extends Connection {
 
    // private String rbi_url="http://172.23.0.2:58080/uniform-pay-biz/unifiedPay";//正式库
 
-    //private String notify_url = "http://125.77.254.250:5083/upgradeFee/feepay/notify";
-    //private String notify_url = "http://wangfushu.tunnel.qydev.com/upgradeFee/feepay/notify";
-    private String notify_url = "http://172.16.54.205:8089/upgradeFee/feepay/notify";
-    //private String notify_url = "http://192.168.14.111:8089/upgradeFee/feepay/notify";
+    //private String notify_url = "http://125.77.254.250:5083/cardMaintenance/feepay/notify";
+    //private String notify_url = "http://wangfushu.tunnel.qydev.com/cardMaintenance/feepay/notify";
+    //private String notify_url = "http://172.16.54.205:8089/cardMaintenance/feepay/notify";
+    private String notify_url = "http://192.168.14.111:8089/cardMaintenance/feepay/notify";
 
-    public String Pay(String payType,Double totalFee,String payYearString,String plateNo,String orderNo) throws Exception {
+    public String Pay(String payType,Double totalFee,String plateNo,String orderNo) throws Exception {
 
         //int allfee=totalFee.intValue();
       /*  int initNumber = 1;
@@ -43,7 +43,7 @@ public class RBIPay extends Connection {
         String totalFeeStr=String.valueOf(fentotalFee.intValue());
 
         BaseDataPay baseDataPay = initBaseDataPay();
-        UnifiedPay unifiedPay = initUnifiedPay("91",totalFeeStr, baseDataPay.getTimestamp(),payYearString,plateNo,orderNo);
+        UnifiedPay unifiedPay = initUnifiedPay("91",totalFeeStr, baseDataPay.getTimestamp(),plateNo,orderNo);
 
 
         String sign = getsign(baseDataPay, unifiedPay);
@@ -75,7 +75,7 @@ public class RBIPay extends Connection {
      * @param timestamp
      * @return
      */
-    public UnifiedPay initUnifiedPay(String payType, String totalFee, String timestamp,String payYearString,String plateNo,String orderNo) {
+    public UnifiedPay initUnifiedPay(String payType, String totalFee, String timestamp,String plateNo,String orderNo) {
         UnifiedPay unifiedPay = new UnifiedPay();
 /*        String currDate = DateUtils.getCurrTimeStr(5);
         String orderNo = new String();
@@ -95,10 +95,10 @@ public class RBIPay extends Connection {
         unifiedPay.setCheckCode(StringUtil.toHexString(checkCode));
 
 
-        unifiedPay.setTitle("年费缴交["+payYearString+"]("+plateNo+")");
+        unifiedPay.setTitle("二维卡工本费缴交("+plateNo+")");
       /*  unifiedPay.setNotifyUrl("http://wangfushu.tunnel.qydev.com/upgradeFee/feepay/notify");*/
        unifiedPay.setNotifyUrl(notify_url);
-        unifiedPay.setOptType("Mobile4S");
+        unifiedPay.setOptType("Mobile2C");
 
        /* unifiedPay.setOptType("MobileDev4S");*/
         unifiedPay.setAttach("1");

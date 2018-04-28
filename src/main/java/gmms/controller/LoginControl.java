@@ -1,8 +1,10 @@
 package gmms.controller;
 
 import gmms.domain.db.SysConfig;
+import gmms.domain.db.TmTagStore;
 import gmms.domain.db.Users;
 import gmms.service.BaseInformationService;
+import gmms.service.TagService;
 import gmms.service.UsersService;
 import gmms.util.CommonExceptions.InvalidException;
 import gmms.util.JsonMapper;
@@ -27,6 +29,8 @@ import java.io.UnsupportedEncodingException;
 public class LoginControl extends BaseControl {
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private TagService tagService;
     @Autowired
     private BaseInformationService baseInformationService;
     private Logger LOGGER = LoggerFactory.getLogger(LoginControl.class);
@@ -56,6 +60,7 @@ public class LoginControl extends BaseControl {
              }else{
 
                 if ("true".equals((users.getUserNo().equalsIgnoreCase(userName) && users.getPassword().endsWith(MD5.GetMD5Code(password))) ? "true" : "false")){
+
                     return JsonMapper.nonEmptyMapper().toJson(users);
             }else{
                     LOGGER.info("用户:" + userName + " 密码： " + password + "---------密码错误");

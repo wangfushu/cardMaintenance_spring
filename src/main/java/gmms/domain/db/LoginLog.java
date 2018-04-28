@@ -12,10 +12,29 @@ import java.util.Date;
 @Entity
 @Table(name = "login_log")
 @DynamicInsert
-public class LoginLog extends IdEntity {
+public class LoginLog {
+    protected Long id;
     private String loginIp;
     private Date gmtCreate;
     private Users users;
+
+    @Id
+    @TableGenerator(name="ID_GENERATOR",
+            table="sys_SeqTable",
+            pkColumnName="ST_SeqName",
+            pkColumnValue="LoginLog.id",
+            valueColumnName="ST_SeqValue",
+            allocationSize=1,
+            initialValue=1
+    )
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Column(name = "login_ip")
     public String getLoginIp() {

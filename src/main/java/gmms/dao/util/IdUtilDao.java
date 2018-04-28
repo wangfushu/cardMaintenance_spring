@@ -22,7 +22,7 @@ public class IdUtilDao {
     public long getLastNumber(String entityName, int size) {
         //从数据库取得记录
         Connection connection = null;
-        long _latestNumber = 0;
+        long _latestNumber = 1;
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityName", entityName);
         try {
@@ -161,8 +161,8 @@ public class IdUtilDao {
 
 
     private static String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    //private static  String url = "jdbc:sqlserver://172.16.54.188:1433;databaseName=VYearFee4S";
-    private static  String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=VYearFee4S";
+    private static  String url = "jdbc:sqlserver://172.16.54.188:1433;databaseName=cardMaintenance";
+    //private static  String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=cardMaintenance";
     //private static  String url = "jdbc:sqlserver://172.20.10.24:1433;databaseName=VYearFee4S";
     /* private static String username = "sa";
      private static String password = "123456";*/

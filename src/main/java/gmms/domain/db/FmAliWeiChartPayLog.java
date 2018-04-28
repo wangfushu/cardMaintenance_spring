@@ -10,14 +10,22 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "ALIWEICHARTPAYLOG4S")
+@Table(name = "ALIWEICHARTPAYLOG")
 @DynamicInsert
 public class FmAliWeiChartPayLog {
 
 
     /*************** 支付参数信息  ****************/
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @TableGenerator(name="ID_GENERATOR",
+            table="sys_SeqTable",
+            pkColumnName="ST_SeqName",
+            pkColumnValue="FmAliWeiChartPayLog.FID",
+            valueColumnName="ST_SeqValue",
+            allocationSize=1,
+            initialValue=1
+    )
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="ID_GENERATOR")
     @Column(name = "FID")
     private Long  fID;//自增Id
 
@@ -89,11 +97,15 @@ public class FmAliWeiChartPayLog {
     @Column(name = "NOTIFYEXTPAM")
     private String notifyExtPam;//回调返回参数
 
-    @Column(name = "AUTOSHOPNO")
-    private String autoshopNo;//回调返回参数
+/*    @Column(name = "AUTOSHOPNO")
+    private String autoshopNo;//回调返回参数*/
 
     @Column(name = "INPUTTIME")
     private Date inputtime;//订单生成时间
+
+    @Column(name = "ENDSIGN")
+    private int endSign;//订单生成时间
+
 
     public Long getfID() {
         return fID;
@@ -263,13 +275,6 @@ public class FmAliWeiChartPayLog {
         this.notifyExtPam = notifyExtPam;
     }
 
-    public String getAutoshopNo() {
-        return autoshopNo;
-    }
-
-    public void setAutoshopNo(String autoshopNo) {
-        this.autoshopNo = autoshopNo;
-    }
 
     public Date getInputtime() {
         return inputtime;
@@ -277,5 +282,13 @@ public class FmAliWeiChartPayLog {
 
     public void setInputtime(Date inputtime) {
         this.inputtime = inputtime;
+    }
+
+    public int getEndSign() {
+        return endSign;
+    }
+
+    public void setEndSign(int endSign) {
+        this.endSign = endSign;
     }
 }

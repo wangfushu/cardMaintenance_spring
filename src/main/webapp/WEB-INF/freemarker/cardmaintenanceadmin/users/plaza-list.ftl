@@ -48,7 +48,8 @@
                        onclick="delete_all();" href="javascript:;"><i
                             class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>-->
 	</span>
-        <span class="r">共有数据：<strong>${sysPlazaList?size}</strong> 条</span></div>
+      <#--  <span class="r">共有数据：<strong>${sysPlazaList?size}</strong> 条</span>-->
+    </div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-bg table-hover table-sort  table-responsive">
             <thead>
@@ -66,11 +67,11 @@
                 <th width="100">操作</th>
             </tr>
             </thead>
-            <tbody>
+            <#--<tbody>
             <#list sysPlazaList as sysPlaza>
             <tr class="text-c" id="user_${sysPlaza.plaNo?string}">
                 <td><input userId="${(sysPlaza.plaNo)?c}" type="checkbox" value="" name=""></td>
-<#--                <td>${(sysPlaza.plaNo)!''}</td>-->
+&lt;#&ndash;                <td>${(sysPlaza.plaNo)!''}</td>&ndash;&gt;
                 <td>${sysPlaza.plaName!''}</td>
                 <td>${sysPlaza.plaLinkMan!''}</td>
                 <td>${sysPlaza.plaPhone!''}</td>
@@ -101,7 +102,7 @@
                 </td>
             </tr>
             </#list>
-            </tbody>
+            </tbody>-->
         </table>
     </div>
 </div>
@@ -133,14 +134,80 @@
     var userAddIndex;
 
 
-    $('.table-sort').dataTable({
-        "aaSorting": [[1, "desc"]],//默认第几个排序
-        "bStateSave": true,//状态保存
-        "pading": false,
-        "aoColumnDefs": [
-            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            // {"orderable":false,"aTargets":[0,8]}// 不参与排序的列
-        ]
+    $(function () {
+        var data = $("#user_searchlist_form").serializeObject();
+        $('.table-sort').dataTable({
+            "bDeferRender": true,
+            "processing": true, //打开数据加载时的等待效果
+            "serverSide": true,//打开后台分页
+            "bAutoWidth": false,
+            "ordering": false,
+            "aLengthMenu": [20, 100, 200, 500, 1000], //更改显示记录数选项
+            "iDisplayLength": 20, //默认显示的记录数
+            "searching": false,
+            "ajax": {
+                "url": "${absoluteContextPath}/user/plazaPage",
+                "data": data
+            },
+            "columns": [{
+                "targets": 0,
+                "data": "plaNo",
+                "width": "25px",
+                "render": function (data, type, row, meta) {
+
+                    return '<input userId="'+data+'" type="checkbox" value="" name="">';
+                }
+            },
+                {"data": "plaName", defaultContent:""},
+                {"data": "plaLinkMan", defaultContent:""},
+                {"data": "plaPhone",defaultContent:"" },
+                {"data": "plaFax", defaultContent:""},
+                {"data": "plaAddress", defaultContent:""},
+                {"data": "plaZipCode", defaultContent:""},
+                {"data": "plaRemark", defaultContent:""},
+                {
+                    "targets": 4,
+                    "data": "plaInUse",
+                    "width": "50px",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if(data==0){
+                            return  "<span >在用</span>";
+                        }else{
+                            return '<span class="c-red">停用</span>';
+                        }
+
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "plaNo",
+                    "width": "100px",
+                    "class":"f-14 td-manage",
+                    "render": function (data, type, row, meta) {
+                       var result=' <a style="text-decoration:none" class="ml-5"'+
+                        'onclick="alert_user(this,'+data+')" data-title="编辑网点"  title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>';
+                    if(row.plaInUse==0){
+                        result+='<a style="text-decoration:none" class="ml-5" onClick="alter_plaza(this,'+data+',1)" '+
+                               ' href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>';
+                    }else{
+                        result+='<a style="text-decoration:none" class="ml-5" onClick="alter_plaza_on(this,'+data+',0)" href="javascript:;"'+
+                        'title="启用"><i class="Hui-iconfont">&#xe615;</i></a>';
+                    }
+                    result+=' <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'+data+')" href="javascript:;"'+
+                        'title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+                        return result;
+                    }
+                }
+            ],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                $(nRow).addClass('text-c');
+            }
+
+        });
+        setTimeout(function () {
+            $("table").css("width", "100%");
+        }, 2000);
     });
 
     function show_user_add() {
@@ -191,7 +258,7 @@
                 data: {plazaNo: id},
                 success: function (data) {
                     if (data == "ok") {
-                        $(obj).parents("tr").remove();
+                        location.replace(location.href);
                         layer.msg('已删除!', {icon: 1, time: 1000});
                     } else if(data=='userExist'){
                         layer.alert("该网点下存在用户，不可删除", {icon: 1, time: 1000});

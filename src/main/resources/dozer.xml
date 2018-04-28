@@ -9,8 +9,8 @@
     </configuration>
     <mapping map-null="false">
 
-       <!-- <class-a>gmms.domain.form.CallReminderForm</class-a>
-        <class-b>gmms.domain.db.CallReminder</class-b>-->
+        <class-a>gmms.domain.form.VmVehicleForm</class-a>
+        <class-b>gmms.domain.db.VmVehicle</class-b>
     </mapping>
 </mappings>
 

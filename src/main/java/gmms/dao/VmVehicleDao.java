@@ -11,6 +11,7 @@ import java.util.List;
 public interface VmVehicleDao extends BaseDao<VmVehicle, String> {
 
 	VmVehicle findByPlateNoAndPlateColorAndVKindNo(String vPlateNo, String vPlateColor, Long vKind);
+	VmVehicle findByPlateNoAndPlateColor(String vPlateNo, String vPlateColor);
 
 /*	@Query(value = "select vVehicleNo from VmVehicle cr where vVehicleNo like ? order by vVehicleNo desc")
 	List<String> findAllNo(String vVehicleNo);

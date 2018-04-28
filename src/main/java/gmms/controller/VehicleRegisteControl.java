@@ -3,9 +3,11 @@ package gmms.controller;
 
 import gmms.domain.AjaxResponseBodyFactory;
 import gmms.domain.db.SysBaseInformation;
+import gmms.domain.db.TmTagStore;
 import gmms.domain.db.Users;
 import gmms.domain.db.VmVehicle;
 import gmms.domain.form.VmVehicleForm;
+import gmms.domain.param.IssueForm;
 import gmms.domain.query.VmVehicleQueryParam;
 import gmms.service.BaseInformationService;
 import gmms.service.TagService;
@@ -159,14 +161,17 @@ public class VehicleRegisteControl extends BaseControl {
                 vmVehicleForm.setvRegDate(DateUtil.fromDateStringToYMDDate(vRegDate));
 
             List<MultipartFile> files = new ArrayList<MultipartFile>();
-            if (!file1.isEmpty()) {
+            if (null!=file1&&!file1.isEmpty()) {
                 files.add(file1);
             }
-            if (!file2.isEmpty()) {
+            if (null!=file2&&!file2.isEmpty()) {
                 files.add(file2);
             }
-            if (!file3.isEmpty()) {
+            if (null!=file3&&!file3.isEmpty()) {
                 files.add(file3);
+            }
+            if (null!=file4&&!file4.isEmpty()) {
+                files.add(file4);
             }
             VmVehicle isVmVehicleExit = vmVehicleService.findById(vmVehicleForm.getVehicleNo());
 
@@ -205,7 +210,7 @@ public class VehicleRegisteControl extends BaseControl {
                         if(null != isVmVehicleExit){
                             imagePath = file_path + basePath;
                         }else {
-                            imagePath = file_path+file_name + basePath;
+                            imagePath = file_path + file_name + basePath;
                         }
                         vmVehicleForm.setImageDirectory(imagePath);
                         //vmVehicleForm.setvRIFDImageDirectory(imagePath);
@@ -232,7 +237,7 @@ public class VehicleRegisteControl extends BaseControl {
             return AjaxResponseBodyFactory.createSuccessBody(true, save.getVehicleNo());
         } catch (Exception e) {
             e.printStackTrace();
-            return AjaxResponseBodyFactory.createSuccessBody(false, "error");
+            return "error";
         }
 
     }
@@ -279,6 +284,19 @@ public class VehicleRegisteControl extends BaseControl {
     }
 
     /**
+     * 车辆信息
+     * @param plateNo
+     * @param plateColor
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryvehicleByplateNo", method = RequestMethod.POST)
+    private String queryvehicleByplateNo(String plateNo,String plateColor) {
+        VmVehicle vmVehicle = vmVehicleService.findVmVehicleByPlateNoAndPlateColor(plateNo,plateColor);
+        return vmVehicle.getVehicleNo();
+    }
+
+    /**
      * 查找车型
      * @return
      */
@@ -317,6 +335,120 @@ public class VehicleRegisteControl extends BaseControl {
     }
 
 
+
+    /**
+     * 贴卡
+     *
+     * @param file1
+     * @param file2
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/stickrfid", method = RequestMethod.POST)
+    private String StickRfid(@RequestParam(value = "file1", required = false) MultipartFile file1, @RequestParam(value = "file2", required = false) MultipartFile file2,
+                             HttpServletRequest request) {
+        try {
+            IssueForm issueForm = new IssueForm();
+            //用户Id
+            String userId = request.getParameter("userId");
+            Users users = usersService.findById(Long.valueOf(userId));
+            if(null!=users) {
+                issueForm.setUserId(users.getId());
+                issueForm.setUserNo(users.getUserNo());
+                issueForm.setUserName(users.getUserName());
+                issueForm.setPlazaNo(users.getSysPlaza().getPlaNo());
+                issueForm.setPlazaName(users.getSysPlaza().getPlaName());
+            }
+            String vehicleNo = request.getParameter("vehicleNo");
+
+
+            String tid = request.getParameter("tid");
+            issueForm.setTid(tid);
+            String epc = request.getParameter("epc");
+            issueForm.setEpc(epc);
+            List<MultipartFile> files = new ArrayList<MultipartFile>();
+            if (!file1.isEmpty()) {
+                files.add(file1);
+            }
+            if (!file2.isEmpty()) {
+                files.add(file2);
+            }
+            VmVehicle isVmVehicleExit = vmVehicleService.findById(vehicleNo);
+
+            if (null != files) {
+                for (MultipartFile file : files) {
+                    String imagePath = "";
+                    String path = "";
+                    if (!file.isEmpty()) {
+
+                        //生成uuid作为文件名称
+                        //String uuid = UUID.randomUUID().toString().replaceAll("-","");
+                        //获得文件类型（可以判断如果不是图片，禁止上传）
+
+                        String dateStr = DateUtils.getCurrDateStr(2);
+                        String basePath = "";
+                        for (String pathStr : dateStr.split("-")) {
+                            basePath += pathStr + "/";
+                        }
+                        //2018/02/07/00010120180207000002/
+                        basePath = file_path+file_name+basePath + vehicleNo + "/";
+                        if (null != isVmVehicleExit) {
+                            basePath = isVmVehicleExit.getImageDirectory();
+                        }
+
+                        //图片存放路径
+                        imagePath = basePath;
+
+                        String contentType = file.getContentType();
+                        //获得文件名称
+                        String fileName = file.getOriginalFilename();
+
+
+                        String imageName =vehicleNo + fileName;
+                        //图片完整路径
+                        path = imagePath + imageName;
+                        newFolder(imagePath);
+
+                        //存放图片
+                        file.transferTo(new File(path));
+
+                    }
+                    System.out.println(path);
+                }
+            }
+            String result = vmVehicleService.updateIssueTagAndVmVehicle(vehicleNo,users,issueForm);
+            if (result.equals("success")) {
+                return "success";
+            } else {
+                return "fail";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+
+    }
+
+
+    /**
+     * 卡库存判断
+     * @param userId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/checkTmStore", method = RequestMethod.POST)
+    private String checkTmStore(Long userId) {
+        Users users = usersService.findById(userId);
+        TmTagStore tmTagStore = tagService.findTmTagStoreByPlazaNo(users.getSysPlaza().getPlaNo());
+        if(null == tmTagStore){
+            return "empty";//无卡库存
+        }else if(tmTagStore.getGoodTagCount() <= 0){
+            return "empty";//无卡库存
+        }else{
+            return "success";
+        }
+    }
 
 
     public static void newFolder(String folderPath) {

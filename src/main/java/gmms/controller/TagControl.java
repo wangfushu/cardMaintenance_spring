@@ -6,14 +6,18 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import gmms.domain.AjaxResponseBodyFactory;
 import gmms.domain.db.*;
+import gmms.domain.param.DataTablesParam;
 import gmms.domain.param.TmTagStoreParam;
 import gmms.service.BaseInformationService;
 import gmms.service.TagService;
 import gmms.util.DateUtil;
+import gmms.util.JsonMapper;
+import gmms.util.Pagination;
 import gmms.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +50,7 @@ public class TagControl extends BaseControl {
         model.addAttribute("tmTagTypeList", tmTagTypes);
         return "cardmaintenanceadmin/tags/tagtype-list";
     }
+
 
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -89,14 +94,33 @@ public class TagControl extends BaseControl {
 
     @RequestMapping(value = "/tagstorelist")
     public String tagstorelist(TmTagStoreParam tmTagStoreParam, Model model) {
-        List<TmTagType> tmTagTypes = tagService.TagTypelistAll();
+        //List<TmTagType> tmTagTypes = tagService.TagTypelistAll();
         List<TmTagStore> tmTagStores = tagService.listAllTmTagStore(tmTagStoreParam);
         model.addAttribute("tagInStoreTypeList",tagService.findInStoreTypeByValue());
-        model.addAttribute("tmTagTypeList", tmTagTypes);
+        //model.addAttribute("tmTagTypeList", tmTagTypes);
         model.addAttribute("tmTagStoreList", tmTagStores);
         model.addAttribute("plazaList", baseInformationService.listAllPlaza());
         model.addAttribute("param", tmTagStoreParam);
         return "cardmaintenanceadmin/tags/plazatag-managelist";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/tagstorePage")
+    public String tagstorePage(TmTagStoreParam tmTagStoreParam, Model model) {
+       // List<TmTagType> tmTagTypes = tagService.TagTypelistAll();
+        int pageNo = tmTagStoreParam.getStart() / tmTagStoreParam.getLength() + 1;
+        Pagination<TmTagStore> pagination = new Pagination<TmTagStore>();
+        Page<TmTagStore> tmTagStores = tagService.listAllTmTagStorePage(tmTagStoreParam,pageNo,tmTagStoreParam.getLength());
+        pagination.setData(tmTagStores.getContent());
+        pagination.setDraw(tmTagStoreParam.getDraw());
+        pagination.setRecordsFiltered((int) tmTagStores.getTotalElements());
+        pagination.setRecordsTotal((int) tmTagStores.getTotalElements());
+       // pagination.setLength(tmTagStoreParam.getLength());
+        if(tmTagStores.getContent().size()>0) {
+            return JsonMapper.nonEmptyMapper().toJson(pagination);
+        }else{
+            return JsonMapper.nonDefaultMapper().toJson(pagination);
+        }
     }
 
     @ResponseBody
@@ -115,6 +139,10 @@ public class TagControl extends BaseControl {
         if(!StringUtil.isEmpty(String.valueOf(tmTagInStore.getInSendPlazaNo()))){
             SysPlaza sysPlaza=baseInformationService.findSysPlaza(tmTagInStore.getInSendPlazaNo());
             tmTagInStore.setInSendPlazaName(sysPlaza.getPlaName());
+        }
+        if(tmTagInStore.getIsNewCardInStore()){
+            tmTagInStore.setInSendPlazaNo(users.getSysPlaza().getPlaNo());
+            tmTagInStore.setInSendPlazaName(users.getSysPlaza().getPlaName());
         }
         TmTagInStore save = tagService.inStoreTagAll(tmTagInStore);
         long inId = save.getInID();
@@ -196,6 +224,18 @@ public class TagControl extends BaseControl {
 
         return "false";
     }
+
+    @ResponseBody
+    @RequestMapping(value = "tagStoreCount")
+    public String tagStoreCount(Long plazaNo){
+   TmTagStore tmTagStore = tagService.findTmTagStoreByPlazaNo(plazaNo);
+        if(null!=tmTagStore){
+            return String.valueOf(tmTagStore.getGoodTagCount());
+        }else{
+            return "0";
+        }// users.setStoreNum(tmTagStore.getGoodTagCount());
+    }
+
 
 
 }

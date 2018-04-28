@@ -1,9 +1,11 @@
 package gmms.domain.db;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wangfs on 2018-04-09 helloword.
@@ -167,5 +169,15 @@ public class TmTagInStore {
 
     public void setInSendPlazaNo(Long inSendPlazaNo) {
         this.inSendPlazaNo = inSendPlazaNo;
+    }
+
+    @Transient
+    public boolean getIsNewCardInStore() {
+
+            if (this.getInStoreType().equals(1L)) {
+                return true;
+            }
+
+        return false;
     }
 }

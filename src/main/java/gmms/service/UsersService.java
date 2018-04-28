@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -113,7 +115,40 @@ public class UsersService {
         return allUsers;
     }
 
+    public Page<Users> listAllUserPage(UserParam userParam,int pageNo,int pageSize) {
+        List<SearchFilter> filters = Lists.newArrayList();
+        if (userParam.getTimefromFormat() != null) {
+            if (userParam.getTimeType() == 0) {
+                filters.add(new SearchFilter("lastLoginTime", SearchFilter.Operator.GTE, userParam.getTimefromFormat()));
+            } else {
+                filters.add(new SearchFilter("gmtCreate", SearchFilter.Operator.GTE, userParam.getTimefromFormat()));
+            }
 
+        }
+        if (userParam.getTimetoFormat() != null) {
+            if (userParam.getTimeType() == 0) {
+                filters.add(new SearchFilter("lastLoginTime", SearchFilter.Operator.LTE, new Date(DateUtil.dayEndnTime(userParam.getTimetoFormat()))));
+            } else {
+                filters.add(new SearchFilter("gmtCreate", SearchFilter.Operator.LTE, new Date(DateUtil.dayEndnTime(userParam.getTimetoFormat()))));
+            }
+        }
+
+        Specification<Users> spec = DynamicSpecifications.bySearchFilter(filters, Users.class);
+        Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "gmtCreate");
+        PageRequest page = new PageRequest(pageNo - 1, pageSize, purchaseDateDB);
+        Page<Users> allUsers = usersDao.findAll(spec, page);
+        if (userParam.getRoleId() != null && userParam.getRoleId() != -1) {
+            Role role = roleDao.findOne(userParam.getRoleId());
+            Iterator<Users> iterator = allUsers.getContent().iterator();
+            while (iterator.hasNext()) {
+                Users next = iterator.next();
+                if (!next.getRoles().contains(role)) {
+                    iterator.remove();
+                }
+            }
+        }
+        return allUsers;
+    }
 
     public void changePassword(Long eId, String oldPassword,String newPassword) throws InvalidException, UnsupportedEncodingException {
         if (eId == null) {

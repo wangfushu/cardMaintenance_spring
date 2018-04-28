@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE HTML>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%--<c:set var="ctx" value="${pageContext.request.contextPath}"/>--%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--<%@ page import="org.springframework.security.ui.AbstractProcessingFilter" %>--%>
@@ -119,6 +119,7 @@
         #body {
             margin: 0px;
             padding: 0px;
+            background-image: url(${absoluteContextPath}/images/bg1.jpg);
         }
         #bg {
             height: 100%;
@@ -134,8 +135,17 @@
             margin: 0px;
             padding: 0px;
             display:block;
+            z-index: -1;
         }
-
+        #bg_2{
+            height: 100%;
+            width: 100%;
+            left: auto;
+            top: auto;
+            margin: 0px;
+            padding: 0px;
+            display:block;
+        }
         #top {
             width: 1024px;
             margin-top: 0px;
@@ -144,9 +154,9 @@
             margin-left: auto;
             position: relative;
             padding: 0px;
-            background-image: url(${absoluteContextPath}/images/bg_02.png);
-            background-repeat: no-repeat;
-            background-size:100%;
+   /*         background-image: url(${absoluteContextPath}/images/bg_02.png);*/
+/*            background-repeat: no-repeat;
+            background-size:100%;*/
         }
         #center {
             padding: 0px;
@@ -164,15 +174,16 @@
             margin-right: auto;
             margin-bottom: 0px;
             margin-left: auto;
-            padding-top:12%;
+            padding-top: 10%;
         }
         #login {
             background-image: url(${absoluteContextPath}/images/login_09.png);
             background-repeat: no-repeat;
             margin: 0px;
+            margin-left: 15%;
             padding: 0px;
-            height: 396px;
-            width: 70%;
+            height: 596px;
+            width: 80%;
             float: left;
         }
         #title {
@@ -194,9 +205,9 @@
         #yonghu {
             padding: 0px;
             width: 80%;
-            margin-top: 20%;
+            margin-top: 10%;
             margin-right: auto;
-            margin-left: auto;
+            margin-left: 20%;
         }
         #yonghu ul {
             margin: 0px;
@@ -341,21 +352,21 @@
 
 <body id="body">
 <div id="bg">
-    <img src="images/bg.jpg" id="bg_1">
+    <img src="${absoluteContextPath}/images/bg2.png" id="bg_1">
 </div>
 <div style="width:100%; height:100%; padding:0; margin:0;">
     <div id="top">
-        <div id="logo"><img src="images/login_06.png" width="100%" height="100%" >
-      <%--  <h1  align="center" >年费发票打印系统</h1>--%>
-        </div>
+
     </div>
 </div>
 <div id="center">
     <form name="loginForm" method="post" action="${absoluteContextPath}/j_spring_security_check" onsubmit="return checkForm();">
       <%-- <input type="hidden" id="j_username" name="j_username" value="" />--%>
         <div id="neirong">
-            <div id="title"><img src="images/login_11.png" width="100%" height="100%"></div>
+<%--            <div id="title"><img src="${absoluteContextPath}/images/login_11.png" width="100%" height="100%"></div>--%>
             <div id="login">
+                <div id="logo"><img src="${absoluteContextPath}/images/login_06.png" width="100%" height="100%" >
+                </div>
                 <div id="yonghu">
                     <ul>
                         <li><input type="text" class="shuru"  value="用户名"   name="j_username"  id="j_username" ></li>
