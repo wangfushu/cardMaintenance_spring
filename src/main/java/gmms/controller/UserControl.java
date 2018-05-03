@@ -107,6 +107,10 @@ public class UserControl extends BaseControl {
 
     @RequestMapping(value = "/list")
     public String list(UserParam userParam, Model model) {
+        Users currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
        /* List<Users> users = usersService.listAllUser(userParam);
         model.addAttribute("userList", users);*/
         model.addAttribute("roleList", usersService.listAllRole());
@@ -261,6 +265,10 @@ public class UserControl extends BaseControl {
     }
     @RequestMapping(value = "/plazalist")
     public String plazalist(UserParam userParam, Model model) {
+        Users currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
      /*   List<SysPlaza> sysPlazas = baseInformationService.sysPlazaListAll();
         model.addAttribute("sysPlazaList", sysPlazas);*/
         //model.addAttribute("roleList", usersService.listAllRole());

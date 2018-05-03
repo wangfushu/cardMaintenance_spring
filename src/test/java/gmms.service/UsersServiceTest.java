@@ -5,6 +5,7 @@ import gmms.domain.db.Users;
 import gmms.domain.db.VmVehicle;
 import gmms.domain.query.VmVehicleQueryParam;
 import gmms.unifiedPay.RefundPay;
+import gmms.util.JsonMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,9 @@ public class UsersServiceTest {
 	private BaseInformationService baseInformationService;
 	@Test
 	public void findById() throws Exception {
-
-	System.out.println(baseInformationService.findCardExpenseByValue().getCfConfigValue());
+		VmVehicle vmVehicle = new VmVehicle();
+		System.out.println(JsonMapper.nonEmptyMapper().toJson(vmVehicle));
+	//System.out.println(baseInformationService.findCardExpenseByValue().getCfConfigValue());
 
 	/*	Users users =usersService.findById(4L);
 		Page<VmVehicle> vmVehicles = vmVehicleService.androidlistAll(new VmVehicleQueryParam(),users, 1, 10);
@@ -58,7 +60,7 @@ public class UsersServiceTest {
 /*		VmVehicle vmVehicle=vmVehicleService.findById("00001201804190000002");
 		Users users = usersService.findById(4L);
 		fmFeeService.saveInSureFmFee(vmVehicle,users);*/
-		System.out.println(	Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue()));
+		//System.out.println(	Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue()));
 
 
 		/*List<FmAliWeiChartPayLog> list=fmFeeService.getALLFmAliWeiChartPayLogHasPay();

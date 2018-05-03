@@ -225,7 +225,7 @@
     </@sec.authorize>
     <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
         <dl id="menu-member">
-            <dt><i class="Hui-iconfont">&#xe60d;</i> 基础信息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe62e;</i> 基础信息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
                     <li><a data-href="${absoluteContextPath}/user/plazalist"  data-title="网点管理"
@@ -240,7 +240,7 @@
     </@sec.authorize>
     <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
         <dl id="menu-member">
-            <dt><i class="Hui-iconfont">&#xe60d;</i> 卡管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe628;</i> 卡管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
                     <#--<li><a data-href="${absoluteContextPath}/tag/list"  data-title="卡类型管理"
@@ -260,7 +260,7 @@
     </@sec.authorize>
     <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER'>
         <dl id="menu-member">
-            <dt><i class="Hui-iconfont">&#xe60d;</i> 报表管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe6bf;</i> 报表管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d6;</i></dt>
             <dd>
                 <ul>
                     <@sec.authorize ifAnyGranted = 'ROLE_ADMIN,ROLE_TAGMANAGER'>
@@ -276,6 +276,9 @@
                     </li>
                     <li><a data-href="${absoluteContextPath}/statistic/issuetag-year-report"  data-title="发卡信息年报表"
                            href="javascript:;">发卡信息年报表</a>
+                    </li>
+                    <li><a data-href="${absoluteContextPath}/statistic/issuetag-year-report"  data-title="发卡信息详细报表"
+                           href="javascript:;">发卡信息详细报表</a>
                     </li>
 
                 </ul>

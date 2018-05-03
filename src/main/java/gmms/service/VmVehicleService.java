@@ -85,6 +85,7 @@ public class VmVehicleService {
             vmVehicle.setUserName(users.getUserName());
             vmVehicle.setUpdateTime(new Date());
             vmVehicle.setBornSource(1L);
+            vmVehicle.setUpdateMode(1L);
             return vmVehicleDao.save(vmVehicle);
         }else{
             if (StringUtils.isNotNullBlank( vmVehicle.getPlateNo()))

@@ -11,6 +11,7 @@ import gmms.domain.param.TagInStoreParam;
 import gmms.domain.param.TagOutStoreParam;
 import gmms.domain.param.TmTagStoreParam;
 import gmms.domain.query.IssueTagYearQueryForm;
+import gmms.domain.vo.IssueTagExcelVO;
 import gmms.domain.vo.TagInStoreExcelVO;
 import gmms.domain.vo.TagOutStoreExcelVO;
 import gmms.util.DateUtil;
@@ -19,6 +20,8 @@ import gmms.util.ExcelUtil;
 import gmms.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +43,7 @@ import java.util.List;
  */
 @Service
 public class TagService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TagService.class);
     @Autowired
     private TmTagTypeDao tmTagTypeDao;
 
@@ -722,4 +726,88 @@ public class TagService {
         }
         return ExcelUtil.exportIssueTagYearReportExcel(issueTagYearQueryForms, fileName, Title);
     }
+
+    /**************************************************************  发卡信息记录报表  detail详细报表  ********************************************************************************************/
+    public Page<IssueTag> IssueTaglistAllPage(IssueTagYearParam param,Users users, int pageNo, int pageSize) {
+        List<SearchFilter> filters = Lists.newArrayList();
+        if (param.getTimefromFormat() != null) {
+            filters.add(new SearchFilter("installDate", SearchFilter.Operator.GTE, param.getTimefromFormat()));
+        }
+        if (param.getTimetoFormat() != null) {
+            filters.add(new SearchFilter("installDate", SearchFilter.Operator.LTE, new Date(DateUtil.dayEndnTime(param.getTimetoFormat()))));
+        }
+        if(null!=users&&users.getIsUser()){
+            filters.add(new SearchFilter("userId", SearchFilter.Operator.EQ, users.getId()));
+        }
+        if(null!=param.getPlaNo()){
+            filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ,  param.getPlaNo()));
+        }
+        Specification<IssueTag> spec = DynamicSpecifications.bySearchFilter(filters, IssueTag.class);
+        Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "installDate");
+        PageRequest page = new PageRequest(pageNo - 1, pageSize, purchaseDateDB);
+        return issueTagDao.findAll(spec, page);
+    }
+
+    public List<IssueTag> IssueTaglistAll(IssueTagYearParam param,Users users) {
+        List<SearchFilter> filters = Lists.newArrayList();
+        if (param.getTimefromFormat() != null) {
+            filters.add(new SearchFilter("installDate", SearchFilter.Operator.GTE, param.getTimefromFormat()));
+        }
+        if (param.getTimetoFormat() != null) {
+            filters.add(new SearchFilter("installDate", SearchFilter.Operator.LTE, new Date(DateUtil.dayEndnTime(param.getTimetoFormat()))));
+        }
+        if(null!=users&&users.getIsUser()){
+            filters.add(new SearchFilter("userId", SearchFilter.Operator.EQ, users.getId()));
+        }
+        if(null!=param.getPlaNo()){
+            filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ, param.getPlaNo()));
+        }
+        Specification<IssueTag> spec = DynamicSpecifications.bySearchFilter(filters, IssueTag.class);
+        Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "installDate");
+        return issueTagDao.findAll(spec,purchaseDateDB);
+    }
+
+    public byte[] getIssueTagExcel(List<IssueTag> issueTags, String fileName, String[] Title) {
+        if (CollectionUtils.isEmpty(issueTags)) {
+            return null;
+        }
+        List<IssueTagExcelVO> issueTagExcelVOs = turn2IssueTagExcelVo(issueTags);
+        return ExcelUtil.exportIssueTagReportExcel(issueTagExcelVOs, fileName, Title);
+    }
+    private List<IssueTagExcelVO> turn2IssueTagExcelVo(List<IssueTag> data) {
+        List<IssueTagExcelVO> resultList = Lists.newArrayList();
+        for (IssueTag issueTag : data) {
+            IssueTagExcelVO issueTagExcelVO = new IssueTagExcelVO();
+            issueTagExcelVO.setPlazaName(issueTag.getPlazaName());
+            issueTagExcelVO.setUserNo(issueTag.getUserNo());
+            issueTagExcelVO.setUserName(issueTag.getUserName());
+            issueTagExcelVO.setPlateNo(issueTag.getPlateNo());
+            issueTagExcelVO.setPlateColor(issueTag.getPlateColor());
+            if(issueTag.getvKindNo().equals(1L)){
+                issueTagExcelVO.setvKindNo("客车");
+            }else if(issueTag.getvKindNo().equals(2L)){
+                issueTagExcelVO.setvKindNo("货车");
+            }else{
+                issueTagExcelVO.setvKindNo("农用车");
+            }
+            issueTagExcelVO.setInstallDate(DateUtil.formatDate(issueTag.getInstallDate(), "yyyy-MM-dd HH:mm:ss"));
+            if(issueTag.getInstallType().equals(1L)){
+                issueTagExcelVO.setInstallType("新卡发放");
+            }else if(issueTag.getInstallType().equals(2L)){
+                issueTagExcelVO.setInstallType("保内换卡");
+            }else{
+                issueTagExcelVO.setInstallType("保外换卡");
+            }
+            issueTagExcelVO.setFee(issueTag.getFee());
+
+            resultList.add(issueTagExcelVO);
+        }
+        return resultList;
+    }
+
+
+
+
+
+
 }

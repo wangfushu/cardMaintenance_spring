@@ -24,6 +24,7 @@
         <intercept-url pattern="/user/checkPassword" access="ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER"/>
         <intercept-url pattern="/user/changePassword" access="ROLE_ADMIN,ROLE_USER,ROLE_TAGMANAGER"/>
         <intercept-url pattern="/user/list" access="ROLE_ADMIN,ROLE_TAGMANAGER"/>
+        <intercept-url pattern="/tag/" access="ROLE_ADMIN,ROLE_TAGMANAGER"/>
         <!--<intercept-url pattern="/order" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL,ROLE_UI"/>
         <intercept-url pattern="/order/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>
         <intercept-url pattern="/seller/**" access="ROLE_ADMIN,ROLE_USER,ROLE_NORMAL"/>-->

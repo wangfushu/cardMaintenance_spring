@@ -1,6 +1,7 @@
 package gmms.util;
 
 import gmms.domain.query.IssueTagYearQueryForm;
+import gmms.domain.vo.IssueTagExcelVO;
 import gmms.domain.vo.TagInStoreExcelVO;
 import gmms.domain.vo.TagOutStoreExcelVO;
 import org.apache.poi.hssf.usermodel.*;
@@ -55,7 +56,41 @@ public class ExcelUtil {
         return getBytes(wb);
     }
 
+    public static byte[] exportIssueTagReportExcel(List<IssueTagExcelVO> data, String fileName, String[] Title) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(fileName);
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 4000);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(5, 4000);
+        sheet.setColumnWidth(6, 6000);
+        sheet.setColumnWidth(7, 6000);
+        sheet.setColumnWidth(8, 6000);
 
+        setHeader(wb, sheet, fileName);
+
+        HSSFRow row2 = sheet.createRow(1);
+        for (Integer i = 0; i < Title.length; i++) {
+            row2.createCell(i).setCellValue(Title[i]);
+        }
+
+        int index = 2;
+        for (IssueTagExcelVO vo : data) {
+            HSSFRow rowIndex = sheet.createRow(index++);
+            rowIndex.createCell(0).setCellValue(vo.getPlazaName());
+            rowIndex.createCell(1).setCellValue(vo.getUserNo());
+            rowIndex.createCell(2).setCellValue(vo.getUserName());
+            rowIndex.createCell(3).setCellValue(vo.getPlateNo());
+            rowIndex.createCell(4).setCellValue(vo.getPlateColor());
+            rowIndex.createCell(5).setCellValue(vo.getvKindNo());
+            rowIndex.createCell(6).setCellValue(vo.getInstallDate());
+            rowIndex.createCell(7).setCellValue(vo.getInstallType());
+            rowIndex.createCell(8).setCellValue(vo.getFee());
+        }
+        return getBytes(wb);
+    }
 
     public static byte[] exportTagOutStoreReportExcel(List<TagOutStoreExcelVO> data, String fileName, String[] Title) {
         HSSFWorkbook wb = new HSSFWorkbook();

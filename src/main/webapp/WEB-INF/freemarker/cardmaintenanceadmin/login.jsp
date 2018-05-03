@@ -10,111 +10,7 @@
     <meta charset="utf-8">
     <title>后台管理</title>
     <script type="text/javascript" src="${absoluteContextPath}/js/jquery-1.8.0.min.js"></script>
-    <%--<script type="text/javascript" src="js/jquery.js" ></script>--%>
-  <%--  <script type="text/javascript">
-        $(document).ready(function() {
 
-            $("#btnSubmit").click(function() {
-                if(checkForm()){ //若验证通过，则调用保存方法
-                    submits();
-                    //document.forms[0].submit();
-                }
-            });
-            document.forms[0].j_username1.focus();
-            initIframe();
-
-        });
-
-        //登录综合养护系统GMMS
-        function submits(){
-            var passWord = $.trim($('#j_password').val());
-            var loginName = $.trim($('#j_username1').val());
-            var host = window.location.host;
-            var httpUrl = 'http://'+host+'/gmms/';
-            setCookie("loginUrl",window.location.href,null,"/");
-            if(loginName != '' && passWord != '') {
-                $.post(httpUrl + "modules/security/user!validateUP.action",
-                        {
-                            loginName : loginName,
-                            passWord : passWord
-                        },
-                        function(returnedData, status){
-                            if(status == 'success'){
-                                if(returnedData == 'fail'){
-                                    $('#loginErr').attr("style","display:");
-                                    $('#j_password').val('');
-                                } else {
-                                    var userName = $.trim($('#j_username1').val());
-                                    $('#j_username').val(userName);
-                                    document.forms[0].action = httpUrl + 'j_spring_security_check';
-                                    document.forms[0].submit();
-                                }
-                            }
-                        }
-                );
-            }
-        }
-
-        function keySubmit(event){
-            if (event.keyCode == 13) {
-                if(checkForm()){ //若验证通过，则调用保存方法
-                    submits();
-                }
-            }
-            if($("#j_username1").val().indexOf('用户名')>-1)
-                $("#j_username1").val('');
-        }
-
-        function checkForm(){
-            var userEle = document.getElementById('j_username1');
-            var passEle = document.getElementById('j_password');
-            var str = '';
-            if(userEle.value == '')
-                str += '用户名';
-            if(passEle.value == '')
-                str+= '密码';
-            if(str != ''){
-                alert(str + '不可为空！');
-                return false;
-            }
-
-            return true;
-
-        }
-
-        function clearName(){
-            if($("#j_username1").val()=='')
-                $("#j_username1").val('用户名');
-        }
-
-        function initIframe(){
-            var host = window.location.host;
-            var src = 'http://'+host+'/gmms/pages/main-file.jsp';
-            document.getElementById('modelframe').src=src;
-        }
-        /**
-         * 设置cookie
-         * @param name
-         * @param value
-         * @param expiredays 有效期天数（可选）
-         * @param path 路径范围（可选）
-         * @param domain 域名（可选）
-         * @param isSecure 是否安全传输（可选）
-         * 例 setCookie('username','test',30) 或 setCookie('username','test',30)
-         */
-
-        function setCookie(pName, value, expiredays,path,domain,isSecure){
-            var exdate=new Date();
-            exdate.setDate(exdate.getDate() + expiredays);
-            var cookieStr = pName + "=" + escape(value) + ((expiredays) ? ";expires="+exdate.toGMTString():"")
-                    + (path ? (";path="+path):"")
-                    + (domain ? (";domain="+domain):"")
-                    + (isSecure ? (";secure"):"")
-
-            document.cookie = cookieStr;
-        }
-
-    </script>--%>
     <style type="text/css">
         #body {
             margin: 0px;
@@ -258,8 +154,18 @@
 
     </style>
     <script>
+        /**
+         * 用于跳出iframe 登录超时问题
+         */
+        var _topWin = window;
+        while (_topWin != _topWin.parent.window) {
+            _topWin = _topWin.parent.window;
+        }
+        if (window != _topWin)
+            _topWin.document.location.href = '${absoluteContextPath}/login';
+
+
         $(function(){
-            //alert("11  "+${absoluteContextPath});
 //取出有clear类的input域
             $('#j_username').each(function () {
                 //使用data方法存储数据
@@ -282,21 +188,7 @@
                     currtA.style.color="#808080";
                     currtA.style.marginTop="6px";
                 }else{
-                    //alert("输入用户名")
-             /*       $.ajax({
-                        type: "POST",
-                        url: "<%=request.getContextPath() %>/modules/main/main!getRoleTypeId.action",
-                        cache: false,
-                        dataType : "json",
-                        data:{loginName:loginName},
-                        async:false,
-                        success: function(data){
-                            if(data==true){
-                                $("#td_1").css("display", "block");
 
-                            }
-                        }
-                    });*/
                 }
             });
 

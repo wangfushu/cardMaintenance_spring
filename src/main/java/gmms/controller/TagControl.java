@@ -46,6 +46,10 @@ public class TagControl extends BaseControl {
 
     @RequestMapping(value = "/list")
     public String list( Model model) {
+        Users currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         List<TmTagType> tmTagTypes = tagService.listAllTagType();
         model.addAttribute("tmTagTypeList", tmTagTypes);
         return "cardmaintenanceadmin/tags/tagtype-list";
