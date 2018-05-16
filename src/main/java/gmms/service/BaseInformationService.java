@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +34,8 @@ public class BaseInformationService {
     private SysConfigDao sysConfigDao;
     @Autowired
     private SysBaseInformationDao sysBaseInformationDao;
+    @Autowired
+    private CrashLogDao crashLogDao;
 
     public SysPlaza saveOrUpdateSysPlaza(SysPlaza sysPlaza ,Users operateUsers) {
         LOGGER.info("sysPlaza {} has saveAndUpdate,operator user id is {},name is{} ", sysPlaza, operateUsers.getId(), operateUsers.getUserName());
@@ -51,6 +54,7 @@ public class BaseInformationService {
     }
     public Page<SysPlaza> sysPlazaListAllPage(int pageNo,int pageSize){
         List<SearchFilter> filters = Lists.newArrayList();
+        filters.add(new SearchFilter("plaNo", SearchFilter.Operator.NEQ, 0l));
         Specification<SysPlaza> spec = DynamicSpecifications.bySearchFilter(filters, SysPlaza.class);
         PageRequest page = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC,"plaModifyTime"));
         Page<SysPlaza> sysPlazas= sysPlazaDao.findAll(spec,page);
@@ -129,4 +133,17 @@ public class BaseInformationService {
         return sysBaseInformationDao.querybybiType("VehicleKind");
     }
 
+
+
+
+    /**
+     * 安卓机子打印日志
+     * @param carshLogText
+     */
+    public void saveCrashLog(String carshLogText){
+        CrashLog crashLog = new CrashLog();
+        crashLog.setCrashText(carshLogText);
+        crashLog.setCrashTime(new Date());
+        this.crashLogDao.save(crashLog);
+    }
 }

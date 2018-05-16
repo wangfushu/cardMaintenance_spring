@@ -23,10 +23,10 @@ import java.util.TreeMap;
 public class RefundPay {
     // 接口地址
     private Logger LOGGER = LoggerFactory.getLogger(RefundPay.class);
-    private String rbi_refund_url = "http://172.16.52.39:50080/uniform-pay-biz/refundPay";//测试库内网
+    private String rbi_refund_url = "https://app.xmparking.net/cloud-pay-api/refundPay";//测试库外网
    // private String rbi_refund_url = "http://117.29.161.2:50080/uniform-pay-biz/refundPay";//测试库外网
 
-    // private String rbi_refund_url="http://172.23.0.2:58080/uniform-pay-biz/refundPay";//正式库
+    // private String rbi_refund_url="https://app.xmparking.net/cloud-pay-api/refundPay";//正式库
 
 
     public String refundPay(String orderNO,String payOrderNo,Double totalFee) throws Exception {

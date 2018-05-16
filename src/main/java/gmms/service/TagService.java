@@ -351,6 +351,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -395,9 +396,12 @@ public class TagService {
             if(null!=obj[7])
             issueTagYearQueryForm.setOutsureCardIssueCount(Integer.valueOf(String.valueOf(obj[7])));
             if(null!=obj[8])
-            issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[8])));
+                issueTagYearQueryForm.setInsureDamageCardIssueCount(Integer.valueOf(String.valueOf(obj[8])));
+
             if(null!=obj[9])
-            issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[9])));
+            issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[9])));
+            if(null!=obj[10])
+            issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[10])));
             issueTagYearParamList.add(issueTagYearQueryForm);
         }
         em.close();
@@ -427,6 +431,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -471,6 +476,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -514,9 +520,11 @@ public class TagService {
             if(null!=obj[6])
                 issueTagYearQueryForm.setOutsureCardIssueCount(Integer.valueOf(String.valueOf(obj[6])));
             if(null!=obj[7])
-                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[7])));
+                issueTagYearQueryForm.setInsureDamageCardIssueCount(Integer.valueOf(String.valueOf(obj[7])));
             if(null!=obj[8])
-                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[8])));
+                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[8])));
+            if(null!=obj[9])
+                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[9])));
             issueTagYearParamList.add(issueTagYearQueryForm);
         }
         em.close();
@@ -543,6 +551,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -594,9 +603,12 @@ public class TagService {
             if(null!=obj[7])
                 issueTagYearQueryForm.setOutsureCardIssueCount(Integer.valueOf(String.valueOf(obj[7])));
             if(null!=obj[8])
-                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[8])));
+                issueTagYearQueryForm.setInsureDamageCardIssueCount(Integer.valueOf(String.valueOf(obj[8])));
+
             if(null!=obj[9])
-                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[9])));
+                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[9])));
+            if(null!=obj[10])
+                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[10])));
             issueTagYearParamList.add(issueTagYearQueryForm);
         }
         em.close();
@@ -612,6 +624,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -660,6 +673,7 @@ public class TagService {
                 "(select count(*) from IssueTag temp where temp.installType = 1 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 新发卡数量  ," +
                 "(select count(*) from IssueTag temp where temp.installType = 2 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保内换卡数量," +
                 "(select count(*) from IssueTag temp where temp.installType = 3 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 保外换卡数量," +
+                "(select count(*) from IssueTag temp where temp.installType = 4 and  temp.userName=t.userName and  temp.plazaNo=t.plazaNo and temp.plazaName=t.plazaName and convert(char(10),temp.installDate,120)=convert(char(10),t.installDate,120)) 人为损坏换卡数量," +
                 "count(*) 总数量, SUM(fee) 实收金额" +
                 " from IssueTag t  where  " ;
         String conditions="";
@@ -709,9 +723,11 @@ public class TagService {
             if(null!=obj[6])
                 issueTagYearQueryForm.setOutsureCardIssueCount(Integer.valueOf(String.valueOf(obj[6])));
             if(null!=obj[7])
-                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[7])));
+                issueTagYearQueryForm.setInsureDamageCardIssueCount(Integer.valueOf(String.valueOf(obj[7])));
             if(null!=obj[8])
-                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[8])));
+                issueTagYearQueryForm.setCount(Integer.valueOf(String.valueOf(obj[8])));
+            if(null!=obj[9])
+                issueTagYearQueryForm.setTotalfee(Double.valueOf(String.valueOf(obj[9])));
             issueTagYearParamList.add(issueTagYearQueryForm);
         }
         em.close();
@@ -739,7 +755,7 @@ public class TagService {
         if(null!=users&&users.getIsUser()){
             filters.add(new SearchFilter("userId", SearchFilter.Operator.EQ, users.getId()));
         }
-        if(null!=param.getPlaNo()){
+        if(null!=param.getPlaNo()&&!param.getPlaNo().equals(0L)){
             filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ,  param.getPlaNo()));
         }
         Specification<IssueTag> spec = DynamicSpecifications.bySearchFilter(filters, IssueTag.class);

@@ -7,9 +7,7 @@ import gmms.dao.util.SearchFilter;
 import gmms.domain.db.*;
 import gmms.domain.form.YearFee;
 import gmms.unifiedPay.payResultEntity.QueryOrderResult;
-import gmms.util.DateUtils;
-import gmms.util.DomainCopyUtil;
-import gmms.util.StringUtils;
+import gmms.util.*;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +33,6 @@ public class FmFeeService {
     @Autowired
     private FmFeeDao feeDao;
 
-/*    @Autowired
-    private VmVehicleService vmVehicleService;*/
-
     @Autowired
     private UsersDao usersDao;
 
@@ -48,6 +43,8 @@ public class FmFeeService {
     private FmAliWeiChartPayLogDao fmAliWeiChartPayLogDao;
     @Autowired
     private SysConfigDao sysConfigDao;
+    @Autowired
+    private BaseInformationService baseInformationService;
 
     /**
      * 根据订单号查找微信支付宝支付留档
@@ -157,10 +154,10 @@ public class FmFeeService {
     @Transactional(rollbackFor = Exception.class)
     public List<FmFee> saveFmFee(VmVehicle vmVehicle, FmAliWeiChartPayLog fmAliWeiChartPayLog, Long paytype) {
         List<FmFee> fmFees = new ArrayList<FmFee>();
-        String plazaNo = vmVehicle.getVehicleNo().substring(0, 5);
+        String plazaNo = vmVehicle.getVehicleNo().substring(2, 5);
                         FmFee fmFee = new FmFee();
-                        int initNumber = 1;
-                        String currDate = plazaNo + DateUtils.getCurrTimeStr(6);
+                        //int initNumber = 1;
+                        String currDate ="LQ"+ plazaNo + DateUtils.getCurrTimeStr(6);
                         String predix="FmFee.fid";
 
 
@@ -188,7 +185,24 @@ public class FmFeeService {
                         fmFee.setfUserNo(vmVehicle.getUserNo());
                         fmFee.setfUserName(vmVehicle.getUserName());
 
-                        fmFee.setfFeeReason(1L);//缴交理由 新卡保外换卡  保内换卡
+                        if(null!=vmVehicle.getInstallDate()){
+                                Integer insureDays=Integer.valueOf(baseInformationService.findInSureYearByValue().getCfConfigValue());
+                            if(DateUtils.getCurrDate().before( DateUtil.getDateAfterDays(vmVehicle.getInstallDate(), insureDays))){
+                            //issueTag.setInstallType(2L);//保内换卡
+                                if(fmAliWeiChartPayLog.getInstallType()==4){
+                                    fmFee.setfFeeReason(4L);//缴交理由 新卡 保外换卡  保内换卡  人为损坏
+                                }else{
+                                    fmFee.setfFeeReason(2L);//缴交理由 新卡 保外换卡  保内换卡
+                                }
+                        }else{
+                                fmFee.setfFeeReason(3L);//保外换卡
+
+                        }
+                     }else{
+                            fmFee.setfFeeReason(1L);//新卡
+                         }
+
+                        fmFee.setfFeeReason(1L);//缴交理由 新卡 保外换卡  保内换卡
                         //主键
                         fmFee.setfId( generate(currDate,predix) );
 
@@ -275,7 +289,7 @@ public class FmFeeService {
         fmFee.setfUserNo(vmVehicle.getUserNo());
         fmFee.setfUserName(vmVehicle.getUserName());
 
-        fmFee.setfFeeReason(1L);//缴交理由 新卡保外换卡  保内换卡
+        fmFee.setfFeeReason(2L);//缴交理由 新卡 保外换卡  保内换卡
         //主键
         fmFee.setfId( generate(currDate,predix) );
 
@@ -303,7 +317,7 @@ public class FmFeeService {
      * @param payType
      * @return
      */
-    public String saveFmAliWeiChartPayLog(String orderNo, String payOrderNo, String extPam, VmVehicle vmVehicle, String payType, Users users) {
+    public String saveFmAliWeiChartPayLog(String orderNo, String payOrderNo, String extPam, VmVehicle vmVehicle, String payType, Users users,Integer installType) {
         //VmVehicle vmVehicleTemp= vmVehicleDao.findByVVehicleNo(vmVehicle.getvVehicleNo());
         String result = "";
         FmAliWeiChartPayLog fmAliWeiChartPayLog = fmAliWeiChartPayLogDao.findByOrderNo(orderNo);
@@ -333,6 +347,9 @@ public class FmFeeService {
 
             if (StringUtils.isNotNullBlank(payType))
                 fmAliWeiChartPayLog1.setSubmitType(Long.valueOf(payType));
+            if(null!=installType){
+                fmAliWeiChartPayLog1.setInstallType(installType);
+            }
 
             fmAliWeiChartPayLog1.setEndSign(0);
             fmAliWeiChartPayLogDao.save(fmAliWeiChartPayLog1);
@@ -361,14 +378,12 @@ public class FmFeeService {
 
     public List<FmAliWeiChartPayLog> getALLFmAliWeiChartPayLogHasPay(){
         List<SearchFilter> filters = Lists.newArrayList();
-
         filters.add(new SearchFilter("payStatus", SearchFilter.Operator.EQ, 1L));
         //filters.add(new SearchFilter("buComputerNo", SearchFilter.Operator.EQ, 0L));
         //filters.add(new SearchFilter("buUsedState", SearchFilter.Operator.NEQ, 1L));
         Specification<FmAliWeiChartPayLog> spec = DynamicSpecifications.bySearchFilter(filters, FmAliWeiChartPayLog.class);
         List<FmAliWeiChartPayLog> fms = fmAliWeiChartPayLogDao.findAll(spec);
         return fms;
-
     }
 
     /*********************************************数据库操作*********************************************************************/

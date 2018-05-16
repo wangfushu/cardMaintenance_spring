@@ -80,14 +80,14 @@ public class FeePayControl {
      */
     @ResponseBody
     @RequestMapping(value = "/getqrcode", method = RequestMethod.POST)
-    private String getQrcode(String vehicleNo, String payType, Double totalFee,  Long userId ) {
+    private String getQrcode(String vehicleNo, String payType, Double totalFee,  Long userId ,Integer installType) {
         Users users= usersService.findById(userId);
 
         //返回的参数{"extPam":{"code_url":"weixin://wxpay/bizpayurl?pr=DQVcCZ9","appid":"wxe06b890980f4cd92"},"orderNo":"4SPAY20171023160850876","payOrderNo":"20171023160844937865003362974860","isOk":true}
         String orderNo = "2CPAY" + DateUtils.getCurrTimeStr(5);
         VmVehicle vmVehicle = vmVehicleService.findById(vehicleNo);
         if (null != vmVehicle) {
-            String flag = fmFeeService.saveFmAliWeiChartPayLog(orderNo, "", "", vmVehicle, payType,users);
+            String flag = fmFeeService.saveFmAliWeiChartPayLog(orderNo, "", "", vmVehicle, payType,users,installType);
 
             if (flag == "add") {
 
@@ -97,7 +97,7 @@ public class FeePayControl {
                     LOGGER.info(vehicleNo + "    getqrcode: " + reslut);
                     AliPayResult aliPayResult = JSONObject.parseObject(reslut, AliPayResult.class);
                     if ("true".equals(aliPayResult.getIsOk()))
-                        fmFeeService.saveFmAliWeiChartPayLog(aliPayResult.getOrderNo(), aliPayResult.getPayOrderNo(), reslut, vmVehicle, payType, users);
+                        fmFeeService.saveFmAliWeiChartPayLog(aliPayResult.getOrderNo(), aliPayResult.getPayOrderNo(), reslut, vmVehicle, payType, users,installType);
                     return JsonMapper.nonEmptyMapper().toJson(aliPayResult);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -254,7 +254,7 @@ public class FeePayControl {
                     }else{
                         FmAliWeiChartPayLog fmAliWeiChartPayLogNotify = fmFeeService.updateFmAliWeiChartPayLogNotify("",result,fmAliWeiChartPayLog);
                     }
-                    return JsonMapper.nonEmptyMapper().toJson(new OrderQueryTurnForm(queryOrderResult.getPayOrderNo(), queryOrderResult.getPayType(), queryOrderResult.getTotalFee(), vmVehicle.getVehicleNo()));
+                    return JsonMapper.nonEmptyMapper().toJson(new OrderQueryTurnForm(queryOrderResult.getPayOrderNo(), queryOrderResult.getPayType(), queryOrderResult.getTotalFee(),  vmVehicle.getPlateNo()));
 
                 } else {
                     return JsonMapper.nonEmptyMapper().toJson(new OrderQueryTurnForm(queryOrderResult.getPayOrderNo(), queryOrderResult.getPayType(), queryOrderResult.getTotalFee()));
@@ -286,7 +286,12 @@ public class FeePayControl {
                     if(null!=vmVehicle.getInstallDate()){
                         Integer insureDays=Integer.valueOf(baseInformationService.findInSureYearByValue().getCfConfigValue());
                         if(DateUtils.getCurrDate().before( DateUtil.getDateAfterDays(vmVehicle.getInstallDate(), insureDays))){
-                                return "2";//保内换卡
+                                List<FmAliWeiChartPayLog> fmAliWeiChartPayLogs = fmFeeService.findFmAliWeiChartPayLogByVehicleNo(vehicleNo);
+                                if(fmAliWeiChartPayLogs.size()>0 ?  null!= fmAliWeiChartPayLogs.get(0).getInputtime() ? fmAliWeiChartPayLogs.get(0).getEndSign()==0 ? fmAliWeiChartPayLogs.get(0).getInstallType()==4 : false : false : false){
+                                    return "4"; //人为损坏
+                                }else {
+                                    return "2";//保内换卡
+                                }
                         }else{
                             return "3";//保外换卡
                         }

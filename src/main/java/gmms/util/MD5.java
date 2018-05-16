@@ -62,10 +62,13 @@ public class MD5 {
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        MD5 getMD5 = new MD5();
+      /*  MD5 getMD5 = new MD5();
         System.out.println(getMD5.GetMD5Code("123456"));
-       /* System.out.println(getMD5.GetMD5Code("201701220001&version=1.0&osType=web&devType=testcase&devId=testcase001&timestamp=1507885974610&payType=52&optType=unionpay&notifyUrl=http://www.baidu.com&title=aaa&body=0&orderNo=20171013171254615&totalFee=1&timeout=2m&attach=1&checkCode=9353ce0717659551cbe038a6c0085832xmrbi3967968@2017"));*/
-       // System.out.println(getMD5.GetMD5Code("201701220001&version=1.0&osType=web&devType=testcase&devId=testcase001&timestamp=1511944861078&payType=52&optType=unionpay&title=年费缴交&orderNo=4SPAY20171129164101078&totalFee=1&timeout=2m&attach=1&checkCode=b1911cef793df6b64b44d4ee9d04c901xmrbi3967968@2017"));
+       *//* System.out.println(getMD5.GetMD5Code("201701220001&version=1.0&osType=web&devType=testcase&devId=testcase001&timestamp=1507885974610&payType=52&optType=unionpay&notifyUrl=http://www.baidu.com&title=aaa&body=0&orderNo=20171013171254615&totalFee=1&timeout=2m&attach=1&checkCode=9353ce0717659551cbe038a6c0085832xmrbi3967968@2017"));*//*
+        String md5String=getMD5.GetMD5Code("201701220001&version=1.0&osType=web&devType=testcase&devId=testcase001&timestamp=1525917876503&payType=91&optType=Mobile2C&notifyUrl=http://172.16.54.205:8089/cardMaintenance/feepay/notify&title=二维卡工本费缴交(闽D12345)&orderNo=4SPAY20180510100436503&totalFee=100&timeout=2m&attach=1&checkCode=19dc37ca600f6f091573c61b77780f72xmrbi3967968@2017");
+       // String md5String=MD5.GetMD5Code(sign);
+        String str= new String(Base64Util.encode(md5String.getBytes())).toUpperCase();
+        System.out.println(str);*/
   /*     String str= new String(Base64.encode("e10adc3949ba59abbe56e057f20f883e".getBytes()));
         System.out.println(str);*/
     }

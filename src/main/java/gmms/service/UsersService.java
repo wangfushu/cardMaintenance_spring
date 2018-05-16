@@ -132,12 +132,14 @@ public class UsersService {
                 filters.add(new SearchFilter("gmtCreate", SearchFilter.Operator.LTE, new Date(DateUtil.dayEndnTime(userParam.getTimetoFormat()))));
             }
         }
-
+        if(null!=userParam.getPlaNo()&&userParam.getPlaNo()!=0){
+            filters.add(new SearchFilter("sysPlaza.plaNo", SearchFilter.Operator.EQ, userParam.getPlaNo()));
+        }
         Specification<Users> spec = DynamicSpecifications.bySearchFilter(filters, Users.class);
         Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "gmtCreate");
         PageRequest page = new PageRequest(pageNo - 1, pageSize, purchaseDateDB);
         Page<Users> allUsers = usersDao.findAll(spec, page);
-        if (userParam.getRoleId() != null && userParam.getRoleId() != -1) {
+       /* if (userParam.getRoleId() != null && userParam.getRoleId() != -1) {
             Role role = roleDao.findOne(userParam.getRoleId());
             Iterator<Users> iterator = allUsers.getContent().iterator();
             while (iterator.hasNext()) {
@@ -146,7 +148,7 @@ public class UsersService {
                     iterator.remove();
                 }
             }
-        }
+        }*/
         return allUsers;
     }
 

@@ -110,6 +110,18 @@ public class VmVehicle {
 	@Column(name = "USERID")
 	private Long userId;
 
+	@Column(name = "UPDATESIGN")
+	private Long updateSign;
+
+
+	public Long getUpdateSign() {
+		return updateSign;
+	}
+
+	public void setUpdateSign(Long updateSign) {
+		this.updateSign = updateSign;
+	}
+
 	public String getHandleName() {
 		return handleName;
 	}

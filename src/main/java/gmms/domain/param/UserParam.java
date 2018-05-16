@@ -7,6 +7,15 @@ package gmms.domain.param;
 public class UserParam extends DataTablesParam {
     private Long roleId;
     private int timeType;
+    private Long plaNo;
+
+    public Long getPlaNo() {
+        return plaNo;
+    }
+
+    public void setPlaNo(Long plaNo) {
+        this.plaNo = plaNo;
+    }
 
     public Long getRoleId() {
         return roleId;

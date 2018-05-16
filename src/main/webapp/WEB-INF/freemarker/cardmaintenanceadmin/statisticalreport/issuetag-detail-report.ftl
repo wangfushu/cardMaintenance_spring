@@ -57,7 +57,7 @@
                class="input-text Wdate" name="timeto" style="width:120px;">
 
         <button class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
-        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 清空</button>
+        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 重置</button>
     </form>
 </div>
 <div class="page-container" style="padding-top: 0px">

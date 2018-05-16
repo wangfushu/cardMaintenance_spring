@@ -170,7 +170,7 @@ public class VmVehicleService {
 
         if (null != users) {
 
-                 filters.add(new SearchFilter("vehicleNo", SearchFilter.Operator.TLIKE, StringUtils.getFormat(5,users.getSysPlaza().getPlaNo().intValue()) ));
+                 filters.add(new SearchFilter("vehicleNo", SearchFilter.Operator.TLIKE, "LQ"+StringUtils.getFormat(4,users.getSysPlaza().getPlaNo().intValue()) ));
         }
 
         if (null != queryParam.getStartPassTime() && !"".equals(queryParam.getStartPassTime())) {
@@ -182,8 +182,14 @@ public class VmVehicleService {
         }
 
         if (null != queryParam.getvNewCarRegistNode() && !"".equals(queryParam.getvNewCarRegistNode())) {
+            List<Long> vNewCarRegistNodeList = new ArrayList<Long>();
+            String[] vNewCarRegistNodes = queryParam.getvNewCarRegistNode().split(",");
 
-            filters.add(new SearchFilter("newCarRegistNode", SearchFilter.Operator.EQ, Long.valueOf(queryParam.getvNewCarRegistNode())));
+            for (int i = 0; i < vNewCarRegistNodes.length; i++) {
+                vNewCarRegistNodeList.add(Long.valueOf(vNewCarRegistNodes[i]));
+            }
+            filters.add(new SearchFilter("newCarRegistNode", SearchFilter.Operator.IN, vNewCarRegistNodeList));
+           // filters.add(new SearchFilter("newCarRegistNode", SearchFilter.Operator.EQ, Long.valueOf(queryParam.getvNewCarRegistNode())));
         }
         Specification<VmVehicle> spec = DynamicSpecifications.bySearchFilter(filters, VmVehicle.class);
 
@@ -202,11 +208,20 @@ public class VmVehicleService {
         issueTag.setvKindNo(vmVehicle.getvKindNo());
         issueTag.setInstallDate(new Date());
         Float fee=Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue());
+        List<FmAliWeiChartPayLog> fmAliWeiChartPayLogs = fmFeeService.findFmAliWeiChartPayLogByVehicleNo(vehicleNo);
         if(null!=vmVehicle.getInstallDate()){
             Integer insureDays=Integer.valueOf(baseInformationService.findInSureYearByValue().getCfConfigValue());
             if(DateUtils.getCurrDate().before( DateUtil.getDateAfterDays(vmVehicle.getInstallDate(), insureDays))){
-                issueTag.setInstallType(2L);//保内换卡
-                issueTag.setFee(0f);
+
+                if(fmAliWeiChartPayLogs.size() > 0 ?  null!= fmAliWeiChartPayLogs.get(0).getInputtime() ? fmAliWeiChartPayLogs.get(0).getEndSign()==0 ? fmAliWeiChartPayLogs.get(0).getInstallType()==4 : false : false : false){
+                    issueTag.setInstallType(4L);//人为损坏
+                    issueTag.setFee(fee);
+                }else {
+                    issueTag.setInstallType(2L);//保内换卡
+                    issueTag.setFee(0f);
+                }
+
+
             }else{
                 issueTag.setInstallType(3L);//保外换卡
                 issueTag.setFee(fee);
@@ -230,9 +245,10 @@ public class VmVehicleService {
         vmVehicle.setInstallDate(save.getInstallDate());
         vmVehicle.setUpdateTime(new Date());
         vmVehicle.setNewCarRegistNode(2L);
+        vmVehicle.setUpdateSign(0L);
         VmVehicle vmVehiclesave=vmVehicleDao.save(vmVehicle);
 
-        List<FmAliWeiChartPayLog> fmAliWeiChartPayLogs=fmFeeService.findFmAliWeiChartPayLogByVehicleNo(vmVehiclesave.getVehicleNo());
+        //List<FmAliWeiChartPayLog> fmAliWeiChartPayLogs=fmFeeService.findFmAliWeiChartPayLogByVehicleNo(vmVehiclesave.getVehicleNo());
         if(fmAliWeiChartPayLogs.size()>0){
 
             fmAliWeiChartPayLogs.get(0).setEndSign(2);
@@ -240,6 +256,11 @@ public class VmVehicleService {
         }
         return "success";
     }
+
+    public List<IssueTag> findIssueTagByTidAndEpc(String tid, String epc){
+        return  issueTagDao.findByTidAndEpc(tid,epc);
+    }
+
 
     /*********************************************数据库操作*********************************************************************/
 

@@ -103,8 +103,10 @@ public class FmAliWeiChartPayLog {
     @Column(name = "INPUTTIME")
     private Date inputtime;//订单生成时间
 
-    @Column(name = "ENDSIGN")
-    private int endSign;//订单生成时间
+
+    private int endSign;//完成标识   0-流程未结束  2-该流程已经完全结束
+    @Column(name = "INSTALLTYPE")
+    private int installType;//贴卡类型
 
 
     public Long getfID() {
@@ -290,5 +292,13 @@ public class FmAliWeiChartPayLog {
 
     public void setEndSign(int endSign) {
         this.endSign = endSign;
+    }
+
+    public int getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(int installType) {
+        this.installType = installType;
     }
 }

@@ -54,4 +54,5 @@ public class OrderQueryTurnForm {
     public void setPlateNo(String plateNo) {
         this.plateNo = plateNo;
     }
+
 }

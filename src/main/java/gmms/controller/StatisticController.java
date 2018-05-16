@@ -464,7 +464,7 @@ public class StatisticController extends BaseControl {
         Users currentUser = getCurrentUser();
         List<IssueTagYearQueryForm> objectList = tagService.IssueTagYearlistAllList(param, getCurrentUser());
 
-        String[] Title = {"网点名称" ,"发卡账号", "发卡姓名","统计日期" ,"新发卡数量","保内换卡数量","保外换卡数量","总发卡数量 ", "实收金额"};
+        String[] Title = {"网点名称" ,"发卡账号", "发卡姓名","统计日期" ,"新发卡数量","保内换卡数量","保外换卡数量","人为损坏换卡数量","总发卡数量 ", "实收金额"};
         String fileName=param.getYear()+"年-发卡信息年报表.xls";
 
         byte[] tagInStoreExcel = tagService.getIssueTagYearExcel(objectList, fileName, Title);
@@ -511,7 +511,7 @@ public class StatisticController extends BaseControl {
         Users currentUser = getCurrentUser();
         List<IssueTagYearQueryForm> objectList = tagService.IssueTagDaylistAllList(param, getCurrentUser());
 
-        String[] Title = {"网点名称" ,"发卡账号", "发卡姓名","统计日期" ,"新发卡数量","保内换卡数量","保外换卡数量","总发卡数量 ", "实收金额"};
+        String[] Title = {"网点名称" ,"发卡账号", "发卡姓名","统计日期" ,"新发卡数量","保内换卡数量","保外换卡数量","人为损坏换卡数量","总发卡数量 ", "实收金额"};
         String fileName = param.getTimefrom()+"到"+param.getTimeto()+"年-发卡信息年报表.xls";
 
         byte[] tagInStoreExcel = tagService.getIssueTagDayExcel(objectList, fileName, Title);

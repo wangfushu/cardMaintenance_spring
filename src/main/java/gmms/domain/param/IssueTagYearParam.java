@@ -1,6 +1,5 @@
 package gmms.domain.param;
 
-import javafx.scene.chart.PieChart;
 
 /**
  * Created by wangfs on 2018-04-20 helloword.

@@ -67,7 +67,7 @@
                class="input-text Wdate" name="timeto" style="width:120px;">-->
 
         <button class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
-        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 清空</button>
+        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 重置</button>
     </form>
 </div>
 <div class="page-container" style="padding-top: 0px">
@@ -93,6 +93,7 @@
                 <th width="50">新发卡数量</th>
                 <th width="50">保内换卡数量</th>
                 <th width="50">保外换卡数量</th>
+                <th width="50">人为损坏数量</th>
                 <th width="50">总发卡数量</th>
                 <th width="50">实收金额</th>
             </tr>
@@ -156,6 +157,7 @@
             {"data": "newCardIssueCount"},
             {"data": "insureCardIssueCount"},
             {"data": "outsureCardIssueCount"},
+            {"data": "insureDamageCardIssueCount"},
             {"data": "count"},
             {"data": "totalfee"}],
         "fnDrawCallback": function(){

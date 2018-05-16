@@ -2,7 +2,9 @@ package gmms.unifiedPay;
 
 import com.alibaba.fastjson.JSONObject;
 
+import com.google.common.collect.Lists;
 import com.xmrbi.parking.CheckCode;
+import gmms.domain.param.BodyParam;
 import gmms.unifiedPay.conn.Connection;
 import gmms.unifiedPay.payConfig.BaseConfig;
 import gmms.unifiedPay.payEntity.BaseDataPay;
@@ -10,8 +12,8 @@ import gmms.unifiedPay.payEntity.UnifiedPay;
 import gmms.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,30 +24,33 @@ public class RBIPay extends Connection {
 
     // 接口地址
     private Logger LOGGER = LoggerFactory.getLogger(RBIPay.class);
-    private String rbi_url = "http://172.16.52.39:50080/uniform-pay-biz/unifiedPay";//测试库内网
-   // private String rbi_url = "http://117.29.161.2:50080/uniform-pay-biz/unifiedPay";//测试库外网
-   //
+    //private String rbi_url = "http://172.16.52.39:50080/uniform-pay-biz/unifiedPay";//测试库内网
+   //private String rbi_url = "http://117.29.161.2:50080/uniform-pay-biz/unifiedPay";//测试库外网
 
-   // private String rbi_url="http://172.23.0.2:58080/uniform-pay-biz/unifiedPay";//正式库
+
+   // private String rbi_url="https://demoapp.xmparking.net/cloud-pay-api/unifiedPay";//测试库外网
+
+    private String rbi_url="https://app.xmparking.net/cloud-pay-api/unifiedPay";//正式库
 
     //private String notify_url = "http://125.77.254.250:5083/cardMaintenance/feepay/notify";
     //private String notify_url = "http://wangfushu.tunnel.qydev.com/cardMaintenance/feepay/notify";
-    //private String notify_url = "http://172.16.54.205:8089/cardMaintenance/feepay/notify";
-    private String notify_url = "http://192.168.14.111:8089/cardMaintenance/feepay/notify";
+    private String notify_url = "http://172.16.54.205:8089/cardMaintenance/feepay/notify";
+   // private String notify_url = "http://192.168.14.111:8089/cardMaintenance/feepay/notify";
 
     public String Pay(String payType,Double totalFee,String plateNo,String orderNo) throws Exception {
 
-        //int allfee=totalFee.intValue();
-      /*  int initNumber = 1;
-        String formatNum = StringUtils.getFormat(5, initNumber);*/
-        //    UnifiedPay unifiedPay=new UnifiedPay();
+
         Double fentotalFee=totalFee*100;//精确到分
         String totalFeeStr=String.valueOf(fentotalFee.intValue());
 
+        List<BodyParam> bodyParams= Lists.newArrayList();
+        BodyParam bodyParam=new BodyParam("492",totalFeeStr);
+        bodyParams.add(bodyParam);
+        String bodyStr = JSONObject.toJSONString(bodyParams);
+
         BaseDataPay baseDataPay = initBaseDataPay();
-        UnifiedPay unifiedPay = initUnifiedPay("91",totalFeeStr, baseDataPay.getTimestamp(),plateNo,orderNo);
-
-
+        System.out.println("-------------------bodysty  " + bodyStr);
+        UnifiedPay unifiedPay = initUnifiedPay("91",totalFeeStr, baseDataPay.getTimestamp(),plateNo,orderNo,bodyStr);
         String sign = getsign(baseDataPay, unifiedPay);
         //String sign="201701220001&version=1.0&osType=web&devType=testcase&devId=testcase001&timestamp=1511944861078&payType=52&optType=unionpay&title=年费缴交&orderNo=4SPAY20171129164101078&totalFee=1&timeout=2m&attach=1&checkCode=b1911cef793df6b64b44d4ee9d04c901xmrbi3967968@2017";
         System.out.println("==============================sign 未加密 :" +sign);
@@ -75,7 +80,7 @@ public class RBIPay extends Connection {
      * @param timestamp
      * @return
      */
-    public UnifiedPay initUnifiedPay(String payType, String totalFee, String timestamp,String plateNo,String orderNo) {
+    public UnifiedPay initUnifiedPay(String payType, String totalFee, String timestamp,String plateNo,String orderNo,String bodyStr) {
         UnifiedPay unifiedPay = new UnifiedPay();
 /*        String currDate = DateUtils.getCurrTimeStr(5);
         String orderNo = new String();
@@ -98,13 +103,13 @@ public class RBIPay extends Connection {
         unifiedPay.setTitle("二维卡工本费缴交("+plateNo+")");
       /*  unifiedPay.setNotifyUrl("http://wangfushu.tunnel.qydev.com/upgradeFee/feepay/notify");*/
        unifiedPay.setNotifyUrl(notify_url);
-        unifiedPay.setOptType("Mobile2C");
+        unifiedPay.setOptType("Mobile4S");
 
        /* unifiedPay.setOptType("MobileDev4S");*/
         unifiedPay.setAttach("1");
         unifiedPay.setTimeout("2m");
        // unifiedPay.setUserId("a");
-       // unifiedPay.setBody("0");
+        unifiedPay.setBody(bodyStr);
         return unifiedPay;
     }
 

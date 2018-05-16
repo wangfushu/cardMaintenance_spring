@@ -23,9 +23,9 @@ import java.util.TreeMap;
 public class RbiCancelPayOrder {
     private Logger LOGGER = LoggerFactory.getLogger(RbiCancelPayOrder.class);
     //private String rbi_cancel_url = "http://117.29.161.2:50080/uniform-pay-biz/cancelPay";//测试库
-    private String rbi_cancel_url = "http:// 172.16.52.39:50080/uniform-pay-biz/cancelPay";//测试库内网
+    private String rbi_cancel_url = "https://demoapp.xmparking.net/cloud-pay-api/cancelPay";//测试库外网
 
-    // private String rbi_url="http://172.23.0.2:58080/uniform-pay-biz/cancelPay";//正式库
+    // private String rbi_url="https://app.xmparking.net/cloud-pay-api/cancelPay";//正式库
 
     public String cancelOrder(String orderNO,String payOrderNo) throws Exception {
         BaseDataPay baseDataPay = initBaseDataPay();

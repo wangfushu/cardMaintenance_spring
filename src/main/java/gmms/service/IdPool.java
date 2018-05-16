@@ -72,7 +72,7 @@ public class IdPool {
      * @return
      */
     private String buildId(long number) {
-       return  StringUtils.getFormat(7, new Long(number).intValue());
+       return  StringUtils.getFormat(6, new Long(number).intValue());
         //return StringUtil.leftPad(number + "", 20, '0');
     }
 

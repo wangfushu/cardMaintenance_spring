@@ -71,7 +71,7 @@ public class UserControl extends BaseControl {
             oldUser.setRemark(users.getRemark());
             oldUser.setPassword(MD5.GetMD5Code(users.getPassword()));
             oldUser.setGmtModify(new Date());
-            if (!oldUser.isSuperAdmin()||!oldUser.isTagAdmin()) {
+            if (oldUser.getIsUser()) {
                 Role role = usersService.getByRoleId(roleId);
                 oldUser.setRoles(Lists.newArrayList(role));
                 oldUser.setSysPlaza(users.getSysPlaza());

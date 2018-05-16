@@ -134,6 +134,7 @@ public class ExcelUtil {
         sheet.setColumnWidth(6, 4000);
         sheet.setColumnWidth(7, 4000);
         sheet.setColumnWidth(8, 4000);
+        sheet.setColumnWidth(9, 4000);
 
 
         setHeader(wb, sheet, fileName);
@@ -153,6 +154,7 @@ public class ExcelUtil {
             rowIndex.createCell(4).setCellValue(vo.getNewCardIssueCount());
             rowIndex.createCell(5).setCellValue(vo.getInsureCardIssueCount());
             rowIndex.createCell(6).setCellValue(vo.getOutsureCardIssueCount());
+            rowIndex.createCell(7).setCellValue(vo.getInsureDamageCardIssueCount());
             rowIndex.createCell(7).setCellValue(vo.getCount());
             rowIndex.createCell(8).setCellValue(vo.getTotalfee());
         }

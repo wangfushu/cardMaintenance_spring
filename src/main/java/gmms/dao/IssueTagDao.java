@@ -7,10 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
 public interface IssueTagDao extends BaseDao<IssueTag, Long> {
+
+    List<IssueTag> findByTidAndEpc(String tid ,String epc);
 
   /*  @Query(nativeQuery =true ,value = "select convert(char(7),installDate,120) 统计日期,userNo 发卡账号,userName 发卡姓名,plazaName 网点名称," +
             "(select count(*) from IssueTag temp where temp.installType = 1 group by convert(char(7),installDate,120),userName,plazaNo,plazaName) 新发卡数量  ," +

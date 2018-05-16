@@ -277,7 +277,7 @@
                     <li><a data-href="${absoluteContextPath}/statistic/issuetag-year-report"  data-title="发卡信息年报表"
                            href="javascript:;">发卡信息年报表</a>
                     </li>
-                    <li><a data-href="${absoluteContextPath}/statistic/issuetag-year-report"  data-title="发卡信息详细报表"
+                    <li><a data-href="${absoluteContextPath}/statistic/issuetag-detail-report"  data-title="发卡信息详细报表"
                            href="javascript:;">发卡信息详细报表</a>
                     </li>
 

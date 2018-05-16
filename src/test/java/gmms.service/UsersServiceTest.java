@@ -1,27 +1,19 @@
 package gmms.service;
 
-import gmms.domain.db.FmAliWeiChartPayLog;
-import gmms.domain.db.Users;
-import gmms.domain.db.VmVehicle;
-import gmms.domain.query.VmVehicleQueryParam;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import gmms.domain.param.BodyParam;
+import gmms.unifiedPay.RBIPay;
 import gmms.unifiedPay.RefundPay;
-import gmms.util.JsonMapper;
+import gmms.unifiedPay.payResultEntity.AliPayResult;
+import gmms.util.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.util.List;
 
 
@@ -46,8 +38,14 @@ public class UsersServiceTest {
 	private BaseInformationService baseInformationService;
 	@Test
 	public void findById() throws Exception {
-		VmVehicle vmVehicle = new VmVehicle();
-		System.out.println(JsonMapper.nonEmptyMapper().toJson(vmVehicle));
+		/*VmVehicle vmVehicle = new VmVehicle();
+		System.out.println(JsonMapper.nonEmptyMapper().toJson(vmVehicle));*/
+		RBIPay rbiPay=new RBIPay();
+		String orderNo = "4SPAY" + DateUtils.getCurrTimeStr(5);
+		String reslut1=rbiPay.Pay("91",Double.valueOf(1),"闽D12345",orderNo);
+		AliPayResult weChatCodeResult= JSONObject.parseObject(reslut1, AliPayResult.class);
+		System.out.println("======================= : "+weChatCodeResult.getExtPam().getQr_code());
+
 	//System.out.println(baseInformationService.findCardExpenseByValue().getCfConfigValue());
 
 	/*	Users users =usersService.findById(4L);
@@ -62,7 +60,9 @@ public class UsersServiceTest {
 		fmFeeService.saveInSureFmFee(vmVehicle,users);*/
 		//System.out.println(	Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue()));
 
-
+/*		RefundPay refundPay = new RefundPay();
+		String testresult = refundPay.refundPay("2CPAY20180510152257235","2CP20180510152600055421755879", Double.valueOf(0.05));
+		System.out.println("+++++++++++++++++++++++++: " + testresult);*/
 		/*List<FmAliWeiChartPayLog> list=fmFeeService.getALLFmAliWeiChartPayLogHasPay();
 		for(FmAliWeiChartPayLog a:list) {
 			//退款订单

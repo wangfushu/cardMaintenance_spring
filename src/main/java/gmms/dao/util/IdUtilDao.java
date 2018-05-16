@@ -162,6 +162,7 @@ public class IdUtilDao {
 
     private static String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static  String url = "jdbc:sqlserver://172.16.54.188:1433;databaseName=cardMaintenance1";
+    //private static  String url = "jdbc:sqlserver://172.16.60.51:1433;databaseName=Station_cardMaintenance";
     //private static  String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=cardMaintenance";
     //private static  String url = "jdbc:sqlserver://172.20.10.24:1433;databaseName=VYearFee4S";
     /* private static String username = "sa";

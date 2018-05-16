@@ -2,10 +2,7 @@ package gmms.controller;
 
 
 import gmms.domain.AjaxResponseBodyFactory;
-import gmms.domain.db.SysBaseInformation;
-import gmms.domain.db.TmTagStore;
-import gmms.domain.db.Users;
-import gmms.domain.db.VmVehicle;
+import gmms.domain.db.*;
 import gmms.domain.form.VmVehicleForm;
 import gmms.domain.param.IssueForm;
 import gmms.domain.query.VmVehicleQueryParam;
@@ -14,6 +11,7 @@ import gmms.service.TagService;
 import gmms.service.UsersService;
 import gmms.service.VmVehicleService;
 import gmms.util.*;
+import gmms.util.CommonExceptions.InvalidException;
 import net.sf.json.JSONArray;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -82,11 +80,11 @@ public class VehicleRegisteControl extends BaseControl {
                 //流水单号生成
                 String id = new String();
                 // 车辆编号生成规则：4位网点号 + 3位计算机编号 + 8位日期(YYYYMMDD) + 5位流水号;(作废)
-                ////车辆编号生成规则：5位网点号  + 8位日期(YYYYMMDD) + 7位流水号;
+                ////车辆编号生成规则：4位网点号  + 8位日期(YYYYMMDD) + 6位流水号;
                 int initNumber = 1;
                 String formatNum = StringUtils.getFormat(5, initNumber);
                 //employee
-                String currDate =  StringUtils.getFormat(5,users.getSysPlaza().getPlaNo().intValue())  + DateUtils.getCurrTimeStr(6);
+                String currDate = "LQ"+ StringUtils.getFormat(4,users.getSysPlaza().getPlaNo().intValue())  + DateUtils.getCurrTimeStr(6);
 
                 vmVehicleForm.setVehicleNo(vmVehicleService.generate(currDate, "VmVehicle.vehicleNo"));
             }
@@ -346,7 +344,7 @@ public class VehicleRegisteControl extends BaseControl {
      */
     @ResponseBody
     @RequestMapping(value = "/stickrfid", method = RequestMethod.POST)
-    private String StickRfid(@RequestParam(value = "file1", required = false) MultipartFile file1, @RequestParam(value = "file2", required = false) MultipartFile file2,
+    private String StickRfid(@RequestParam(value = "file1", required = false) MultipartFile file1, @RequestParam(value = "file2", required = false) MultipartFile file2, @RequestParam(value = "file3", required = false) MultipartFile file3,
                              HttpServletRequest request) {
         try {
             IssueForm issueForm = new IssueForm();
@@ -364,15 +362,26 @@ public class VehicleRegisteControl extends BaseControl {
 
 
             String tid = request.getParameter("tid");
+
             issueForm.setTid(tid);
             String epc = request.getParameter("epc");
             issueForm.setEpc(epc);
+            if(StringUtil.isEmpty(tid)||StringUtil.isEmpty(epc)) {
+                throw new InvalidException("tid  或  epc 为空");
+            }else{
+                List<IssueTag> issueTags=vmVehicleService.findIssueTagByTidAndEpc(tid,epc);
+                if(null!=issueTags&&issueTags.size()>0)
+                    return "repeat";//卡重复
+            }
             List<MultipartFile> files = new ArrayList<MultipartFile>();
             if (!file1.isEmpty()) {
                 files.add(file1);
             }
             if (!file2.isEmpty()) {
                 files.add(file2);
+            }
+            if (!file3.isEmpty()) {
+                files.add(file3);
             }
             VmVehicle isVmVehicleExit = vmVehicleService.findById(vehicleNo);
 
@@ -429,7 +438,19 @@ public class VehicleRegisteControl extends BaseControl {
         }
 
     }
+/*    *//**
+     * 卡是否使用判断判断
+     * @param tid
+     * @param epc
+     * @return
+     *//*
+    @ResponseBody
+    @RequestMapping(value = "/checkTagUseType", method = RequestMethod.POST)
+    private String checkTagUseType(  String tid,String epc ) {
 
+
+        return null;
+    }*/
 
     /**
      * 卡库存判断

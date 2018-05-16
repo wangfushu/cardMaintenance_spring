@@ -12,6 +12,6 @@ import java.util.List;
 public interface SysBaseInformationDao extends BaseDao<SysBaseInformation, SysBaseInformationPK> {
 	SysBaseInformation findByBiTypeAndBiValue(String biType, String biValue);
 
-	@Query(value = "from SysBaseInformation cr where biType = ?")
+	@Query(value = "from SysBaseInformation cr where biType = ? order by sort desc")
 	List<SysBaseInformation> querybybiType(String biType);
 }

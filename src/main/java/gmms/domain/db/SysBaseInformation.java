@@ -39,6 +39,16 @@ public class SysBaseInformation {
 
     @Column(name = "AMEMO")
     private String aMemo;//备注
+    @Column(name = "SORT")
+    private Long sort;
+
+    public Long getSort() {
+        return sort;
+    }
+
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
 
     public String getBiType() {
         return biType;

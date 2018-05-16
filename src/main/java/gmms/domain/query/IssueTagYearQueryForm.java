@@ -11,8 +11,17 @@ public class IssueTagYearQueryForm {
     private int  newCardIssueCount;//发新卡数量
     private int  insureCardIssueCount;//保内换卡数量
     private int  outsureCardIssueCount;//保外换卡数量
+    private int  insureDamageCardIssueCount;//人为损坏换卡数量
     private int count;//总数量
     private double totalfee; //实收总金额；
+
+    public int getInsureDamageCardIssueCount() {
+        return insureDamageCardIssueCount;
+    }
+
+    public void setInsureDamageCardIssueCount(int insureDamageCardIssueCount) {
+        this.insureDamageCardIssueCount = insureDamageCardIssueCount;
+    }
 
     public String getPlazaName() {
         return plazaName;

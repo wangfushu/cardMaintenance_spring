@@ -38,15 +38,25 @@
 
 <div class="text-c" style="margin: 10px">
     <form id="user_searchlist_form" action="${absoluteContextPath}/user/list" method="post">
-    <span class="select-box inline">
+
+        网点：<span class="select-box inline">
+
+       <select  name="plaNo" class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
+       <#list plazaList as plaza>
+           <option value="${plaza.plaNo?c}"
+                   <#if param.plaNo?? && param.plaNo==plaza.plaNo>selected</#if>>${plaza.plaName}</option>
+       <#--<option value="${plaza.plaNo?c}">${plaza.plaName}</option>-->
+       </#list>
+       </select>
+  <#--  <span class="select-box inline">
 		<select name="roleId" class="select">
             <option value="-1">角色</option>
         <#list roleList as role>
             <option value="${role.id}"
-                    <#if param.roleId?? && param.roleId==role.id>selected</#if>>${role.remark!'超级管理员'}</option>
+                    <#if param.roleId?? && param.roleId==role.id>selected</#if>>${role.remark}</option>
         </#list>
         </select>
-		</span>
+		</span>-->
         根据：
         <span class="select-box inline">
 		<select name="timeType" class="select">
@@ -63,7 +73,7 @@
                class="input-text Wdate" name="timeto" style="width:120px;">
 
         <button class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
-        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 清空</button>
+        <button class="btn btn-success" type="reset"><i class="Hui-iconfont">&#xe609;</i> 重置</button>
     </form>
 </div>
 <div class="page-container" style="padding-top: 0px">
@@ -87,7 +97,7 @@
                 <th width="40">工号</th>
                 <th width="40">姓名</th>
                 <th width="80">手机号</th>
-                <th width="80">邮箱</th>
+                <th width="80">角色</th>
                 <th width="100">注册时间</th>
 <#--                <th width="160">上次登录时间</th>-->
                 <th width="120">备注</th>
@@ -166,6 +176,8 @@
     });*/
 
     $(function () {
+
+        $("#plazaNo").combo("setText", "text").combo('setValue',"");
         var data = $("#user_searchlist_form").serializeObject();
         $('.table-sort').dataTable({
             "bDeferRender": true,
@@ -193,7 +205,20 @@
                 {"data": "userNo"},
                 {"data": "userName",defaultContent:"管理员" },
                 {"data": "telphone", defaultContent:""},
-                {"data": "email", defaultContent:""},
+                {
+                    "targets": 4,
+                    "data": "roleName",
+                    "width": "100px",
+                    "defaultContent": "",
+                    "render": function (data, type, row, meta) {
+                        if(data){
+                            return  data;
+                        }else{
+                            return "";
+                        }
+
+                    }
+                },
                 {
                     "targets": 4,
                     "data": "gmtCreate",
@@ -224,7 +249,7 @@
                         }
                         if(row.zip){zip=row.zip;}
                         if(row.iDCard){iDCard=row.iDCard;}
-                        var result=' <a style="text-decoration:none" class="ml-5" data-href="${absoluteContextPath}/user/add?id='+row.id+'" onclick="alert_user(this,'+row.id+',\''+row.password+'\','+row.roleId+','+row.sysPlaza.plaNo+',\''+fax+'\',\''+address+'\',\''+zip+'\',\''+iDCard+'\')" data-title="编辑用户" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'+row.id+')" href="javascript:;"title="删除"> <i class="Hui-iconfont">&#xe6e2;</i></a>';
+                        var result=' <a style="text-decoration:none" class="ml-5" data-href="${absoluteContextPath}/user/add?id='+row.id+'" onclick="alert_user(this,'+row.email+','+row.id+',\''+row.password+'\','+row.roleId+','+row.sysPlaza.plaNo+',\''+fax+'\',\''+address+'\',\''+zip+'\',\''+iDCard+'\')" data-title="编辑用户" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="del_user(this,'+row.id+')" href="javascript:;"title="删除"> <i class="Hui-iconfont">&#xe6e2;</i></a>';
 
 
                         return result;
@@ -256,7 +281,7 @@
         });
     }
 
-    function alert_user(obj, id, password, roleId,plazaNo,fax,address,zip,idcard) {
+    function alert_user(obj, email,id, password, roleId,plazaNo,fax,address,zip,idcard) {
         $("#form-user-add")[0].reset();
         $("#plazaNo").combobox('select', 0);
         $("#form-user-add").find("input[name='userNo']").attr("readonly", "readonly");
@@ -265,7 +290,7 @@
         var userName = $tds.eq(2).text();
         var realName = $tds.eq(3).text();
         var phone = $tds.eq(4).text();
-        var email = $tds.eq(5).text();
+        /*var email = $tds.eq(5).text();*/
         var remark = $tds.eq(7).text();
         $("#form-user-add").find("input[name='id']").val(id);
         $("#form-user-add").find("input[name='userNo']").val(userName);
@@ -279,8 +304,9 @@
         $("#form-user-add").find("input[name='address']").val(address);
         $("#passwordAgain").val(password);
         $("#form-user-add").find("select[name='roleId']").val(roleId);
-       /* $("#plazaNo").val(plazaNo);*/
+
         $('#plazaNo').combobox('select', plazaNo);
+
         $("#plazaNo_input").val(plazaNo);
         //$("#form-user-add").find("select[id='sysPlaza.plaNo']").val(plazaNo);
         if (roleId == 1) {
@@ -327,28 +353,31 @@
             idArray.push($(this).attr("userId"));
         });
         var ids = idArray.join(",");
+        if(ids==""){
+            layer.msg('请先勾选用户!', {icon: 1, time: 1000});
+        }else {
+            layer.confirm('确认要删除这些账号吗？', function (index) {
+                $.ajax({
+                    type: 'GET',
+                    url: '${absoluteContextPath}/user/deleteAll',
+                    data: {userIds: ids},
+                    success: function (data) {
+                        if (data == "ok") {
+                            layer.msg("删除成功", {icon: 1, time: 1000});
+                            setTimeout(function () {
+                                location.replace(location.href);
+                            }, 1000);
 
-        layer.confirm('确认要删除这些账号吗？', function (index) {
-            $.ajax({
-                type: 'GET',
-                url: '${absoluteContextPath}/user/deleteAll',
-                data: {userIds: ids},
-                success: function (data) {
-                    if (data == "ok") {
-                        layer.msg("删除成功", {icon: 1, time: 1000});
-                        setTimeout(function () {
-                            location.replace(location.href);
-                        }, 1000);
-
-                    } else {
-                        layer.alert(data, {icon: 1});
+                        } else {
+                            layer.alert(data, {icon: 1});
+                        }
+                    },
+                    error: function (data) {
+                        layer.alert("删除出错啦,请刷新一下页面再操作!", {icon: 5});
                     }
-                },
-                error: function (data) {
-                    layer.alert("删除出错啦,请刷新一下页面再操作!", {icon: 5});
-                }
+                });
             });
-        });
+        }
     }
 
 /*    function alter_type_setting(userId) {

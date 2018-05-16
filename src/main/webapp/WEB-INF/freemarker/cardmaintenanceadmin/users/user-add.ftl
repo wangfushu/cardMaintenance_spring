@@ -66,6 +66,8 @@
                 <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
                 <#list plazaList as plaza>
                     <option value="${plaza.plaNo?c}">${plaza.plaName}</option>
+
+
                 </#list>
                 </select>
             <#--
