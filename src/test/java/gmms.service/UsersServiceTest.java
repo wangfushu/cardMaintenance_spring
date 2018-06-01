@@ -40,11 +40,11 @@ public class UsersServiceTest {
 	public void findById() throws Exception {
 		/*VmVehicle vmVehicle = new VmVehicle();
 		System.out.println(JsonMapper.nonEmptyMapper().toJson(vmVehicle));*/
-		RBIPay rbiPay=new RBIPay();
+/*		RBIPay rbiPay=new RBIPay();
 		String orderNo = "4SPAY" + DateUtils.getCurrTimeStr(5);
 		String reslut1=rbiPay.Pay("91",Double.valueOf(1),"闽D12345",orderNo);
 		AliPayResult weChatCodeResult= JSONObject.parseObject(reslut1, AliPayResult.class);
-		System.out.println("======================= : "+weChatCodeResult.getExtPam().getQr_code());
+		System.out.println("======================= : "+weChatCodeResult.getExtPam().getQr_code());*/
 
 	//System.out.println(baseInformationService.findCardExpenseByValue().getCfConfigValue());
 
@@ -60,9 +60,9 @@ public class UsersServiceTest {
 		fmFeeService.saveInSureFmFee(vmVehicle,users);*/
 		//System.out.println(	Float.valueOf(baseInformationService.findCardExpenseByValue().getCfConfigValue()));
 
-/*		RefundPay refundPay = new RefundPay();
-		String testresult = refundPay.refundPay("2CPAY20180510152257235","2CP20180510152600055421755879", Double.valueOf(0.05));
-		System.out.println("+++++++++++++++++++++++++: " + testresult);*/
+		RefundPay refundPay = new RefundPay();
+		String testresult = refundPay.refundPay("2CPAY20180517105415220","2CP20180517105400086646542992", Double.valueOf(0.01));
+		System.out.println("+++++++++++++++++++++++++: " + testresult);
 		/*List<FmAliWeiChartPayLog> list=fmFeeService.getALLFmAliWeiChartPayLogHasPay();
 		for(FmAliWeiChartPayLog a:list) {
 			//退款订单

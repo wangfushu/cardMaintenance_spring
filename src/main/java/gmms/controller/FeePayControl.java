@@ -80,7 +80,7 @@ public class FeePayControl {
      */
     @ResponseBody
     @RequestMapping(value = "/getqrcode", method = RequestMethod.POST)
-    private String getQrcode(String vehicleNo, String payType, Double totalFee,  Long userId ,Integer installType) {
+    private String getQrcode(String vehicleNo, String payType, Double totalFee,  Long userId ,String installType) {
         Users users= usersService.findById(userId);
 
         //返回的参数{"extPam":{"code_url":"weixin://wxpay/bizpayurl?pr=DQVcCZ9","appid":"wxe06b890980f4cd92"},"orderNo":"4SPAY20171023160850876","payOrderNo":"20171023160844937865003362974860","isOk":true}
@@ -234,6 +234,12 @@ public class FeePayControl {
 
     }
 
+    /**
+     * 查询订单状态方法
+     * @param orderNO
+     * @param payOrderNo
+     * @return
+     */
     public String queryOrderStatesMethod(String orderNO,String payOrderNo){
         RbiQueryPayOrder rbiQueryPayOrder = new RbiQueryPayOrder();
         try {

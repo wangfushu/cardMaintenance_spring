@@ -152,7 +152,7 @@ public class FmFeeService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public List<FmFee> saveFmFee(VmVehicle vmVehicle, FmAliWeiChartPayLog fmAliWeiChartPayLog, Long paytype) {
+    public synchronized List<FmFee> saveFmFee(VmVehicle vmVehicle, FmAliWeiChartPayLog fmAliWeiChartPayLog, Long paytype) {
         List<FmFee> fmFees = new ArrayList<FmFee>();
         String plazaNo = vmVehicle.getVehicleNo().substring(2, 5);
                         FmFee fmFee = new FmFee();
@@ -210,7 +210,11 @@ public class FmFeeService {
                         fmFee.setfSubmitFee(fmAliWeiChartPayLog.getFee().floatValue());//实缴工本费
 
                     fmFees.add(feeDao.save(fmFee));
-
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return fmFees;
     }
 
@@ -317,7 +321,7 @@ public class FmFeeService {
      * @param payType
      * @return
      */
-    public String saveFmAliWeiChartPayLog(String orderNo, String payOrderNo, String extPam, VmVehicle vmVehicle, String payType, Users users,Integer installType) {
+    public String saveFmAliWeiChartPayLog(String orderNo, String payOrderNo, String extPam, VmVehicle vmVehicle, String payType, Users users,String installType) {
         //VmVehicle vmVehicleTemp= vmVehicleDao.findByVVehicleNo(vmVehicle.getvVehicleNo());
         String result = "";
         FmAliWeiChartPayLog fmAliWeiChartPayLog = fmAliWeiChartPayLogDao.findByOrderNo(orderNo);
@@ -347,8 +351,8 @@ public class FmFeeService {
 
             if (StringUtils.isNotNullBlank(payType))
                 fmAliWeiChartPayLog1.setSubmitType(Long.valueOf(payType));
-            if(null!=installType){
-                fmAliWeiChartPayLog1.setInstallType(installType);
+            if(!StringUtil.isEmpty(installType)){
+                fmAliWeiChartPayLog1.setInstallType(Integer.valueOf(installType));
             }
 
             fmAliWeiChartPayLog1.setEndSign(0);

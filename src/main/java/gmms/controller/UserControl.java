@@ -51,6 +51,13 @@ public class UserControl extends BaseControl {
         return "cardmaintenanceadmin/users/user-add";
     }
 
+    /**
+     * 添加用户
+     * @param users
+     * @param roleId
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(Users users, long roleId) throws UnsupportedEncodingException {
@@ -104,7 +111,12 @@ public class UserControl extends BaseControl {
         return AjaxResponseBodyFactory.createSuccessBody(true, userId);
     }
 
-
+    /**
+     * 用户列表
+     * @param userParam
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/list")
     public String list(UserParam userParam, Model model) {
         Users currentUser = getCurrentUser();
@@ -119,6 +131,11 @@ public class UserControl extends BaseControl {
         return "cardmaintenanceadmin/users/user-list";
     }
 
+    /**
+     * 用户分页
+     * @param userParam
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/page")
     public String userpage(UserParam userParam) {

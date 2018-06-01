@@ -374,13 +374,13 @@ public class VehicleRegisteControl extends BaseControl {
                     return "repeat";//卡重复
             }
             List<MultipartFile> files = new ArrayList<MultipartFile>();
-            if (!file1.isEmpty()) {
+            if (null!=file1&&!file1.isEmpty()) {
                 files.add(file1);
             }
-            if (!file2.isEmpty()) {
+            if (null!=file2&&!file2.isEmpty()) {
                 files.add(file2);
             }
-            if (!file3.isEmpty()) {
+            if (null!=file3&&!file3.isEmpty()) {
                 files.add(file3);
             }
             VmVehicle isVmVehicleExit = vmVehicleService.findById(vehicleNo);

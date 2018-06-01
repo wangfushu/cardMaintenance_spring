@@ -6,7 +6,7 @@
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text"
                        data-msg-checkWithId="该账号已被注册"
-                       checkWithId="${absoluteContextPath}/user/usernameNotExist"
+                       checkWithId="${absoluteContextPath}/user/usernameNotEx ist"
                        class="input-text" required minlength="3"
                        placeholder="" id="formUserNo" name="userNo">
             </div>
@@ -53,7 +53,7 @@
             <label class="form-label col-xs-4 col-sm-2">
                 用户角色：</label>
             <div class="formControls col-xs-6 col-sm-3"> <span class="select-box" style="width:150px;">
-			<select class="select" name="roleId" size="1" onchange="">
+			<select class="select" name="roleId" id="roleId-select" size="1" onchange=" rolechange()">
             <#list roleList as role>
                 <option value="${role.id}">${role.remark}</option>
             </#list>
@@ -63,11 +63,9 @@
                 网点号：</label>
             <div class="formControls col-xs-4 col-sm-2">
                 <input id="plazaNo_input" name="sysPlaza.plaNo" type="hidden">
-                <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'">
+                <select id="plazaNo"  class="easyui-combobox"style="width:195px;" data-options="panelHeight:'auto'"  onchange=" rolechange()">
                 <#list plazaList as plaza>
                     <option value="${plaza.plaNo?c}">${plaza.plaName}</option>
-
-
                 </#list>
                 </select>
             <#--
@@ -148,6 +146,35 @@
 </article>
 
 <script>
+    $('#plazaNo').combobox({
+        onChange: function (newValue, oldValue) {
+            //alert(newValue)
+            if(newValue!=""){
+                var rolename = $("#form-user-add").find("select[name='roleId']").val();
+                if (rolename == 1 || rolename == 3) {
+                    if (newValue != "所有网点") {
+                        layer.msg("管理员与卡管理的网点权限只能为所有网点权限", {icon: 1, time: 2000});
+                        $('#plazaNo').combobox('select', 0);
+                    }
+                }
+            }
+
+        }
+    });
+    function rolechange(){
+        var ids=$("#plazaNo").combobox('getText');
+        var rolename= $("#form-user-add").find("select[name='roleId']").val();
+        //alert(rolename);
+        if(rolename==1||rolename==3){
+            //alert(ids);
+            if(ids!="所有网点"){
+                layer.msg("管理员与卡管理的网店权限只能为所有权限", {icon: 1, time: 2000});
+                $('#plazaNo').combobox('select', 0);
+            }
+        }
+
+        //return false;
+    }
     if ($.validator != undefined) {
 
         $.validator.addMethod("checkEmail", function (value, element, params) {

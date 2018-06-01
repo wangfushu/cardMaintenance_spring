@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest>
-<version>1.0.2.4</version>
+<version>1.0.1</version>
 <filesize>14.7M</filesize>
     <url>http://172.16.54.205:8089/cardMaintenance/TwoDimensionalCard.apk</url>
-<description>onetwothree</description>
-<description>four</description>
+<description>更新</description>
 </manifest>

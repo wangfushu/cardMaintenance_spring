@@ -811,8 +811,10 @@ public class TagService {
                 issueTagExcelVO.setInstallType("新卡发放");
             }else if(issueTag.getInstallType().equals(2L)){
                 issueTagExcelVO.setInstallType("保内换卡");
-            }else{
+            }else if(issueTag.getInstallType().equals(3L)){
                 issueTagExcelVO.setInstallType("保外换卡");
+            }else{
+                issueTagExcelVO.setInstallType("人为损坏");
             }
             issueTagExcelVO.setFee(issueTag.getFee());
 

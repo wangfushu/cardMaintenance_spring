@@ -34,7 +34,7 @@ public class RBIPay extends Connection {
 
     //private String notify_url = "http://125.77.254.250:5083/cardMaintenance/feepay/notify";
     //private String notify_url = "http://wangfushu.tunnel.qydev.com/cardMaintenance/feepay/notify";
-    private String notify_url = "http://172.16.54.205:8089/cardMaintenance/feepay/notify";
+    private String notify_url = "http://117.29.161.2:5689/cardMaintenance/feepay/notify";
    // private String notify_url = "http://192.168.14.111:8089/cardMaintenance/feepay/notify";
 
     public String Pay(String payType,Double totalFee,String plateNo,String orderNo) throws Exception {
@@ -44,6 +44,7 @@ public class RBIPay extends Connection {
         String totalFeeStr=String.valueOf(fentotalFee.intValue());
 
         List<BodyParam> bodyParams= Lists.newArrayList();
+        //id 535 正式id
         BodyParam bodyParam=new BodyParam("492",totalFeeStr);
         bodyParams.add(bodyParam);
         String bodyStr = JSONObject.toJSONString(bodyParams);
