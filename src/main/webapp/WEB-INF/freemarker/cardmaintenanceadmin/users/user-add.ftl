@@ -6,7 +6,7 @@
             <div class="formControls col-xs-8 col-sm-8">
                 <input type="text"
                        data-msg-checkWithId="该账号已被注册"
-                       checkWithId="${absoluteContextPath}/user/usernameNotEx ist"
+                       checkWithId="${absoluteContextPath}/user/usernameNotExist"
                        class="input-text" required minlength="3"
                        placeholder="" id="formUserNo" name="userNo">
             </div>

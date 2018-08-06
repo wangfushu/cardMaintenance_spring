@@ -15,7 +15,7 @@ public interface UsersDao extends BaseDao<Users, Long> {
     public Users findByUserNo(String userNo);
 
     public  List<Users> findBySysPlaza(SysPlaza sysPlaza);
-
     List<Users> findByTelphone(String telphone);
+
 
 }

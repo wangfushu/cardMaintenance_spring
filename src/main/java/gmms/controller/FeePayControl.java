@@ -138,6 +138,13 @@ public class FeePayControl {
                         + IsNulls("payStatus", notifyUrlForm.getPayStatus()) + IsNulls("tradeStatus", notifyUrlForm.getTradeStatus()) + IsNulls("backEnd", notifyUrlForm.getBackEnd()) + IsNulls("extPam", notifyUrlForm.getExtPam()) + BaseConfig.secret + ",newsign:\r\n");
 
                 if (signs.equals(notifyUrlForm.getSign())) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        LOGGER.info("回调异常2： orderNo : " + notifyUrlForm.getOrderNo() + " payOrderNo : " + notifyUrlForm.getPayOrderNo() + " error :" + e.getStackTrace());
+
+                    }
                     //订单缴费成功
                     System.out.println("成功了没有");
                     FmAliWeiChartPayLog fmAliWeiChartPayLog = fmFeeService.findById(notifyUrlForm.getOrderNo(), notifyUrlForm.getPayOrderNo());
@@ -164,7 +171,10 @@ public class FeePayControl {
                     return "success";
 
 
-                } else {
+                } else    if(notifyUrlForm.getTradeStatus().toUpperCase().contains("TRADE_WAIT")|| notifyUrlForm.getTradeStatus().toUpperCase().contains("TRADE_SCAN")||notifyUrlForm.getTradeStatus().toUpperCase().contains("TRADE_USERCANCEL")){
+                    LOGGER.info("已经被扫码，单号orderNo ——{}：" ,notifyUrlForm.getOrderNo() );
+                    return "success";
+                }else {
                     return "false";
                 }
             } else {

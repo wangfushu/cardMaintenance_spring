@@ -775,8 +775,8 @@ public class TagService {
         if(null!=users&&users.getIsUser()){
             filters.add(new SearchFilter("userId", SearchFilter.Operator.EQ, users.getId()));
         }
-        if(null!=param.getPlaNo()){
-            filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ, param.getPlaNo()));
+        if(null!=param.getPlaNo()&&!param.getPlaNo().equals(0L)){
+            filters.add(new SearchFilter("plazaNo", SearchFilter.Operator.EQ,  param.getPlaNo()));
         }
         Specification<IssueTag> spec = DynamicSpecifications.bySearchFilter(filters, IssueTag.class);
         Sort purchaseDateDB = new Sort(Sort.Direction.DESC, "installDate");

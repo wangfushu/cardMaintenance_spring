@@ -181,7 +181,7 @@
             param += name + "=" + value + "&";
         });
         param.substring(0, param.length - 1);
-        window.location.href = "${absoluteContextPath}/statistic/tagOutStoreexport" + param;
+        window.location.href = "${absoluteContextPath}/statistic/issueTagYearexport" + param;
     }
 
 </script>

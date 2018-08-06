@@ -77,7 +77,6 @@ public class LoginControl extends BaseControl {
     public String changePassWord(Long eId, String oldpassword,String newpassword) throws UnsupportedEncodingException {
         try {
             if(null!=eId && StringUtils.isNotNullBlank(String.valueOf(eId))){
-
             }else{
                 Users users=getCurrentUser();
                 eId=users.getId();
@@ -87,7 +86,6 @@ public class LoginControl extends BaseControl {
         } catch (NumberFormatException e) {
             return "error";
         } catch (InvalidException e) {
-            //String result=e.getMessage();
             return e.getMessage();
         }
     }
