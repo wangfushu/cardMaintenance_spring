@@ -18,11 +18,11 @@ import java.util.TreeMap;
  */
 public class RbiQueryPayOrder {
     private Logger LOGGER = LoggerFactory.getLogger(RbiQueryPayOrder.class);
-   // private String rbi_query_url = "http://117.29.161.2:50080/uniform-pay-biz/queryPay";//测试库
-    //private String rbi_query_url = "http://172.16.52.39:50080/uniform-pay-biz/queryPay";//测试库（内网）
+   // private String rbi_query_url = "";//测试库
+    //private String rbi_query_url = "";//测试库（内网）
 
-    //private String rbi_query_url = "https://demoapp.xmparking.net/cloud-pay-api/queryPay";//测试库
-     private String rbi_query_url="https://app.xmparking.net/cloud-pay-api/queryPay";//正式库
+    //private String rbi_query_url = "";//测试库
+     private String rbi_query_url="";//正式库
 
     public String queryOrder(String orderNO,String payOrderNo) throws Exception {
         BaseDataPay baseDataPay = initBaseDataPay();
