@@ -24,18 +24,18 @@ public class RBIPay extends Connection {
 
     // 接口地址
     private Logger LOGGER = LoggerFactory.getLogger(RBIPay.class);
-    //private String rbi_url = "http://172.16.52.39:50080/uniform-pay-biz/unifiedPay";//测试库内网
-   //private String rbi_url = "http://117.29.161.2:50080/uniform-pay-biz/unifiedPay";//测试库外网
+    //private String rbi_url = 
+   //private String rbi_url =
 
 
-   // private String rbi_url="https://demoapp.xmparking.net/cloud-pay-api/unifiedPay";//测试库外网
+   // private String rbi_url=
 
-    private String rbi_url="https://app.xmparking.net/cloud-pay-api/unifiedPay";//正式库
+    private String rbi_url=
 
-    //private String notify_url = "http://125.77.254.250:5083/cardMaintenance/feepay/notify";
-    //private String notify_url = "http://wangfushu.tunnel.qydev.com/cardMaintenance/feepay/notify";
-    private String notify_url = "http://117.29.161.2:5689/cardMaintenance/feepay/notify";
-   // private String notify_url = "http://192.168.14.111:8089/cardMaintenance/feepay/notify";
+    //private String notify_url = 
+    //private String notify_url = 
+    private String notify_url = 
+   // private String notify_url = 
 
     public String Pay(String payType,Double totalFee,String plateNo,String orderNo) throws Exception {
 
